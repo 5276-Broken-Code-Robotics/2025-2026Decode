@@ -1,3 +1,8 @@
+## Robot code file path:
+
+2025-2026Decode/TeamCode/src/main/java/org/firstinspires/ftc
+/teamcode/
+
 ## NOTICE
 
 This repository contains the public FTC SDK for the DECODE (2025-2026) competition season.
