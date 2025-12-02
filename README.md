@@ -1,7 +1,8 @@
 ## Robot code file path:
 
-2025-2026Decode/TeamCode/src/main/java/org/firstinspires/ftc
-/teamcode/
+2025-2026Decode/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/
+
+[Or click here.](https://github.com/5276-Broken-Code-Robotics/2025-2026Decode/tree/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode)
 
 ## NOTICE
 
