@@ -76,10 +76,10 @@ public class FieldRelativeDrive extends OpMode {
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
-        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        // br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         imu = hardwareMap.get(IMU.class, "imu");
         // This needs to be changed to match the orientation on your robot
