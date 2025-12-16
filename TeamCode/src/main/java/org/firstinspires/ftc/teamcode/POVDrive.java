@@ -47,7 +47,7 @@ import com.qualcomm.robotcore.hardware.IMU;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
-@TeleOp
+@TeleOp(name = "POVDrive", group = "Drive")
 
 public class POVDrive extends OpMode {
     // This declares the four motors needed
@@ -66,8 +66,8 @@ public class POVDrive extends OpMode {
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
 
+        fl.setDirection(DcMotor.Direction.REVERSE);
         bl.setDirection(DcMotor.Direction.REVERSE);
-        br.setDirection(DcMotor.Direction.REVERSE);
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these

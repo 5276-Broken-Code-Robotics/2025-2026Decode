@@ -50,7 +50,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
-@TeleOp
+@TeleOp(name = "RelativeDrive", group = "Drive")
 public class FieldRelativeDrive extends OpMode {
     // This declares the four motors needed
     DcMotor fl;
