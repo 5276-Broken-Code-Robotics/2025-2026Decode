@@ -36,7 +36,7 @@ public class LiftMechanism {
 
     public void lift(double direction) {
         //Ascent
-        if (direction >= 0) {
+        if (direction > 0) {
 
             leftLift.setTargetPosition((int) (rotationCount * ticks));
             rightLift.setTargetPosition((int) (rotationCount * ticks));
@@ -47,7 +47,7 @@ public class LiftMechanism {
         }
 
         //Descent
-        else if (direction <= 0){
+        else if (direction < 0){
 
             leftLift.setTargetPosition(0);
             rightLift.setTargetPosition(0);

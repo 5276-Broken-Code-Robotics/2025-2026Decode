@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.mechanisms.LaunchMechanism;
 import org.firstinspires.ftc.teamcode.mechanisms.LiftMechanism;
 
 @TeleOp
@@ -12,6 +13,8 @@ public class EliTeleopTest extends OpMode {
 
     LiftMechanism lift = new LiftMechanism();
     POVDrive drive = new POVDrive();
+
+    LaunchMechanism launch = new LaunchMechanism();
 
     // Uncomment below line + comment out above line for Field Relative
 
@@ -22,8 +25,6 @@ public class EliTeleopTest extends OpMode {
     DcMotor intake;
     DcMotor flywheel;
 
-    Servo leftPush;
-    Servo rightPush;
 
 
 
@@ -49,7 +50,7 @@ public class EliTeleopTest extends OpMode {
         flywheel.setPower(1);
 
         if (gamepad1.right_trigger > 0) {
-            launch();
+            launch.shoot();
         }
 
     }
