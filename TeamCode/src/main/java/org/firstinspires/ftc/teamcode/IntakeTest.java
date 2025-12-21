@@ -9,10 +9,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class IntakeTest extends OpMode {
 
     DcMotor intake;
+    DcMotor intake1;
+
 
     @Override
     public void init() {
         intake = hardwareMap.get(DcMotor.class, "intake");
+        intake1 = hardwareMap.get(DcMotor.class, "intake1");
     }
 
     @Override
