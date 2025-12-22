@@ -52,8 +52,8 @@ public class LiftMechanism {
             leftLift.setTargetPosition(0);
             rightLift.setTargetPosition(0);
 
-            leftLift.setPower(downSpeed * gamepad1.left_trigger);
-            rightLift.setPower(downSpeed * gamepad1.left_trigger);
+            leftLift.setPower(downSpeed * gamepad2.left_trigger);
+            rightLift.setPower(downSpeed * gamepad2.left_trigger);
 
         }
 
