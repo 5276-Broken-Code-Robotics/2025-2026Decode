@@ -55,12 +55,6 @@ public class EliTeleopTest extends OpMode {
 
     }
 
-    public void launch() {
-
-    }
-
-
-
 
 
 }
