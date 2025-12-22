@@ -8,18 +8,22 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class IntakeTest extends OpMode {
 
+    POVDrive drive = new POVDrive();
     DcMotor intake;
-    DcMotor intake1;
 
 
     @Override
     public void init() {
+
         intake = hardwareMap.get(DcMotor.class, "intake");
-        intake1 = hardwareMap.get(DcMotor.class, "intake1");
+
     }
 
     @Override
     public void loop() {
-        intake.setPower(gamepad1.left_stick_y);
+
+        drive.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        intake.setPower(-gamepad1.right_trigger);
+
     }
 }
