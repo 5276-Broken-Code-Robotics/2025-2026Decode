@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.mechanisms.LaunchMechanism;
 import org.firstinspires.ftc.teamcode.mechanisms.LiftMechanism;
 
-@TeleOp
+@TeleOp(name = "POVDrive", group = "Drive")
 public class EliTeleopTest extends OpMode {
 
     LiftMechanism lift = new LiftMechanism();
