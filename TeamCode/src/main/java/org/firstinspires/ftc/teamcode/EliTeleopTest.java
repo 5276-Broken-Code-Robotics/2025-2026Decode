@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.mechanisms.LaunchMechanism;
 import org.firstinspires.ftc.teamcode.mechanisms.LiftMechanism;
@@ -12,7 +11,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.LiftMechanism;
 public class EliTeleopTest extends OpMode {
 
     LiftMechanism lift = new LiftMechanism();
-    POVDrive drive = new POVDrive();
+    POVDriveOp drive = new POVDriveOp();
 
     LaunchMechanism launch = new LaunchMechanism();
 
