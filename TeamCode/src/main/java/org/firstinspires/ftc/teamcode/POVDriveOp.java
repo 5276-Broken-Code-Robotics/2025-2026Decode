@@ -26,15 +26,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.firstinspires.ftc.teamcode.mechanisms;
-
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 
 /*
  * This OpMode illustrates how to program your robot to drive field relative.  This means
@@ -50,30 +47,27 @@ import com.qualcomm.robotcore.hardware.IMU;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  *
  */
+@TeleOp(name = "POVDrive - Only")
 
-public class POVDrive{
-
+public class POVDriveOp extends OpMode {
     // This declares the four motors needed
     DcMotor fl;
     DcMotor fr;
     DcMotor bl;
     DcMotor br;
 
-
-
-    public void init(HardwareMap hwMap) {
-
-
-        fl = hwMap.get(DcMotor.class, "fl");
-        fr = hwMap.get(DcMotor.class, "fr");
-        bl = hwMap.get(DcMotor.class, "bl");
-        br = hwMap.get(DcMotor.class, "br");
+    @Override
+    public void init() {
+        fl = hardwareMap.get(DcMotor.class, "fl");
+        fr = hardwareMap.get(DcMotor.class, "fr");
+        bl = hardwareMap.get(DcMotor.class, "bl");
+        br = hardwareMap.get(DcMotor.class, "br");
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
 
-        bl.setDirection(DcMotor.Direction.REVERSE);
         fl.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.REVERSE);
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
@@ -82,9 +76,12 @@ public class POVDrive{
         // bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
     }
 
+    @Override
+    public void loop() {
+        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+    }
 
     public void drive(double forward, double strafe, double rotate) {
         double flPower = forward + strafe + rotate;
@@ -106,4 +103,8 @@ public class POVDrive{
         br.setPower((maxSpeed * (brPower / maxPower)));
     }
 
+
+    public void init(HardwareMap hardwareMap) {
+
+    }
 }
