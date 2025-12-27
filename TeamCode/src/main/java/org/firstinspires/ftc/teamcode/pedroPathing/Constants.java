@@ -13,13 +13,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Constants {
-    public static FollowerConstants followerConstants = new FollowerConstants();
+    public static FollowerConstants followerConstants = new FollowerConstants()
+            .mass(9);
 
     public static TwoWheelConstants localizerConstants = new TwoWheelConstants()
             .forwardEncoder_HardwareMapName("fl")
             .strafeEncoder_HardwareMapName("fr")
             .forwardPodY(6.5)
-            .strafePodX(1)
+            .strafePodX(2.75)
+            .forwardTicksToInches(.00198)
+            .forwardTicksToInches(.00199)
             .IMU_HardwareMapName("imu")
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(

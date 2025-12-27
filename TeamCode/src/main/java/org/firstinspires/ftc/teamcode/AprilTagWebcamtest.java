@@ -34,18 +34,19 @@ public class AprilTagWebcamtest extends OpMode {
 
 
     AprilTagWebcam aprilTagWebCam = new AprilTagWebcam();
-    public void init(){
+    public void init() {
         aprilTagWebCam.init(hardwareMap, telemetry);
-
-        fr  = hardwareMap.get(DcMotor.class, "fr");
+        timer = new ElapsedTime();
+        fr = hardwareMap.get(DcMotor.class, "fr");
         fl = hardwareMap.get(DcMotor.class, "fl");
-        bl  = hardwareMap.get(DcMotor.class, "bl");
+        bl = hardwareMap.get(DcMotor.class, "bl");
         br = hardwareMap.get(DcMotor.class, "br");
         tilt = hardwareMap.get(Servo.class, "tilt");
         pan = hardwareMap.get(Servo.class, "pan");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
         timer.reset();
         beganshot = false;
+
     }
 
 
@@ -57,16 +58,16 @@ public class AprilTagWebcamtest extends OpMode {
 
     public void loop(){
         aprilTagWebCam.update();
-        AprilTagDetection id20 = aprilTagWebCam.getTagByID(20);
+        AprilTagDetection id24 = aprilTagWebCam.getTagByID(24);
 
 
         if(!beganshot){
-            if(id20 == null){
+            if(id24 == null){
                 pan.setPosition(pan.getPosition() + 10f);
             }else{
 
                 //perform calculation to get needed angle
-                if(Math.abs(id20.ftcPose.bearing) < 10){
+                if(Math.abs(id24.ftcPose.bearing) < 10){
 
                     beganshot = true;
                     timer.reset();
@@ -75,7 +76,7 @@ public class AprilTagWebcamtest extends OpMode {
 
                     
                 }else{
-                    pan.setPosition(pan.getPosition() + id20.ftcPose.bearing);
+                    pan.setPosition(pan.getPosition() + id24.ftcPose.bearing);
                 }
             }
 
