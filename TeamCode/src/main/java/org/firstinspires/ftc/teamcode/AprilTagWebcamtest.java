@@ -35,6 +35,14 @@ public class AprilTagWebcamtest extends OpMode {
     private DcMotor flywheel;
 
 
+
+
+    AprilTagDetection currOne;
+    int state = 0;
+
+    //0 : looking for
+    //1 : orienting correctly
+
     boolean waiting = false;
 
     boolean seen = false;
@@ -58,6 +66,8 @@ public class AprilTagWebcamtest extends OpMode {
 
         elapsedTime.reset();
 
+
+        state=  0;
      }
 
 
@@ -81,15 +91,14 @@ public class AprilTagWebcamtest extends OpMode {
         telemetry.addData("Seen val :" , seen);
 
 
+    if(state == 0) {
 
-        if(elapsedTime.seconds() <= 1f){
+
+        if (elapsedTime.seconds() <= 1f) {
             waiting = false;
-        }else
-
-        if(elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 2f){
+        } else if (elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 2f) {
             waiting = true;
-        }else
-        if(elapsedTime.seconds() >= 2f){
+        } else if (elapsedTime.seconds() >= 2f) {
             waiting = false;
             elapsedTime.reset();
 
@@ -97,38 +106,30 @@ public class AprilTagWebcamtest extends OpMode {
         }
 
 
-            if(id24 == null && !seen){
+        if (aprilTagWebCam.getDetectedTags().isEmpty()) {
 
-                if(!waiting)pan.setPosition(initpos + 0.05f);
+            if (!waiting) pan.setPosition(initpos + 0.05f);
 
-            }else{
+        } else {
 
-                seen = true;
+            seen = true;
 
-                telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
+            telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
 
-                telemetry.addData("We did it", "john");
+            telemetry.addData("We did it", "john");
+            state = 1;
 
-                //perform calculation to get needed angle
-
-            if(id24 != null){
-                if(Math.abs(id24.ftcPose.bearing) < 10){
-
-                    beganshot = true;
-                    timer.reset();
-                    flywheel.setPower(0);
+            currOne = aprilTagWebCam.getDetectedTags().get(0);
+        }
 
 
+    }
 
-                }else{
-                    pan.setPosition(pan.getPosition() + id24.ftcPose.bearing);
-                }
-            }
+    if(state == 1){
+        pan.setPosition(pan.getPosition() + currOne.ftcPose.bearing);
+        tilt.setPosition(tilt.getPosition() + currOne.ftcPose.elevation);
 
-            }
-
-
-
+    }
 
 
 
