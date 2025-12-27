@@ -25,11 +25,19 @@ public class AprilTagWebcamtest extends OpMode {
 
     float turretangle = 0f;
     boolean beganshot = false;
+
+    double initpos = 0f;
     private DcMotor fl;
     private DcMotor br;
     private DcMotor bl;
+
+    ElapsedTime elapsedTime;
     private DcMotor flywheel;
 
+
+    boolean waiting = false;
+
+    boolean seen = false;
     ElapsedTime timer;
 
 
@@ -46,8 +54,11 @@ public class AprilTagWebcamtest extends OpMode {
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
         timer.reset();
         beganshot = false;
+        elapsedTime = new ElapsedTime();
 
-    }
+        elapsedTime.reset();
+
+     }
 
 
 
@@ -60,33 +71,62 @@ public class AprilTagWebcamtest extends OpMode {
         aprilTagWebCam.update();
         AprilTagDetection id24 = aprilTagWebCam.getTagByID(24);
 
+        telemetry.update();
+        if(aprilTagWebCam.getDetectedTags() != null){
+            telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
+        }else{
+            telemetry.addData("Save ", "Me");
+        }
 
-        if(!beganshot){
-            if(id24 == null){
-                pan.setPosition(pan.getPosition() + 10f);
+        telemetry.addData("Seen val :" , seen);
+
+
+
+        if(elapsedTime.seconds() <= 1f){
+            waiting = false;
+        }else
+
+        if(elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 2f){
+            waiting = true;
+        }else
+        if(elapsedTime.seconds() >= 2f){
+            waiting = false;
+            elapsedTime.reset();
+
+            initpos = pan.getPosition();
+        }
+
+
+            if(id24 == null && !seen){
+
+                if(!waiting)pan.setPosition(initpos + 0.05f);
+
             }else{
 
+                seen = true;
+
+                telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
+
+                telemetry.addData("We did it", "john");
+
                 //perform calculation to get needed angle
+
+            if(id24 != null){
                 if(Math.abs(id24.ftcPose.bearing) < 10){
 
                     beganshot = true;
                     timer.reset();
-                    flywheel.setPower(0.7);
+                    flywheel.setPower(0);
 
 
-                    
+
                 }else{
                     pan.setPosition(pan.getPosition() + id24.ftcPose.bearing);
                 }
             }
 
-        }else if(timer.milliseconds() > 1000){
-            beganshot = false;
+            }
 
-
-            flywheel.setPower(0);
-            timer.reset();
-        }
 
 
 
