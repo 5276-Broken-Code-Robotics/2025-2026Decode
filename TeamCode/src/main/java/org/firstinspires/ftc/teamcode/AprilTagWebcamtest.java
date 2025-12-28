@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,7 +24,11 @@ public class AprilTagWebcamtest extends OpMode {
     private DcMotor fr;
 
 
+
+
     float turretangle = 0f;
+
+    float initposforseeingpreorient = 0f;
     boolean beganshot = false;
 
     double initpos = 0f;
@@ -31,8 +36,12 @@ public class AprilTagWebcamtest extends OpMode {
     private DcMotor br;
     private DcMotor bl;
 
+
+
     ElapsedTime elapsedTime;
     private DcMotor flywheel;
+
+    private DcMotor intake;
 
 
 
@@ -46,8 +55,12 @@ public class AprilTagWebcamtest extends OpMode {
     boolean waiting = false;
 
     boolean seen = false;
+
+    CRServo transfer;
     ElapsedTime timer;
 
+
+    double positionnecessary = 0f;
 
     AprilTagWebcam aprilTagWebCam = new AprilTagWebcam();
     public void init() {
@@ -59,7 +72,13 @@ public class AprilTagWebcamtest extends OpMode {
         br = hardwareMap.get(DcMotor.class, "br");
         tilt = hardwareMap.get(Servo.class, "tilt");
         pan = hardwareMap.get(Servo.class, "pan");
+
+
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+
+
         timer.reset();
         beganshot = false;
         elapsedTime = new ElapsedTime();
@@ -78,7 +97,6 @@ public class AprilTagWebcamtest extends OpMode {
 
 
     public void loop(){
-        aprilTagWebCam.update();
         AprilTagDetection id24 = aprilTagWebCam.getTagByID(24);
 
         telemetry.update();
@@ -91,48 +109,85 @@ public class AprilTagWebcamtest extends OpMode {
         telemetry.addData("Seen val :" , seen);
 
 
-    if(state == 0) {
+        if(state == 0) {
 
 
-        if (elapsedTime.seconds() <= 1f) {
-            waiting = false;
-        } else if (elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 2f) {
-            waiting = true;
-        } else if (elapsedTime.seconds() >= 2f) {
-            waiting = false;
-            elapsedTime.reset();
+            if (elapsedTime.seconds() <= 1f) {
+                waiting = false;
+            } else if (elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 2f) {
+                waiting = true;
+            } else if (elapsedTime.seconds() >= 2f) {
+                waiting = false;
+                elapsedTime.reset();
 
-            initpos = pan.getPosition();
+                initpos = pan.getPosition();
+            }
+
+
+            if (aprilTagWebCam.getDetectedTags().isEmpty()) {
+
+                if (!waiting) pan.setPosition(initpos + 0.05f);
+
+            } else {
+
+                seen = true;
+
+                telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
+
+                telemetry.addData("We did it", "john");
+                state = 1;
+
+                currOne = aprilTagWebCam.getDetectedTags().get(0);
+            }
+
+
+        }
+
+        if(state == 1){
+
+            positionnecessary = pan.getPosition() + currOne.ftcPose.bearing * 0.4/180;
+
+            initposforseeingpreorient = (float)pan.getPosition();
+            telemetry.addData("position going to" ,  pan.getPosition() + currOne.ftcPose.bearing * 0.4/180);
+
+            //tilt.setPosition(tilt.getPosition() + currOne.ftcPose.elevation);
+            state = 2;
+        }
+
+        if(state == 2){
+
+            telemetry.addData("curpos" , pan.getPosition());
+
+            telemetry.addData("position going to" ,  positionnecessary);
+
+            telemetry.addData("initpos" ,  initposforseeingpreorient);
+
+            pan.setPosition(positionnecessary);
+
+
+            telemetry.addData("bearing is this : ", currOne.ftcPose.bearing);
+
+
+            if(pan.getPosition() == positionnecessary){
+                state = 3;
+            }
+
+
+            aprilTagWebCam.displayDetectionTelemetry(currOne);
+
+
         }
 
 
-        if (aprilTagWebCam.getDetectedTags().isEmpty()) {
 
-            if (!waiting) pan.setPosition(initpos + 0.05f);
+        telemetry.addData("state : ", state);
 
-        } else {
 
-            seen = true;
-
-            telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
-
-            telemetry.addData("We did it", "john");
-            state = 1;
-
-            currOne = aprilTagWebCam.getDetectedTags().get(0);
+        if(state == 3){
+            aprilTagWebCam.displayDetectionTelemetry(currOne);
         }
 
-
-    }
-
-    if(state == 1){
-        pan.setPosition(pan.getPosition() + currOne.ftcPose.bearing);
-        tilt.setPosition(tilt.getPosition() + currOne.ftcPose.elevation);
-
-    }
-
-
-
+        aprilTagWebCam.update();
 
     }
 
