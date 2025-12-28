@@ -43,7 +43,10 @@ public class StanleyAutoP1 {
                     .addPath(
                             new BezierLine(new Pose(56.000, 36.000), new Pose(14.049, 35.733))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+
+
+                    //.setTangentHeadingInterpolation()
                     .build();
 
             Path3 = follower
@@ -51,7 +54,9 @@ public class StanleyAutoP1 {
                     .addPath(
                             new BezierLine(new Pose(14.049, 35.733), new Pose(56.042, 7.483))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+
+                    //.setTangentHeadingInterpolation()
                     .build();
 
             Path4 = follower
@@ -59,7 +64,9 @@ public class StanleyAutoP1 {
                     .addPath(
                             new BezierLine(new Pose(56.042, 7.483), new Pose(45.200, 60.013))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+
+                    //.setTangentHeadingInterpolation()
                     .build();
 
             Path5 = follower
@@ -67,7 +74,9 @@ public class StanleyAutoP1 {
                     .addPath(
                             new BezierLine(new Pose(45.200, 60.013), new Pose(12.522, 59.860))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+
+                    //.setTangentHeadingInterpolation()
                     .build();
 
             Path6 = follower
@@ -75,7 +84,9 @@ public class StanleyAutoP1 {
                     .addPath(
                             new BezierLine(new Pose(12.522, 59.860), new Pose(56.501, 7.635))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+
+                    //.setTangentHeadingInterpolation()
                     .build();
 
             Path7 = follower
@@ -83,7 +94,9 @@ public class StanleyAutoP1 {
                     .addPath(
                             new BezierLine(new Pose(56.501, 7.635), new Pose(40.467, 83.835))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+
+                    //.setTangentHeadingInterpolation()
                     .build();
 
             Path8 = follower
@@ -91,7 +104,9 @@ public class StanleyAutoP1 {
                     .addPath(
                             new BezierLine(new Pose(40.467, 83.835), new Pose(11.606, 83.529))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+
+                    //.setTangentHeadingInterpolation()
                     .build();
 
             Path9 = follower
@@ -99,7 +114,9 @@ public class StanleyAutoP1 {
                     .addPath(
                             new BezierLine(new Pose(11.606, 83.529), new Pose(56.959, 7.635))
                     )
-                    .setTangentHeadingInterpolation()
+                    .setLinearHeadingInterpolation(Math.toRadians(180),Math.toRadians(180))
+
+                    //.setTangentHeadingInterpolation()
                     .build();
 
 
