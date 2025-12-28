@@ -21,15 +21,15 @@ public class RightAuto1 extends OpMode {
     private int pathState;
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer;
-    private final Pose startPose = new Pose(144-20.639209225700164, 122.41186161449752, Math.toRadians(46)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(144-61.680395387149915, 81.37067545304778, Math.toRadians(46)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pickup1Pose = new Pose(144-13.28500823723229, 83.98023064250413, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    private final Pose pickup2Pose = new Pose(144-11.387149917627676, 60.019769357495896, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    private final Pose pickup3Pose = new Pose(144-11.387149917627676, 34.87314662273476, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation1Pose = new Pose(144-49.344316309719936, 84.2174629324547, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation2Pose = new Pose(144-41.990115321252055, 59.78253706754529, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation3Pose = new Pose(144-41.51565074135091, 35.11037891268535, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose finalPose = new Pose(144-55.98682042833608, 64.05271828665569, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose startPose = new Pose(125.49588138385502, 118.14168039538714, Math.toRadians(36)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(96, 96, Math.toRadians(36)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose pickup1Pose = new Pose(127, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(134, 60, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    private final Pose pickup3Pose = new Pose(134, 36, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation1Pose = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation2Pose = new Pose(96, 60, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation3Pose = new Pose(96, 36, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose finalPose = new Pose(103, 65, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
     private Path scorePreload;
     public void buildPaths(){
@@ -182,6 +182,7 @@ public class RightAuto1 extends OpMode {
 
         follower.update();
         autonomousPathUpdate();
+        // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
