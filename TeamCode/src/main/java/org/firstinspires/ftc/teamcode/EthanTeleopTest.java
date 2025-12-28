@@ -24,6 +24,7 @@ public class EthanTeleopTest extends OpMode {
 
     boolean isShooting;
     boolean enableIntake;
+    boolean enableFlywheel;
 
     @Override
     public void init() {
@@ -41,18 +42,21 @@ public class EthanTeleopTest extends OpMode {
         timer = new ElapsedTime();
 
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         transfer.setPower(-1);
-        flywheel.setPower(0.7);
     }
 
     @Override
     public void loop() {
         drive.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        tilt.setPosition(0.59 * gamepad1.left_trigger);
 
-        managePan();
         manageIntake();
+        manageFlywheel();
+
+        // Following 2 are temporary: will be automated eventually
+        tilt.setPosition(0.59 * gamepad1.left_trigger);
+        managePan();
 
         if(gamepad1.right_trigger >= 0.1 && !isShooting) {
             shoot();
@@ -62,17 +66,17 @@ public class EthanTeleopTest extends OpMode {
     }
 
     private void managePan() {
-        double increment = 0.01;
+        double increment = 0.001;
 
         if(gamepad1.dpad_left) {
-            pan.setPosition(Math.min(pan.getPosition() + increment, 1));
+            pan.setPosition(Math.min(pan.getPosition() + increment, 0.4));
         } else if(gamepad1.dpad_right) {
             pan.setPosition(Math.max(pan.getPosition() - increment, 0));
         }
     }
 
     private void manageIntake() {
-        if(gamepad1.circleWasPressed()) {
+        if(gamepad1.squareWasPressed()) {
             enableIntake = !enableIntake;
         }
 
@@ -80,6 +84,18 @@ public class EthanTeleopTest extends OpMode {
             intake.setPower(1);
         } else {
             intake.setPower(0);
+        }
+    }
+
+    private void manageFlywheel() {
+        if(gamepad1.circleWasPressed()) {
+            enableFlywheel = !enableFlywheel;
+        }
+
+        if(enableFlywheel) {
+            flywheel.setPower(0.7);
+        } else {
+            flywheel.setPower(0);
         }
     }
 
@@ -91,7 +107,7 @@ public class EthanTeleopTest extends OpMode {
     }
 
     private void manageShoot() {
-        if(timer.seconds() >= 1) {
+        if(timer.seconds() >= 2) {
             isShooting = false;
 
             transfer.setPower(-1);
