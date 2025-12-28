@@ -78,12 +78,14 @@ public class AprilTagWebcamtest extends OpMode {
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
+        intake.setDirection(DcMotor.Direction.REVERSE);
 
         timer.reset();
         beganshot = false;
         elapsedTime = new ElapsedTime();
 
         elapsedTime.reset();
+
 
 
         state=  0;
@@ -97,9 +99,14 @@ public class AprilTagWebcamtest extends OpMode {
 
 
     public void loop(){
-        AprilTagDetection id24 = aprilTagWebCam.getTagByID(24);
 
-        telemetry.update();
+
+        intake.setPower(1);
+        transfer.setPower(-1);
+
+
+
+
         if(aprilTagWebCam.getDetectedTags() != null){
             telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
         }else{
@@ -170,6 +177,9 @@ public class AprilTagWebcamtest extends OpMode {
 
             if(pan.getPosition() == positionnecessary){
                 state = 3;
+
+                transfer.setPower(1);
+                flywheel.setPower(0.75);
             }
 
 
