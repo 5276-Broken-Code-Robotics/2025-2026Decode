@@ -20,7 +20,7 @@ import java.util.Timer;
 public class LeftAuto1 extends OpMode {
     private int pathState;
     private Follower follower;
-    private ElapsedTime pathTimer, actionTimer, opmodeTimer;
+    private ElapsedTime pathTimer, actionTimer;
     private final Pose startPose = new Pose(20.639209225700164, 122.41186161449752, Math.toRadians(136)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(61.680395387149915, 81.37067545304778, Math.toRadians(136)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pickup1Pose = new Pose(19, 83.98023064250413, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
@@ -82,7 +82,7 @@ public class LeftAuto1 extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(scorePreload);
+                follower.followPath(scorePreload, true);
                 setPathState(1);
                 break;
             case 1:
@@ -162,16 +162,19 @@ public class LeftAuto1 extends OpMode {
                 if (!follower.isBusy()) {
 
                     follower.followPath(finalPosition, true);
-                    setPathState(-1);
+                    setPathState(11);
                 }
                 break;
+            case 11:
+                if(!follower.isBusy()){
+                    setPathState(-1);
+                }
         }
     }
 
     @Override
     public void init() {
-        opmodeTimer = new ElapsedTime();
-        opmodeTimer.reset();
+
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
@@ -190,7 +193,6 @@ public class LeftAuto1 extends OpMode {
     }
     @Override
     public void start() {
-        opmodeTimer.reset();
         setPathState(0);
     }
 }
