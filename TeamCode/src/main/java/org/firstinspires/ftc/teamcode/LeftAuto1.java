@@ -30,7 +30,7 @@ public class LeftAuto1 extends OpMode {
     private final Pose rotation2Pose = new Pose(41.990115321252055, 59.78253706754529, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose rotation3Pose = new Pose(41.51565074135091, 35.11037891268535, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose finalPose = new Pose(35, 64.05271828665569, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
+    private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3, finalPosition;
     private Path scorePreload;
     public void buildPaths(){
         scorePreload = new Path(new BezierLine(startPose, scorePose));
