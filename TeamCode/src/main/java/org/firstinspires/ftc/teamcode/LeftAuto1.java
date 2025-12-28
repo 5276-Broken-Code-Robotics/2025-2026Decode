@@ -21,8 +21,8 @@ public class LeftAuto1 extends OpMode {
     private int pathState;
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer;
-    private final Pose startPose = new Pose(20.639209225700164, 122.41186161449752, Math.toRadians(136)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(61.680395387149915, 81.37067545304778, Math.toRadians(136)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose startPose = new Pose(20.639209225700164, 122.41186161449752, Math.toRadians(144)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(61.680395387149915, 81.37067545304778, Math.toRadians(144)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pickup1Pose = new Pose(24, 83.98023064250413, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
     private final Pose pickup2Pose = new Pose(24, 60.019769357495896, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
     private final Pose pickup3Pose = new Pose(24, 34.87314662273476, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
