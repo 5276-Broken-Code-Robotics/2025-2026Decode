@@ -15,6 +15,13 @@ import java.util.*;
 
 public class AprilTagWebcam {
 
+
+
+    float minPower = 0f;
+
+
+    //Find minpower for the four segments
+    //find the necessary tilt at multiple sampled points for each of the four sections, linearly interpolate between them
     private AprilTagProcessor aprilTagProcessor;
 
     private VisionPortal visionPortal;
