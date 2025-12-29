@@ -6,6 +6,7 @@ public class ShootConstants {
     public static double shotDuration_seconds = 2.5;
 
     static double sizePerDistanceSegment_inches = 144d / 3;
+    
     public static double powerFromDistance(double distance) {
         if(distance <= sizePerDistanceSegment_inches) {
             return 0.65;
@@ -18,6 +19,12 @@ public class ShootConstants {
 
 
     public static double tiltFromDistance(double distance){
-        return 0;
+        if(distance <= sizePerDistanceSegment_inches) {
+            return 0;
+        } else if (distance <= sizePerDistanceSegment_inches * 2) {
+            return 0;
+        } else {
+            return 0;
+        }
     }
 }
