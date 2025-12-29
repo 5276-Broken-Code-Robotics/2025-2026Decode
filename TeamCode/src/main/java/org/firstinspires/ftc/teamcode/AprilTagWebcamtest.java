@@ -105,7 +105,7 @@ public class AprilTagWebcamtest extends OpMode {
         elapsedTime.reset();
 
 
-        follower.setPose(new Pose(0,144));
+        follower.setPose(new Pose(144,90));
 
         state=  0;
      }
@@ -115,6 +115,11 @@ public class AprilTagWebcamtest extends OpMode {
 
 
 
+
+     public void OrientAndFire()
+     {
+
+     }
 
 
     public void loop(){
@@ -177,21 +182,14 @@ public class AprilTagWebcamtest extends OpMode {
 
         if(state == 1){
 
-            if(follower.getPose().getY() >= 72){
-                if(currOne.ftcPose.y >= 78){
-                    power = 0.9f;
-                }
-
-                if(currOne.ftcPose.y <= 78){
-                    power = 0.75f;
-                }
+            if(follower.getPose().getY() <= 72){
             }else{
-                if(currOne.ftcPose.y >= 78){
-                    power = 0.75f;
+                if(currOne.ftcPose.y >= 108){
+                    power = 0.65f;
                 }
 
-                if(currOne.ftcPose.y <= 78){
-                    power = 0.5f;
+                if(currOne.ftcPose.y < 108){
+                    power = 0.75f;
                 }
             }
 

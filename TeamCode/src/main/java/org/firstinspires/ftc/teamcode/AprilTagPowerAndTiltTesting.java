@@ -1,34 +1,43 @@
-package org.firstinspires.ftc.teamcode.mechanisms;
-
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
-
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
+import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebcam;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+@TeleOp
 
-import java.util.*;
-public class HoodedShooter {
+
+
+public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
 
     private Servo pan;
     private Servo tilt;
 
-    AprilTagWebcam aprilTagWebCam;
+    float power = 0.75f;
+
+
+    double tiltangle = 0f;
+
+    //maxes out at 0.59
     private DcMotor fr;
 
 
 
+
+    float turretangle = 0f;
 
     float initposforseeingpreorient = 0f;
     boolean beganshot = false;
@@ -37,8 +46,6 @@ public class HoodedShooter {
     private DcMotor fl;
     private DcMotor br;
     private DcMotor bl;
-
-    double positionnecessary;
 
 
 
@@ -64,25 +71,20 @@ public class HoodedShooter {
     boolean seen = false;
 
     CRServo transfer;
-
-
-    double power;
-
-    double posX;
-    double posY;
-
-
-    boolean shotbegan = false;
-    double angle;
-
-    // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
-    double maxTilt = 0.59;
-    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+    ElapsedTime timer;
 
 
 
-        aprilTagWebCam = new AprilTagWebcam();
+    Follower follower;
+    double positionnecessary = 0f;
+
+    AprilTagWebcam aprilTagWebCam = new AprilTagWebcam();
+    public void init() {
+        follower = Constants.createFollower(hardwareMap);
+
+        //follower.setPose(new Pose(0,144));
         aprilTagWebCam.init(hardwareMap, telemetry);
+        timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
         fl = hardwareMap.get(DcMotor.class, "fl");
         bl = hardwareMap.get(DcMotor.class, "bl");
@@ -92,43 +94,71 @@ public class HoodedShooter {
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+
         intake.setDirection(DcMotor.Direction.REVERSE);
+
+        timer.reset();
+        beganshot = false;
         elapsedTime = new ElapsedTime();
+
         elapsedTime.reset();
 
 
-    }
+        follower.setPose(new Pose(144,90));
 
-    public void move(double move) {
-        tilt.setPosition(maxTilt * (move));
-    }
-
-    public void update()
-    {
-        if(shotbegan)OrientAndShoot();
+        state=  0;
     }
 
 
-    public void beginShot(double pwr, double angl, double pX, double pY){
-        power = pwr;
-        angle = angl;
-        posX = pX;
-        posY = pY;
-        shotbegan = true;
-    }
 
 
-    public void OrientAndShoot(){
+
+
+
+
+    public void loop(){
+
+        telemetry.addData("Tilt angle : ", tiltangle);
+
+        if(gamepad1.aWasPressed()){
+            power+=0.05f;
+        }
+        if(gamepad1.bWasPressed()){
+            power-=0.05f;
+        }
+        if(power > 1){
+            power = 1;
+        }
+        if(power < 0) power = 0;
+
+
+        if(gamepad1.xWasPressed()){
+            tiltangle+=0.05f;
+        }
+        if(gamepad1.yWasPressed()){
+            tiltangle-=0.05f;
+        }
+
+
+        if(tiltangle > 0.59f){
+            tiltangle = 0.59f;
+        }
+        if(tiltangle < 0) tiltangle = 0;
+
+        telemetry.addData("curr y : ", follower.getPose().getY());
 
         intake.setPower(1);
-
         if(state <= 2)transfer.setPower(-1);
+
+
 
         telemetry.addData("Power : ",  power);
 
 
         if(aprilTagWebCam.getDetectedTags() != null){
             telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
+        }else{
+            telemetry.addData("Save ", "Me");
         }
 
         telemetry.addData("Seen val :" , seen);
@@ -159,6 +189,7 @@ public class HoodedShooter {
 
                 telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
 
+                telemetry.addData("We did it", "john");
                 state = 1;
 
                 currOne = aprilTagWebCam.getDetectedTags().get(0);
@@ -168,6 +199,7 @@ public class HoodedShooter {
         }
 
         if(state == 1){
+
 
             positionnecessary = pan.getPosition() + currOne.ftcPose.bearing * 0.4/180;
 
@@ -180,6 +212,12 @@ public class HoodedShooter {
 
         if(state == 2){
 
+            telemetry.addData("curpos" , pan.getPosition());
+
+            telemetry.addData("position going to" ,  positionnecessary);
+
+            telemetry.addData("initpos" ,  initposforseeingpreorient);
+
             pan.setPosition(positionnecessary);
 
 
@@ -191,37 +229,37 @@ public class HoodedShooter {
 
                 transfer.setPower(1);
                 flywheel.setPower(power);
-                elapsedTime.reset();
-
             }
 
+
             aprilTagWebCam.displayDetectionTelemetry(currOne);
+
 
         }
 
 
+
+        tilt.setPosition(tiltangle);
 
         telemetry.addData("state : ", state);
 
 
         if(state == 3){
 
+            transfer.setPower(1);
 
-            if(elapsedTime.seconds() >= 1){
-                transfer.setPower(1);
-                aprilTagWebCam.displayDetectionTelemetry(currOne);
 
-                if(elapsedTime.seconds() >= 2.5 + 1){
-                    beganshot = false;
-                    transfer.setPower(-1);
-                }
-            }
+            aprilTagWebCam.displayDetectionTelemetry(currOne);
+
 
         }
-
+        follower.update();
 
         aprilTagWebCam.update();
 
 
+
     }
+
+
 }
