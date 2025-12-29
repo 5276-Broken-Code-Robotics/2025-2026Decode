@@ -26,7 +26,6 @@ public class BlueAuto1 extends OpMode {
     private final Pose rotation2Pose = new Pose(48, 60, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose rotation3Pose = new Pose(48, 36, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose finalPose = new Pose(41, 65, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose finalPose = new Pose(41, 65, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
 
     private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
     private Path scorePreload;
