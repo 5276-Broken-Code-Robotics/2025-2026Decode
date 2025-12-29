@@ -133,7 +133,7 @@ public class HoodedShooterTest extends OpMode {
     public void loop(){
         intake.setPower(1);
         if(gamepad1.aWasPressed()){
-            hShooter.BeginShot();
+            hShooter.BeginShot(24);
         }
     }
 

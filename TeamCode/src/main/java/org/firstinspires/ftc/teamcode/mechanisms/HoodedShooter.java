@@ -57,6 +57,9 @@ public class HoodedShooter {
     boolean shotbegan = false;
 
 
+
+
+    int currentID;
     float tiltangle = 0f;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
@@ -78,8 +81,10 @@ public class HoodedShooter {
         if(shotbegan)OrientAndShoot();
     }
 
-    public void BeginShot(){
+    public void BeginShot(int id){
         elapsedTime.reset();
+
+        currentID = id;
         shotbegan = true;
     }
 
@@ -113,20 +118,25 @@ public class HoodedShooter {
 
             } else {
 
-                seen = true;
-
                 telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
 
-                state = "found_tag_orienting";
+                for(int i =0; i < aprilTagWebCam.getDetectedTags().size();i++){
+                    if(aprilTagWebCam.getDetectedTags().get(i).id == currentID){
 
-                aprilTag = aprilTagWebCam.getDetectedTags().get(0);
+                        state = "found_tag_orienting";
+                        aprilTag = aprilTagWebCam.getDetectedTags().get(i);
+
+                    }
+                }
             }
 
 
         }
 
         if(state.equals("found_tag_orienting")){
-            double distance = 0;
+
+            double distance = aprilTag.ftcPose.y;
+
 
             flywheelPower = ShootConstants.powerFromDistance(distance);
 
