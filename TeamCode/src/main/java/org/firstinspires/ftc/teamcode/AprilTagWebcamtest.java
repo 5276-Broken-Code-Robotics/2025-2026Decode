@@ -105,6 +105,7 @@ public class AprilTagWebcamtest extends OpMode {
         elapsedTime.reset();
 
 
+        follower.setPose(new Pose(0,144));
 
         state=  0;
      }
@@ -119,7 +120,7 @@ public class AprilTagWebcamtest extends OpMode {
     public void loop(){
 
 
-        follower.setPose(new Pose(0,144));
+
 
         telemetry.addData("curr y : ", follower.getPose().getY());
 
@@ -244,8 +245,11 @@ public class AprilTagWebcamtest extends OpMode {
 
 
         }
+        follower.update();
 
         aprilTagWebCam.update();
+
+
 
     }
 
