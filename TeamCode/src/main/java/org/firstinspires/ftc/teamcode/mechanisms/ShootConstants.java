@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 public class ShootConstants {
     public static double aprilTagScanTimePerStep_seconds = 1;
     public static double flywheelAccelerationTime_seconds = 1;
-    public static double timeToResetTransferServo_seconds = 1;
+    public static double shotDuration_seconds = 2.5;
 
     static double sizePerDistanceSegment_inches = 144d / 3;
     public static double powerFromDistance(double distance) {
@@ -15,11 +15,4 @@ public class ShootConstants {
             return 0.8;
         }
     }
-
-    public static String[] shootStates = {
-            "looking_for_april_tag",
-            "found_tag_orienting",
-            "shoot",
-            "cleanup_shoot"
-    };
 }
