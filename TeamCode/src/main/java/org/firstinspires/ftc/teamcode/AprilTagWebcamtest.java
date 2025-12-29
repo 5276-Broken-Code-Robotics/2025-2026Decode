@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -10,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
 import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebcam;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 @Autonomous
 
@@ -21,6 +24,11 @@ public class AprilTagWebcamtest extends OpMode {
 
     private Servo pan;
     private Servo tilt;
+
+    float power = 0.75f;
+
+
+    double titlangle = 0f;
     private DcMotor fr;
 
 
@@ -54,16 +62,24 @@ public class AprilTagWebcamtest extends OpMode {
 
     boolean waiting = false;
 
+
+    //0.75 for close sec 2
+
     boolean seen = false;
 
     CRServo transfer;
     ElapsedTime timer;
 
 
+
+    Follower follower;
     double positionnecessary = 0f;
 
     AprilTagWebcam aprilTagWebCam = new AprilTagWebcam();
     public void init() {
+        follower = Constants.createFollower(hardwareMap);
+
+        follower.setPose(new Pose(0,144));
         aprilTagWebCam.init(hardwareMap, telemetry);
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
@@ -72,6 +88,8 @@ public class AprilTagWebcamtest extends OpMode {
         br = hardwareMap.get(DcMotor.class, "br");
         tilt = hardwareMap.get(Servo.class, "tilt");
         pan = hardwareMap.get(Servo.class, "pan");
+
+
 
 
         intake = hardwareMap.get(DcMotor.class, "intake");
@@ -101,10 +119,16 @@ public class AprilTagWebcamtest extends OpMode {
     public void loop(){
 
 
+        follower.setPose(new Pose(0,144));
+
+        telemetry.addData("curr y : ", follower.getPose().getY());
+
         intake.setPower(1);
-        transfer.setPower(-1);
+        if(state <= 2)transfer.setPower(-1);
 
 
+
+        telemetry.addData("Power : ",  power);
 
 
         if(aprilTagWebCam.getDetectedTags() != null){
@@ -152,6 +176,24 @@ public class AprilTagWebcamtest extends OpMode {
 
         if(state == 1){
 
+            if(follower.getPose().getY() >= 72){
+                if(currOne.ftcPose.y >= 78){
+                    power = 0.9f;
+                }
+
+                if(currOne.ftcPose.y <= 78){
+                    power = 0.75f;
+                }
+            }else{
+                if(currOne.ftcPose.y >= 78){
+                    power = 0.75f;
+                }
+
+                if(currOne.ftcPose.y <= 78){
+                    power = 0.5f;
+                }
+            }
+
             positionnecessary = pan.getPosition() + currOne.ftcPose.bearing * 0.4/180;
 
             initposforseeingpreorient = (float)pan.getPosition();
@@ -179,7 +221,7 @@ public class AprilTagWebcamtest extends OpMode {
                 state = 3;
 
                 transfer.setPower(1);
-                flywheel.setPower(0.75);
+                flywheel.setPower(power);
             }
 
 
@@ -194,7 +236,13 @@ public class AprilTagWebcamtest extends OpMode {
 
 
         if(state == 3){
+
+            transfer.setPower(1);
+
+
             aprilTagWebCam.displayDetectionTelemetry(currOne);
+
+
         }
 
         aprilTagWebCam.update();
