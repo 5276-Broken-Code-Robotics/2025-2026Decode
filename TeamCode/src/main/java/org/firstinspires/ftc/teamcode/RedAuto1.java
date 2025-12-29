@@ -17,7 +17,7 @@ public class RedAuto1 extends OpMode {
     private int pathState;
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer;
-    private final Pose startPose = new Pose(122, 119.80230642504118, Math.toRadians(144)); // Start Pose of our robot.
+    private final Pose startPose = new Pose(125, 119.80230642504118, Math.toRadians(144)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pickup1Pose = new Pose(127, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
     private final Pose pickup2Pose = new Pose(134, 60, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
