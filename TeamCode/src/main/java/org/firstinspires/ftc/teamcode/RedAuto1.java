@@ -26,7 +26,7 @@ public class RedAuto1 extends OpMode {
     private final Pose rotation2Pose = new Pose(96, 60, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose rotation3Pose = new Pose(96, 36, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose finalPose = new Pose(103, 65, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose leverPose = new Pose(16, 73, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose leverPose = new Pose(128, 73, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
 
     private PathChain rotate1, grabPickup1, hitLever, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
     private Path scorePreload;
