@@ -22,7 +22,7 @@ public class RightAuto1 extends OpMode {
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer;
     private final Pose startPose = new Pose(125.49588138385502, 118.14168039538714, Math.toRadians(36)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(96, 96, Math.toRadians(36)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pickup1Pose = new Pose(127, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
     private final Pose pickup2Pose = new Pose(134, 60, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
     private final Pose pickup3Pose = new Pose(134, 36, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
