@@ -55,7 +55,8 @@ public class EthanTeleopTest extends OpMode {
         manageFlywheel();
 
         // Following 2 are temporary: will be automated eventually
-        tilt.setPosition(0.59 * gamepad1.left_trigger);
+        //tilt.setPosition(0.59 * gamepad1.left_trigger);
+        manageTilt();
         managePan();
 
         if(gamepad1.right_trigger >= 0.1 && !isShooting) {
@@ -66,12 +67,22 @@ public class EthanTeleopTest extends OpMode {
     }
 
     private void managePan() {
-        double increment = 0.001;
+        double increment = 0.05;
 
-        if(gamepad1.dpad_left) {
+        if(gamepad1.dpadLeftWasPressed()) {
             pan.setPosition(Math.min(pan.getPosition() + increment, 0.4));
-        } else if(gamepad1.dpad_right) {
+        } else if(gamepad1.dpadRightWasPressed()) {
             pan.setPosition(Math.max(pan.getPosition() - increment, 0));
+        }
+    }
+
+    private void manageTilt() {
+        double increment = .1;
+
+        if(gamepad1.dpadUpWasPressed()) {
+            tilt.setPosition(Math.min(pan.getPosition() + increment, 0.59));
+        } else if(gamepad1.dpadDownWasPressed()) {
+            tilt.setPosition(Math.max(pan.getPosition() + increment, 0));
         }
     }
 
@@ -93,7 +104,7 @@ public class EthanTeleopTest extends OpMode {
         }
 
         if(enableFlywheel) {
-            flywheel.setPower(0.7);
+            flywheel.setPower(0.8);
         } else {
             flywheel.setPower(0);
         }

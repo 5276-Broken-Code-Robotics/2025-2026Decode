@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.*;
+import org.firstinspires.ftc.teamcode.mechanisms.ShootConstants;
 public class HoodedShooter {
 
 
@@ -25,36 +26,22 @@ public class HoodedShooter {
     private Servo tilt;
 
     AprilTagWebcam aprilTagWebCam;
-    private DcMotor fr;
-
-
-
 
     float initposforseeingpreorient = 0f;
     boolean beganshot = false;
 
     double initpos = 0f;
-    private DcMotor fl;
-    private DcMotor br;
-    private DcMotor bl;
 
     double positionnecessary;
 
-
+    String state;
 
     ElapsedTime elapsedTime;
     private DcMotor flywheel;
 
     private DcMotor intake;
 
-
-
-
-    AprilTagDetection currOne;
-    int state = 0;
-
-    //0 : looking for
-    //1 : orienting correctly
+    AprilTagDetection aprilTag;
 
     boolean waiting = false;
 
@@ -63,69 +50,40 @@ public class HoodedShooter {
 
     boolean seen = false;
 
+    double flywheelPower;
+
     CRServo transfer;
 
-
-    double power;
-
-    double posX;
-    double posY;
-
-
     boolean shotbegan = false;
-    double angle;
 
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
-
-
-
         aprilTagWebCam = new AprilTagWebcam();
         aprilTagWebCam.init(hardwareMap, telemetry);
-        fr = hardwareMap.get(DcMotor.class, "fr");
-        fl = hardwareMap.get(DcMotor.class, "fl");
-        bl = hardwareMap.get(DcMotor.class, "bl");
-        br = hardwareMap.get(DcMotor.class, "br");
         tilt = hardwareMap.get(Servo.class, "tilt");
         pan = hardwareMap.get(Servo.class, "pan");
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
         intake.setDirection(DcMotor.Direction.REVERSE);
+
         elapsedTime = new ElapsedTime();
-        elapsedTime.reset();
-
-
     }
 
-    public void move(double move) {
-        tilt.setPosition(maxTilt * (move));
-    }
-
-    public void update()
+    public void loop()
     {
         if(shotbegan)OrientAndShoot();
     }
 
-
-    public void beginShot(double pwr, double angl, double pX, double pY){
-        power = pwr;
-        angle = angl;
-        posX = pX;
-        posY = pY;
+    public void BeginShot(){
+        elapsedTime.reset();
         shotbegan = true;
     }
 
 
     public void OrientAndShoot(){
-
-        intake.setPower(1);
-
-        if(state <= 2)transfer.setPower(-1);
-
-        telemetry.addData("Power : ",  power);
-
+        state = "looking_for_april_tag";
 
         if(aprilTagWebCam.getDetectedTags() != null){
             telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
@@ -134,9 +92,7 @@ public class HoodedShooter {
         telemetry.addData("Seen val :" , seen);
 
 
-        if(state == 0) {
-
-
+        if(state.equals("looking_for_april_tag")) {
             if (elapsedTime.seconds() <= 1f) {
                 waiting = false;
             } else if (elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 2f) {
@@ -159,43 +115,47 @@ public class HoodedShooter {
 
                 telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
 
-                state = 1;
+                state = "found_tag_orienting";
 
-                currOne = aprilTagWebCam.getDetectedTags().get(0);
+                aprilTag = aprilTagWebCam.getDetectedTags().get(0);
             }
 
 
         }
 
-        if(state == 1){
+        if(state.equals("found_tag_orienting")){
+            double distance = 0;
 
-            positionnecessary = pan.getPosition() + currOne.ftcPose.bearing * 0.4/180;
+            flywheelPower = ShootConstants.powerFromDistance(distance);
+
+            //tilt.setPosition();
+
+            positionnecessary = pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180;
 
             initposforseeingpreorient = (float)pan.getPosition();
-            telemetry.addData("position going to" ,  pan.getPosition() + currOne.ftcPose.bearing * 0.4/180);
+            telemetry.addData("position going to" ,  pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180);
 
             //tilt.setPosition(tilt.getPosition() + currOne.ftcPose.elevation);
-            state = 2;
+            state = "shoot";
         }
 
-        if(state == 2){
+        if(state.equals("shoot")){
 
             pan.setPosition(positionnecessary);
 
 
-            telemetry.addData("bearing is this : ", currOne.ftcPose.bearing);
+            telemetry.addData("bearing is this : ", aprilTag.ftcPose.bearing);
 
 
             if(pan.getPosition() == positionnecessary){
-                state = 3;
+                state = "cleanup_shoot";
 
-                transfer.setPower(1);
-                flywheel.setPower(power);
+                flywheel.setPower(flywheelPower);
                 elapsedTime.reset();
 
             }
 
-            aprilTagWebCam.displayDetectionTelemetry(currOne);
+            aprilTagWebCam.displayDetectionTelemetry(aprilTag);
 
         }
 
@@ -204,19 +164,16 @@ public class HoodedShooter {
         telemetry.addData("state : ", state);
 
 
-        if(state == 3){
-
-
+        if(state.equals("cleanup_shoot")){
             if(elapsedTime.seconds() >= 1){
                 transfer.setPower(1);
-                aprilTagWebCam.displayDetectionTelemetry(currOne);
-
-                if(elapsedTime.seconds() >= 2.5 + 1){
-                    beganshot = false;
-                    transfer.setPower(-1);
-                }
+                aprilTagWebCam.displayDetectionTelemetry(aprilTag);
             }
 
+            if(elapsedTime.seconds() >= 2.5 + 1){
+                beganshot = false;
+                transfer.setPower(-1);
+            }
         }
 
 
