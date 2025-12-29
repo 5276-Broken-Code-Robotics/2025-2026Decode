@@ -116,10 +116,6 @@ public class AprilTagWebcamtest extends OpMode {
 
 
 
-     public void OrientAndFire()
-     {
-
-     }
 
 
     public void loop(){
