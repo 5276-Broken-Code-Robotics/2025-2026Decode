@@ -56,6 +56,8 @@ public class HoodedShooter {
 
     boolean shotbegan = false;
 
+
+    float tiltangle = 0f;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -128,7 +130,7 @@ public class HoodedShooter {
 
             flywheelPower = ShootConstants.powerFromDistance(distance);
 
-            //tilt.setPosition();
+            tilt.setPosition(ShootConstants.tiltFromDistance(distance));
 
             positionnecessary = pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180;
 

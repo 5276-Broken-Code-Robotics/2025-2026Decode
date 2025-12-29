@@ -15,4 +15,9 @@ public class ShootConstants {
             return 0.8;
         }
     }
+
+
+    public static double tiltFromDistance(double distance){
+        return 0;
+    }
 }
