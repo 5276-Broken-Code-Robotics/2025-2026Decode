@@ -95,9 +95,9 @@ public class HoodedShooter {
         if(state.equals("looking_for_april_tag")) {
             if (elapsedTime.seconds() <= 1f) {
                 waiting = false;
-            } else if (elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 2f) {
+            } else if (elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 1f + ShootConstants.aprilTagScanTimePerStep_seconds) {
                 waiting = true;
-            } else if (elapsedTime.seconds() >= 2f) {
+            } else if (elapsedTime.seconds() > 1f + ShootConstants.aprilTagScanTimePerStep_seconds) {
                 waiting = false;
                 elapsedTime.reset();
 
@@ -165,12 +165,12 @@ public class HoodedShooter {
 
 
         if(state.equals("cleanup_shoot")){
-            if(elapsedTime.seconds() >= 1){
+            if(elapsedTime.seconds() >= ShootConstants.flywheelAccelerationTime_seconds){
                 transfer.setPower(1);
                 aprilTagWebCam.displayDetectionTelemetry(aprilTag);
             }
 
-            if(elapsedTime.seconds() >= 2.5 + 1){
+            if(elapsedTime.seconds() >= ShootConstants.shotDuration_seconds + ShootConstants.flywheelAccelerationTime_seconds){
                 beganshot = false;
                 transfer.setPower(-1);
             }
