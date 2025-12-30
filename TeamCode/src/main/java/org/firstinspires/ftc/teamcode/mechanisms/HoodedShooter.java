@@ -54,6 +54,8 @@ public class HoodedShooter {
 
     CRServo transfer;
 
+    Telemetry telemetry;
+
     boolean shotbegan = false;
 
 
@@ -73,24 +75,43 @@ public class HoodedShooter {
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
         intake.setDirection(DcMotor.Direction.REVERSE);
 
+
+        this.telemetry = telemetry;
+
+
         elapsedTime = new ElapsedTime();
     }
 
     public void loop()
     {
-        if(shotbegan)OrientAndShoot();
+
+        telemetry.addData("Shot status : ", shotbegan);
+        if(shotbegan){
+
+            telemetry.addData("currently shooting", " please work");
+            OrientAndShoot();
+        }else{
+            telemetry.addData("we are not shooting", "i cry");
+        }
+
+        telemetry.update();
+
+
+
     }
 
     public void BeginShot(int id){
         elapsedTime.reset();
-
+        state = "looking_for_april_tag";
         currentID = id;
         shotbegan = true;
+
+        telemetry.addData("We began the shot", " gang");
+
     }
 
 
     public void OrientAndShoot(){
-        state = "looking_for_april_tag";
 
         if(aprilTagWebCam.getDetectedTags() != null){
             telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
@@ -117,6 +138,7 @@ public class HoodedShooter {
                 if (!waiting) pan.setPosition(initpos + 0.05f);
 
             } else {
+                boolean found = false;
 
                 telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
 
@@ -125,8 +147,12 @@ public class HoodedShooter {
 
                         state = "found_tag_orienting";
                         aprilTag = aprilTagWebCam.getDetectedTags().get(i);
-
+                        found = true;
                     }
+                }
+
+                if(!found){
+                    if (!waiting) pan.setPosition(initpos + 0.05f);
                 }
             }
 
@@ -159,7 +185,7 @@ public class HoodedShooter {
             telemetry.addData("bearing is this : ", aprilTag.ftcPose.bearing);
 
 
-            if(pan.getPosition() == positionnecessary){
+            if(Math.abs(pan.getPosition() - positionnecessary) < 0.01){
                 state = "cleanup_shoot";
 
                 flywheel.setPower(flywheelPower);
