@@ -27,8 +27,8 @@ public class RedAuto1 extends OpMode {
     private final Pose rotation3Pose = new Pose(96, 24, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose finalPose = new Pose(103, 53, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose leverPose = new Pose(128, 61, Math.toRadians(270)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-
-    private PathChain rotate1, grabPickup1, hitLever, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
+    private final Pose pose270 = new Pose(134,48,Math.toRadians(270));
+    private PathChain rotate1, grabPickup1, truerotation, hitLever, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
     private Path scorePreload;
     public void buildPaths(){
         scorePreload = new Path(new BezierLine(startPose, scorePose));
@@ -74,8 +74,12 @@ public class RedAuto1 extends OpMode {
                 .setLinearHeadingInterpolation(scorePose.getHeading(), finalPose.getHeading())
                 .build();
         hitLever= follower.pathBuilder()
-                .addPath(new BezierLine(pickup1Pose, leverPose))
-                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), leverPose.getHeading())
+                .addPath(new BezierLine(pickup1Pose, pose270))
+                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), pose270.getHeading())
+                .build();
+        truerotation= follower.pathBuilder()
+                .addPath(new BezierLine(pose270, leverPose))
+                .setLinearHeadingInterpolation(pose270.getHeading(), leverPose.getHeading())
                 .build();
     }
     public void setPathState(int pState) {
@@ -107,7 +111,7 @@ public class RedAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(hitLever, true);
+                    follower.followPath(truerotation, true);
                     setPathState(4);
                 }
                 break;
@@ -115,7 +119,7 @@ public class RedAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(shootPickup1, true);
+                    follower.followPath(hitLever, true);
                     setPathState(5);
                 }
                 break;
@@ -123,7 +127,7 @@ public class RedAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(rotate2, true);
+                    follower.followPath(shootPickup1, true);
                     setPathState(6);
                 }
                 break;
@@ -131,7 +135,7 @@ public class RedAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2, true);
+                    follower.followPath(rotate2, true);
                     setPathState(7);
                 }
                 break;
@@ -139,7 +143,7 @@ public class RedAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(shootPickup2, true);
+                    follower.followPath(grabPickup2, true);
                     setPathState(8);
                 }
                 break;
@@ -147,7 +151,7 @@ public class RedAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(rotate3, true);
+                    follower.followPath(shootPickup2, true);
                     setPathState(9);
                 }
                 break;
@@ -155,7 +159,7 @@ public class RedAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3, true);
+                    follower.followPath(rotate3, true);
                     setPathState(10);
                 }
                 break;
@@ -163,11 +167,19 @@ public class RedAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(shootPickup3, true);
+                    follower.followPath(grabPickup3, true);
                     setPathState(11);
                 }
                 break;
             case 11:
+
+                if (!follower.isBusy()) {
+
+                    follower.followPath(shootPickup3, true);
+                    setPathState(12);
+                }
+                break;
+            case 12:
 
                 if (!follower.isBusy()) {
 
