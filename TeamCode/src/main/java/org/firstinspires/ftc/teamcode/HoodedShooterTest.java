@@ -56,7 +56,6 @@ public class HoodedShooterTest extends OpMode {
 
 
 
-    AprilTagDetection currOne;
     int state = 0;
 
     //0 : looking for
@@ -80,8 +79,11 @@ public class HoodedShooterTest extends OpMode {
 
     HoodedShooter hShooter;
 
-    AprilTagWebcam aprilTagWebCam = new AprilTagWebcam();
+
+    int num = 0;
     public void init() {
+
+        num = 0;
 
         hShooter = new HoodedShooter();
 
@@ -92,7 +94,6 @@ public class HoodedShooterTest extends OpMode {
         follower = Constants.createFollower(hardwareMap);
 
         follower.setPose(new Pose(0,144));
-        aprilTagWebCam.init(hardwareMap, telemetry);
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
         fl = hardwareMap.get(DcMotor.class, "fl");
@@ -131,9 +132,25 @@ public class HoodedShooterTest extends OpMode {
 
 
     public void loop(){
+
+        telemetry.addData("ms", elapsedTime.milliseconds());
         intake.setPower(1);
+
+        telemetry.addData("Num : " , num);
         if(gamepad1.aWasPressed()){
             hShooter.BeginShot(24);
+            telemetry.addData("We", "Are being run");
+        }
+
+        if(gamepad1.right_bumper && num == 0){
+            hShooter.BeginShot(24);
+            telemetry.addData("We", "Are being run2");
+            num = 1;
+        }
+
+
+        if(num == 1){
+            telemetry.addData("We", "Are being run2");
         }
     }
 
