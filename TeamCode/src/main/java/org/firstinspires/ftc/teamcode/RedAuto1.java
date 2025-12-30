@@ -17,16 +17,16 @@ public class RedAuto1 extends OpMode {
     private int pathState;
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer;
-    private final Pose startPose = new Pose(125, 119.80230642504118, Math.toRadians(36));
-    private final Pose scorePose = new Pose(96, 96, Math.toRadians(36));
-    private final Pose pickup1Pose = new Pose(127, 84, Math.toRadians(0));
-    private final Pose pickup2Pose = new Pose(130, 60, Math.toRadians(0));
-    private final Pose pickup3Pose = new Pose(130, 36, Math.toRadians(0));
-    private final Pose rotation1Pose = new Pose(96, 84, Math.toRadians(0));
-    private final Pose rotation2Pose = new Pose(96, 60, Math.toRadians(0));
-    private final Pose rotation3Pose = new Pose(96, 36, Math.toRadians(0));
-    private final Pose finalPose = new Pose(103, 65, Math.toRadians(90));
-    private final Pose leverPose = new Pose(128, 73, Math.toRadians(270));
+    private final Pose startPose = new Pose(125, 119.80230642504118, Math.toRadians(36)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(96, 96, Math.toRadians(36)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose pickup1Pose = new Pose(127, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(134, 60, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    private final Pose pickup3Pose = new Pose(134, 36, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation1Pose = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation2Pose = new Pose(96, 60, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation3Pose = new Pose(96, 36, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose finalPose = new Pose(103, 65, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose leverPose = new Pose(128, 73, Math.toRadians(270)); // Lowest (Third Set) of Artifacts from the Spike Mark.
 
     private PathChain rotate1, grabPickup1, hitLever, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
     private Path scorePreload;
