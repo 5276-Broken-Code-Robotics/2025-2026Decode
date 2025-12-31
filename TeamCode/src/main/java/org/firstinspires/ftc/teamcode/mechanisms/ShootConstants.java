@@ -6,6 +6,7 @@ public class ShootConstants {
     public static double flywheelAccelerationTime_seconds = 1;
     public static double shotDuration_seconds = 2.5;
 
+
     static double sizePerDistanceSegment_inches = 144d / 3;
     
     public static double powerFromDistance(double distance) {

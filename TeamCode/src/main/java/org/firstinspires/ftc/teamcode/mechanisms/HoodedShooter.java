@@ -58,7 +58,7 @@ public class HoodedShooter {
 
     Telemetry telemetry;
 
-    boolean shotbegan = false;
+    public boolean shotbegan = false;
 
     Follower follower;
 
@@ -118,6 +118,9 @@ public class HoodedShooter {
     public void loop()
     {
 
+        telemetry.addData("Position : ", follower.getPose().getX() + " " + follower.getPose().getY());
+        telemetry.addData("Pan position : ", pan.getPosition());
+
 
         telemetry.addData("Rotated : ", rotated);
 
@@ -137,6 +140,22 @@ public class HoodedShooter {
 
     }
 
+
+
+    public void AutoBeginShot(int shotDex){
+        if(shotDex == 1) {
+
+        }
+
+        if(shotDex == 2){
+
+        }
+
+        if(shotDex == 3){
+
+        }
+    }
+
     public void BeginShot(int id){
         elapsedTime.reset();
         state = "chassis_orient_to_tag";
@@ -145,6 +164,8 @@ public class HoodedShooter {
             currentAprilTagPos = aprilTagRed;
         }
 
+
+        pan.setPosition(0);
         initPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         rotated = false;
         shotbegan = true;
@@ -173,7 +194,7 @@ public class HoodedShooter {
             telemetry.addData("Angle to aprilTag" , angleToAprilTag);
 
 
-            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/2) {
+            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/3) {
 
 
 
@@ -240,7 +261,13 @@ public class HoodedShooter {
 
             if (aprilTagWebCam.getDetectedTags().isEmpty()) {
 
-                if (!waiting) pan.setPosition(initpos + 0.05f);
+                if (!waiting){
+
+                    if(initpos > 0.4){
+                        initpos = 0;
+                    }
+                    pan.setPosition(initpos + 0.05f);
+                }
 
             } else {
                 boolean found = false;
@@ -318,6 +345,7 @@ public class HoodedShooter {
 
                 flywheel.setPower(0);
                 transfer.setPower(-1);
+
             }
         }
 

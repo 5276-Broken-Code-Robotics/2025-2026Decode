@@ -162,6 +162,9 @@ public class HoodedShooterTest extends OpMode {
 
     public void loop(){
 
+        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
+
         telemetry.addData("ms", elapsedTime.milliseconds());
         intake.setPower(1);
 
@@ -194,7 +197,7 @@ public class HoodedShooterTest extends OpMode {
 
 
         if(elapsedTime.seconds() > 2){
-            //num = 0;
+            num = 0;
         }
 
 
@@ -205,6 +208,27 @@ public class HoodedShooterTest extends OpMode {
         if(num == 1){
             telemetry.addData("We", "Are being run2");
         }
+    }
+
+
+    public void drive(double forward, double strafe, double rotate) {
+        double flPower = forward + strafe + rotate;
+        double frPower = forward - strafe - rotate;
+        double blPower = forward - strafe + rotate;
+        double brPower = forward + strafe - rotate;
+
+        double maxPower = 1.0;
+        double maxSpeed = 1.0;
+
+        maxPower = Math.max(maxPower, Math.abs(flPower));
+        maxPower = Math.max(maxPower, Math.abs(frPower));
+        maxPower = Math.max(maxPower, Math.abs(blPower));
+        maxPower = Math.max(maxPower, Math.abs(brPower));
+
+        fl.setPower((maxSpeed * (flPower / maxPower)));
+        fr.setPower((maxSpeed * (frPower / maxPower)));
+        bl.setPower((maxSpeed * (blPower / maxPower)));
+        br.setPower((maxSpeed * (brPower / maxPower)));
     }
 
 
