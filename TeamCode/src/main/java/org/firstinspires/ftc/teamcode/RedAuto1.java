@@ -74,12 +74,12 @@ public class RedAuto1 extends OpMode {
                 .setLinearHeadingInterpolation(scorePose.getHeading(), finalPose.getHeading())
                 .build();
         hitLever= follower.pathBuilder()
-                .addPath(new BezierLine(pickup1Pose, pose270))
-                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), pose270.getHeading())
+                .addPath(new BezierLine(pose270, leverPose))
+                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), leverPose.getHeading())
                 .build();
         truerotation= follower.pathBuilder()
-                .addPath(new BezierLine(pose270, leverPose))
-                .setLinearHeadingInterpolation(pose270.getHeading(), leverPose.getHeading())
+                .addPath(new BezierLine(pickup1Pose, pose270))
+                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), pose270.getHeading())
                 .build();
     }
     public void setPathState(int pState) {
