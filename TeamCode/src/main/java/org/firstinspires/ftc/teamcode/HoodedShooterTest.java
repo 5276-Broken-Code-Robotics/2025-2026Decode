@@ -24,21 +24,10 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 public class HoodedShooterTest extends OpMode {
-
-
-
-
-
-
     private Servo pan;
     private Servo tilt;
 
     float power = 0.75f;
-
-
-
-
-
     double tiltangle = 0.3f;
 
 

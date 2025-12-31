@@ -186,7 +186,7 @@ public class HoodedShooter {
 
 
         if(state.equals("chassis_orient_to_tag")){
-            angleToAprilTag = Math.atan2((aprilTagRed.getY() - follower.getPose().getY()),(aprilTagRed.getX() - follower.getPose().getX()));
+            angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
 
 
 
