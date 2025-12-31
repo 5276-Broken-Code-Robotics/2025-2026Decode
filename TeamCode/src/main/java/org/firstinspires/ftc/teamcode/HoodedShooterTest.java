@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -24,6 +27,9 @@ public class HoodedShooterTest extends OpMode {
 
 
 
+
+
+
     private Servo pan;
     private Servo tilt;
 
@@ -34,7 +40,6 @@ public class HoodedShooterTest extends OpMode {
 
 
     double tiltangle = 0.3f;
-    private DcMotor fr;
 
 
 
@@ -45,7 +50,11 @@ public class HoodedShooterTest extends OpMode {
     boolean beganshot = false;
 
     double initpos = 0f;
+
+    private DcMotor fr;
+
     private DcMotor fl;
+
     private DcMotor br;
     private DcMotor bl;
 
@@ -95,10 +104,6 @@ public class HoodedShooterTest extends OpMode {
 
         num = 0;
 
-
-
-
-
 //
 //        follower = Constants.createFollower(hardwareMap);
 //
@@ -109,7 +114,13 @@ public class HoodedShooterTest extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setPose(new Pose(0,0, Math.PI));
+
+
+
+        follower.setStartingPose(new Pose(0,0, -Math.PI/2));
+
+
+        follower.update();
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
         fl = hardwareMap.get(DcMotor.class, "fl");
@@ -135,7 +146,7 @@ public class HoodedShooterTest extends OpMode {
 
         hShooter = new HoodedShooter();
 
-        hShooter.init(hardwareMap,telemetry, follower);
+        hShooter.init(hardwareMap,telemetry, follower, fl, fr, bl, br);
 
 
         state=  0;
@@ -156,19 +167,34 @@ public class HoodedShooterTest extends OpMode {
 
         telemetry.addData("Num : " , num);
 
+        if(gamepad1.left_bumper && num == 1){
 
 
+            follower.breakFollowing();
+            PathChain path1= follower.pathBuilder()
+                    .addPath(new BezierLine(follower.getPose(), new Pose(0,0, -Math.PI/2)))
+                    .setLinearHeadingInterpolation(follower.getPose().getHeading(), - Math.PI/2)
+                    .build();
+
+            follower.followPath(path1);
+
+        }
 
 
         if(gamepad1.right_bumper && num == 0){
+
+            follower.setStartingPose(new Pose(0,0, -Math.PI/2));
+            follower.update();
             hShooter.BeginShot(24);
             num = 1;
             elapsedTime.reset();
 
+
         }
 
+
         if(elapsedTime.seconds() > 2){
-            num = 0;
+            //num = 0;
         }
 
 

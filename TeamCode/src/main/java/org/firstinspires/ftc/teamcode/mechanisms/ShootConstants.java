@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 public class ShootConstants {
-    public static double aprilTagScanTimePerStep_seconds = 1;
+    public static double aprilTagScanTimePerStep_seconds = 0.4;
+    public static double aprilTagMoveScanTimePerStep_seconds = 0.4;
     public static double flywheelAccelerationTime_seconds = 1;
     public static double shotDuration_seconds = 2.5;
 
