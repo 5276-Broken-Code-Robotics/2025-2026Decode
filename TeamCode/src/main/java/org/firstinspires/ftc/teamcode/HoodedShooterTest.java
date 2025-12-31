@@ -109,6 +109,8 @@ public class HoodedShooterTest extends OpMode {
         follower.setStartingPose(new Pose(0,0, -Math.PI/2));
 
 
+        follower.setPose(new Pose(0,0,-Math.PI/2));
+
         follower.update();
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
@@ -159,7 +161,7 @@ public class HoodedShooterTest extends OpMode {
 
         telemetry.addData("Num : " , num);
 
-        if(gamepad1.left_bumper && num == 1){
+        if(gamepad1.left_bumper && num == 0){
 
 
             follower.breakFollowing();
@@ -175,9 +177,10 @@ public class HoodedShooterTest extends OpMode {
 
         if(gamepad1.right_bumper && num == 0){
 
-            follower.setStartingPose(new Pose(0,0, -Math.PI/2));
             follower.update();
             hShooter.BeginShot(24);
+
+
             num = 1;
             elapsedTime.reset();
 
@@ -194,9 +197,13 @@ public class HoodedShooterTest extends OpMode {
 
         hShooter.loop();
 
+
+        telemetry.addData("position : ", (int)follower.getPose().getX() + " " + (int)follower.getPose().getY());
         if(num == 1){
             telemetry.addData("We", "Are being run2");
         }
+
+        follower.update();
     }
 
 

@@ -100,11 +100,6 @@ public class HoodedShooter {
         this.bl = bl;
         this.br = br;
 
-
-
-
-
-
         this.follower = follower;
 
         this.telemetry = telemetry;
@@ -118,7 +113,9 @@ public class HoodedShooter {
     public void loop()
     {
 
-        telemetry.addData("Position : ", follower.getPose().getX() + " " + follower.getPose().getY());
+
+
+
         telemetry.addData("Pan position : ", pan.getPosition());
 
 
@@ -130,11 +127,19 @@ public class HoodedShooter {
         if(shotbegan){
 
             OrientAndShoot();
+
+
+            double angleDiff = 180/Math.PI * turnAngle(follower.getPose().getHeading(), Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX())));
+            telemetry.addData("Angle difference in Degrees : ", angleDiff);
+            telemetry.addData("Position : ", (int)follower.getPose().getX() + " " + (int)follower.getPose().getY());
+            telemetry.update();
+
         }else{
             telemetry.addData("we are not shooting", "i cry");
         }
 
-        telemetry.update();
+
+
 
 
 
@@ -142,18 +147,8 @@ public class HoodedShooter {
 
 
 
-    public void AutoBeginShot(int shotDex){
-        if(shotDex == 1) {
+    public void AutoBeginShot(){
 
-        }
-
-        if(shotDex == 2){
-
-        }
-
-        if(shotDex == 3){
-
-        }
     }
 
     public void BeginShot(int id){
@@ -165,7 +160,6 @@ public class HoodedShooter {
         }
 
 
-        pan.setPosition(0);
         initPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         rotated = false;
         shotbegan = true;
@@ -176,8 +170,6 @@ public class HoodedShooter {
 
 
     public void OrientAndShoot(){
-        follower.update();
-
 
         if(aprilTagWebCam.getDetectedTags() != null){
             //telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
@@ -194,38 +186,26 @@ public class HoodedShooter {
             telemetry.addData("Angle to aprilTag" , angleToAprilTag);
 
 
-            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/3) {
+            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/4) {
 
 
 
 
                 if(turnAngle(follower.getPose().getHeading(),angleToAprilTag) > 0){
-                    fr.setPower(0.7);
-                    fl.setPower(-0.7);
-                    bl.setPower(-0.7);
-                    br.setPower(0.7);
+                    fr.setPower(0.8);
+                    fl.setPower(-0.8);
+                    bl.setPower(-0.8);
+                    br.setPower(0.8);
                 }else{
-                    fr.setPower(-0.7);
-                    fl.setPower(0.7);
-                    bl.setPower(0.7);
-                    br.setPower(-0.7);
+                    fr.setPower(-0.8);
+                    fl.setPower(0.8);
+                    bl.setPower(0.8);
+                    br.setPower(-0.8);
                 }
 
 
                 //Maybe tweak to make it rotate just to the point that it needs to rotate to the edge of the AprilTag Range
-                /*
-                if (!rotated) {
-                    follower.turnTo(angleToAprilTag);
-                    elapsedTime.reset();
-                    rotated = true;
-                }
 
-
-                if (!follower.isBusy() || elapsedTime.seconds() > 1.5) {
-                    rotated = false;
-                    state = "looking_for_april_tag";
-                }
-                 */
             }
             else{
                 state = "looking_for_april_tag";
@@ -236,6 +216,14 @@ public class HoodedShooter {
                 br.setPower(0);
 
                 bl.setPower(0);
+                if(turnAngle(follower.getPose().getHeading(),angleToAprilTag) > 0){
+                    pan.setPosition(0.4 * turnAngle(follower.getPose().getHeading(),angleToAprilTag) / 180);
+
+                }else{
+                    pan.setPosition(0.4 - 0.4 * turnAngle(follower.getPose().getHeading(),angleToAprilTag) / 180);
+                }
+
+
 
             }
 
@@ -353,8 +341,9 @@ public class HoodedShooter {
         aprilTagWebCam.update();
 
 
+        follower.update();
 
-        telemetry.update();
+
     }
 
     public static double turnAngle(double currentHeading, double targetAngle) {
