@@ -58,7 +58,7 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
     AprilTagDetection currOne;
-    int state = 0;
+    int state = -1;
 
     //0 : looking for
     //1 : orienting correctly
@@ -82,7 +82,7 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
     public void init() {
         follower = Constants.createFollower(hardwareMap);
 
-        //follower.setPose(new Pose(0,144));
+        follower.setPose(new Pose(0,144));
         aprilTagWebCam.init(hardwareMap, telemetry);
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
@@ -91,6 +91,10 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         br = hardwareMap.get(DcMotor.class, "br");
         tilt = hardwareMap.get(Servo.class, "tilt");
         pan = hardwareMap.get(Servo.class, "pan");
+
+
+
+
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
@@ -106,7 +110,7 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
         follower.setPose(new Pose(144,90));
 
-        state=  0;
+        state=  -1;
     }
 
 
@@ -118,7 +122,9 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
     public void loop(){
 
-        telemetry.addData("Tilt angle : ", tiltangle);
+        telemetry.addData("Power : ", power);
+
+        telemetry.addData("Tilt : ", tiltangle);
 
         if(gamepad1.aWasPressed()){
             power+=0.05f;
@@ -131,11 +137,16 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         }
         if(power < 0) power = 0;
 
+        if(gamepad1.right_stick_y > 0 && state == -1){
+            state = 0;
 
-        if(gamepad1.xWasPressed()){
+        }
+
+
+        if(gamepad1.rightBumperWasPressed()){
             tiltangle+=0.05f;
         }
-        if(gamepad1.yWasPressed()){
+        if(gamepad1.leftBumperWasPressed()){
             tiltangle-=0.05f;
         }
 
@@ -144,6 +155,12 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
             tiltangle = 0.59f;
         }
         if(tiltangle < 0) tiltangle = 0;
+
+
+
+
+
+
 
         telemetry.addData("curr y : ", follower.getPose().getY());
 
@@ -160,8 +177,6 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         }else{
             telemetry.addData("Save ", "Me");
         }
-
-        telemetry.addData("Seen val :" , seen);
 
 
         if(state == 0) {
@@ -248,9 +263,10 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
             transfer.setPower(1);
 
-
             aprilTagWebCam.displayDetectionTelemetry(currOne);
-
+            if(elapsedTime.seconds() > 3){
+                state = -1;
+            }
 
         }
         follower.update();
