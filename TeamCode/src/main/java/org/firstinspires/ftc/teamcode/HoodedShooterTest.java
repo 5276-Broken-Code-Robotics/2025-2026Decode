@@ -30,6 +30,9 @@ public class HoodedShooterTest extends OpMode {
     float power = 0.75f;
 
 
+
+
+
     double tiltangle = 0.3f;
     private DcMotor fr;
 
@@ -54,6 +57,8 @@ public class HoodedShooterTest extends OpMode {
     private DcMotor intake;
 
 
+    Follower follower;
+
 
 
     int state = 0;
@@ -73,9 +78,14 @@ public class HoodedShooterTest extends OpMode {
 
 
 
-    Follower follower;
+    //Follower follower;
     double positionnecessary = 0f;
 
+
+
+
+    Pose aprilTagRed = new Pose(129.61653272101034,128.62456946039035);
+    Pose aprilTagBlue = new Pose(15.2,128.62456946039035);
 
     HoodedShooter hShooter;
 
@@ -85,15 +95,21 @@ public class HoodedShooterTest extends OpMode {
 
         num = 0;
 
-        hShooter = new HoodedShooter();
 
-        hShooter.init(hardwareMap,telemetry);
+
+
+
+//
+//        follower = Constants.createFollower(hardwareMap);
+//
+//        follower.setPose(new Pose(0,144));
+
 
 
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setPose(new Pose(0,144));
+        follower.setPose(new Pose(0,0, Math.PI));
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
         fl = hardwareMap.get(DcMotor.class, "fl");
@@ -117,8 +133,10 @@ public class HoodedShooterTest extends OpMode {
 
         elapsedTime.reset();
 
+        hShooter = new HoodedShooter();
 
-        follower.setPose(new Pose(144,90));
+        hShooter.init(hardwareMap,telemetry, follower);
+
 
         state=  0;
     }
@@ -137,17 +155,26 @@ public class HoodedShooterTest extends OpMode {
         intake.setPower(1);
 
         telemetry.addData("Num : " , num);
-        if(gamepad1.aWasPressed()){
-            hShooter.BeginShot(24);
-            telemetry.addData("We", "Are being run");
-        }
+
+
+
+
 
         if(gamepad1.right_bumper && num == 0){
             hShooter.BeginShot(24);
-            telemetry.addData("We", "Are being run2");
             num = 1;
+            elapsedTime.reset();
+
         }
 
+        if(elapsedTime.seconds() > 2){
+            num = 0;
+        }
+
+
+
+
+        hShooter.loop();
 
         if(num == 1){
             telemetry.addData("We", "Are being run2");
