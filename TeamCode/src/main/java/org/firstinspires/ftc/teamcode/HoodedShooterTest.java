@@ -93,7 +93,6 @@ public class HoodedShooterTest extends OpMode {
 
         num = 0;
 
-//
 //        follower = Constants.createFollower(hardwareMap);
 //
 //        follower.setPose(new Pose(0,144));
@@ -106,10 +105,10 @@ public class HoodedShooterTest extends OpMode {
 
 
 
-        follower.setStartingPose(new Pose(0,0, -Math.PI/2));
+        follower.setStartingPose(new Pose(0,0, 0));
 
 
-        follower.setPose(new Pose(0,0,-Math.PI/2));
+        follower.setPose(new Pose(0,0,0));
 
         follower.update();
         timer = new ElapsedTime();
@@ -123,10 +122,11 @@ public class HoodedShooterTest extends OpMode {
 
 
 
+        pan.setPosition(0);
+
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
-
         intake.setDirection(DcMotor.Direction.REVERSE);
 
         timer.reset();
@@ -159,6 +159,9 @@ public class HoodedShooterTest extends OpMode {
         telemetry.addData("ms", elapsedTime.milliseconds());
         intake.setPower(1);
 
+
+
+
         telemetry.addData("Num : " , num);
 
         if(gamepad1.left_bumper && num == 0){
@@ -166,8 +169,8 @@ public class HoodedShooterTest extends OpMode {
 
             follower.breakFollowing();
             PathChain path1= follower.pathBuilder()
-                    .addPath(new BezierLine(follower.getPose(), new Pose(0,0, -Math.PI/2)))
-                    .setLinearHeadingInterpolation(follower.getPose().getHeading(), - Math.PI/2)
+                    .addPath(new BezierLine(follower.getPose(), new Pose(0,0, 0)))
+                    .setLinearHeadingInterpolation(follower.getPose().getHeading(),0)
                     .build();
 
             follower.followPath(path1);
@@ -193,12 +196,11 @@ public class HoodedShooterTest extends OpMode {
         }
 
 
+        transfer.setPower(-1);
 
 
         hShooter.loop();
 
-
-        telemetry.addData("position : ", (int)follower.getPose().getX() + " " + (int)follower.getPose().getY());
         if(num == 1){
             telemetry.addData("We", "Are being run2");
         }

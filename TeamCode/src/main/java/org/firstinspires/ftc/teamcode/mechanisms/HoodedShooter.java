@@ -23,6 +23,8 @@ import java.util.*;
 import org.firstinspires.ftc.teamcode.mechanisms.ShootConstants;
 public class HoodedShooter {
 
+    ElapsedTime resetElapsedtime;
+
 
 
     private Servo pan;
@@ -61,6 +63,7 @@ public class HoodedShooter {
     public boolean shotbegan = false;
 
     Follower follower;
+    boolean resetting = false;
 
 
     double angleToAprilTag = 0;
@@ -82,6 +85,9 @@ public class HoodedShooter {
 
     private DcMotor br;
     private DcMotor bl;
+
+
+    Pose posePreRotate;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
     public void init(HardwareMap hardwareMap, Telemetry telemetry, Follower follower, DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br) {
@@ -93,8 +99,10 @@ public class HoodedShooter {
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
         intake.setDirection(DcMotor.Direction.REVERSE);
+        resetElapsedtime = new ElapsedTime();
 
 
+        resetting = false;
         this.fl = fl;
         this.fr = fr;
         this.bl = bl;
@@ -131,8 +139,10 @@ public class HoodedShooter {
 
             double angleDiff = 180/Math.PI * turnAngle(follower.getPose().getHeading(), Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX())));
             telemetry.addData("Angle difference in Degrees : ", angleDiff);
-            telemetry.addData("Position : ", (int)follower.getPose().getX() + " " + (int)follower.getPose().getY());
-            telemetry.update();
+            //telemetry.addData("Position : ", (int)follower.getPose().getX() + " " + (int)follower.getPose().getY());
+
+
+
 
         }else{
             telemetry.addData("we are not shooting", "i cry");
@@ -140,9 +150,13 @@ public class HoodedShooter {
 
 
 
+        telemetry.addData("Resetting", resetting);
+
+        telemetry.addData("Resetting elapsed time : ", resetElapsedtime );
 
 
 
+        telemetry.update();
     }
 
 
@@ -165,12 +179,16 @@ public class HoodedShooter {
         shotbegan = true;
         initpos = 0;
 
+        posePreRotate = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
+
 
     }
 
 
     public void OrientAndShoot(){
 
+
+        transfer.setPower(-1);
         if(aprilTagWebCam.getDetectedTags() != null){
             //telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
         }
@@ -186,7 +204,7 @@ public class HoodedShooter {
             telemetry.addData("Angle to aprilTag" , angleToAprilTag);
 
 
-            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/4) {
+            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/2) {
 
 
 
@@ -208,20 +226,16 @@ public class HoodedShooter {
 
             }
             else{
+                follower.setPose(new Pose(initPose.getX(), initPose.getY(), follower.getPose().getHeading()));
                 state = "looking_for_april_tag";
 
                 fl.setPower(0);
                 fr.setPower(0);
-
                 br.setPower(0);
-
                 bl.setPower(0);
-                if(turnAngle(follower.getPose().getHeading(),angleToAprilTag) > 0){
-                    pan.setPosition(0.4 * turnAngle(follower.getPose().getHeading(),angleToAprilTag) / 180);
 
-                }else{
-                    pan.setPosition(0.4 - 0.4 * turnAngle(follower.getPose().getHeading(),angleToAprilTag) / 180);
-                }
+
+
 
 
 
@@ -233,7 +247,16 @@ public class HoodedShooter {
 
 
 
-        if(state.equals("looking_for_april_tag")) {
+
+        if(resetElapsedtime.seconds()> 2){
+            resetting = false;
+        }
+
+
+        if(state.equals("looking_for_april_tag") && !resetting) {
+
+
+
 
             if (elapsedTime.seconds() <= ShootConstants.aprilTagMoveScanTimePerStep_seconds) {
                 waiting = false;
@@ -252,6 +275,10 @@ public class HoodedShooter {
                 if (!waiting){
 
                     if(initpos > 0.4){
+
+
+                        resetElapsedtime.reset();
+                        resetting = true;
                         initpos = 0;
                     }
                     pan.setPosition(initpos + 0.05f);
@@ -290,7 +317,12 @@ public class HoodedShooter {
 
             positionnecessary = pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180;
 
+
+
             initposforseeingpreorient = (float)pan.getPosition();
+
+            if(Math.abs(aprilTag.ftcPose.bearing) > 3)pan.setPosition(positionnecessary);
+
             //telemetry.addData("position going to" ,  pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180);
 
             //tilt.setPosition(tilt.getPosition() + currOne.ftcPose.elevation);
@@ -298,8 +330,6 @@ public class HoodedShooter {
         }
 
         if(state.equals("shoot")){
-
-            pan.setPosition(positionnecessary);
 
 
             //telemetry.addData("bearing is this : ", aprilTag.ftcPose.bearing);
