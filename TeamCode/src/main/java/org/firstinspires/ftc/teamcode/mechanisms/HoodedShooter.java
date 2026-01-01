@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.pedropathing.follower.Follower;
 
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.math.MathFunctions;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,13 +10,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.*;
-import org.firstinspires.ftc.teamcode.mechanisms.ShootConstants;
+
 public class HoodedShooter {
 
 
@@ -84,7 +78,7 @@ public class HoodedShooter {
     private DcMotor bl;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
-    public void init(HardwareMap hardwareMap, Telemetry telemetry, Follower follower, DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br) {
+    public void init(HardwareMap hardwareMap, Follower follower) {
         aprilTagWebCam = new AprilTagWebcam();
         aprilTagWebCam.init(hardwareMap, telemetry);
         tilt = hardwareMap.get(Servo.class, "tilt");
@@ -92,30 +86,22 @@ public class HoodedShooter {
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+
         intake.setDirection(DcMotor.Direction.REVERSE);
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-
-        this.fl = fl;
-        this.fr = fr;
-        this.bl = bl;
-        this.br = br;
+        fl = hardwareMap.get(DcMotor.class, "fl");
+        fr = hardwareMap.get(DcMotor.class, "fr");;
+        bl = hardwareMap.get(DcMotor.class, "bl");;
+        br = hardwareMap.get(DcMotor.class, "br");;
 
         this.follower = follower;
-
-        this.telemetry = telemetry;
-
 
         elapsedTime = new ElapsedTime();
     }
 
-
-
     public void loop()
     {
-
-
-
-
         telemetry.addData("Pan position : ", pan.getPosition());
 
 
@@ -137,15 +123,7 @@ public class HoodedShooter {
         }else{
             telemetry.addData("we are not shooting", "i cry");
         }
-
-
-
-
-
-
     }
-
-
 
     public void AutoBeginShot(){
 
