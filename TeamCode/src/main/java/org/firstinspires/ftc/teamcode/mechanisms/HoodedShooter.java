@@ -1,12 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.pedropathing.follower.Follower;
 
-import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.math.MathFunctions;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -14,13 +10,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 import java.util.*;
-import org.firstinspires.ftc.teamcode.mechanisms.ShootConstants;
+
 public class HoodedShooter {
 
     ElapsedTime resetElapsedtime;
@@ -74,6 +68,8 @@ public class HoodedShooter {
     boolean rotated = false;
     Pose currentAprilTagPos;
 
+    boolean isAutoShot;
+
     Pose initPose;
     int currentID;
     float tiltangle = 0f;
@@ -98,7 +94,9 @@ public class HoodedShooter {
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+
         intake.setDirection(DcMotor.Direction.REVERSE);
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         resetElapsedtime = new ElapsedTime();
 
 
@@ -116,14 +114,8 @@ public class HoodedShooter {
         elapsedTime = new ElapsedTime();
     }
 
-
-
     public void loop()
     {
-
-
-
-
         telemetry.addData("Pan position : ", pan.getPosition());
 
 
@@ -159,10 +151,12 @@ public class HoodedShooter {
         telemetry.update();
     }
 
-
-
     public void AutoBeginShot(){
+        BeginShot(24);
+        isAutoShot = true;
 
+        flywheelPower = 0.65; // Needs testing for accurate value
+        tilt.setPosition(0.5); // Needs testing for accurate value
     }
 
     public void BeginShot(int id){
@@ -310,10 +304,10 @@ public class HoodedShooter {
 
             double distance = aprilTag.ftcPose.y;
 
-
-            flywheelPower = ShootConstants.powerFromDistance(distance);
-
-            tilt.setPosition(ShootConstants.tiltFromDistance(distance));
+            if(!isAutoShot) {
+                flywheelPower = ShootConstants.powerFromDistance(distance);
+                tilt.setPosition(ShootConstants.tiltFromDistance(distance));
+            }
 
             positionnecessary = pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180;
 
@@ -360,8 +354,9 @@ public class HoodedShooter {
 
             if(elapsedTime.seconds() >= ShootConstants.shotDuration_seconds + ShootConstants.flywheelAccelerationTime_seconds){
                 shotbegan = false;
+                isAutoShot = false;
 
-                flywheel.setPower(0);
+                //flywheel.setPower(0); probably better to keep flywheel running
                 transfer.setPower(-1);
 
             }
