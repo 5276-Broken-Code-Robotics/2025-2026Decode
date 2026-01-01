@@ -65,6 +65,8 @@ public class HoodedShooter {
     boolean rotated = false;
     Pose currentAprilTagPos;
 
+    boolean isAutoShot;
+
     Pose initPose;
     int currentID;
     float tiltangle = 0f;
@@ -126,7 +128,11 @@ public class HoodedShooter {
     }
 
     public void AutoBeginShot(){
+        BeginShot(24);
+        isAutoShot = true;
 
+        flywheelPower = 0.65; // Needs testing for accurate value
+        tilt.setPosition(0.5); // Needs testing for accurate value
     }
 
     public void BeginShot(int id){
@@ -200,13 +206,7 @@ public class HoodedShooter {
                 }else{
                     pan.setPosition(0.4 - 0.4 * turnAngle(follower.getPose().getHeading(),angleToAprilTag) / 180);
                 }
-
-
-
             }
-
-
-
         }
 
 
@@ -261,10 +261,10 @@ public class HoodedShooter {
 
             double distance = aprilTag.ftcPose.y;
 
-
-            flywheelPower = ShootConstants.powerFromDistance(distance);
-
-            tilt.setPosition(ShootConstants.tiltFromDistance(distance));
+            if(!isAutoShot) {
+                flywheelPower = ShootConstants.powerFromDistance(distance);
+                tilt.setPosition(ShootConstants.tiltFromDistance(distance));
+            }
 
             positionnecessary = pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180;
 
@@ -308,8 +308,9 @@ public class HoodedShooter {
 
             if(elapsedTime.seconds() >= ShootConstants.shotDuration_seconds + ShootConstants.flywheelAccelerationTime_seconds){
                 shotbegan = false;
+                isAutoShot = false;
 
-                flywheel.setPower(0);
+                //flywheel.setPower(0); probably better to keep flywheel running
                 transfer.setPower(-1);
 
             }
