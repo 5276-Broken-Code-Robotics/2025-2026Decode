@@ -137,8 +137,7 @@ public class HoodedShooterTest extends OpMode {
 
         hShooter = new HoodedShooter();
 
-        hShooter.init(hardwareMap, follower);
-
+        hShooter.init(hardwareMap,telemetry, follower, fl, fr, bl, br);
 
         state=  0;
     }
