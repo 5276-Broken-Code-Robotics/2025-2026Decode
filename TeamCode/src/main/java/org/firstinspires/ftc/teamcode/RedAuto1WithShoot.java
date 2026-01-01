@@ -8,6 +8,7 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -208,7 +209,7 @@ public class RedAuto1WithShoot extends OpMode {
         follower.setStartingPose(startPose);
 
         shooter = new HoodedShooter();
-        shooter.init(hardwareMap, follower);
+        shooter.init(hardwareMap, telemetry, follower, hardwareMap.get(DcMotor.class, "fl"), hardwareMap.get(DcMotor.class, "fr"), hardwareMap.get(DcMotor.class, "bl"), hardwareMap.get(DcMotor.class, "br"));
     }
 
     @Override
