@@ -16,39 +16,23 @@ import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
 @Autonomous
 public class RedAuto1WithShoot extends OpMode {
+    boolean hasShotThisState;
+    HoodedShooter shooter;
+
     private int pathState;
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer;
-
-    HoodedShooter shooter;
-    boolean hasShotThisState;
-
     private final Pose startPose = new Pose(125, 119.80230642504118, Math.toRadians(36)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(96, 96, Math.toRadians(36)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pickup1Pose = new Pose(127, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    private final Pose pickup2Pose = new Pose(134, 60, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    private final Pose pickup3Pose = new Pose(134, 36, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation1Pose = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation2Pose = new Pose(96, 60, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation3Pose = new Pose(96, 36, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose finalPose = new Pose(103, 65, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose leverPose = new Pose(128, 73, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-
-    private PathChain rotate1, grabPickup1, hitLever, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
+    private final Pose scorePose = new Pose(96, 93, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose pickup1Pose = new Pose(125, 81, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(130, 57, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    private final Pose pickup3Pose = new Pose(130, 33, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation1Pose = new Pose(96, 81, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation2Pose = new Pose(96, 57, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation3Pose = new Pose(96, 33, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose finalPose = new Pose(103, 62, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
     private Path scorePreload;
-
-    private void manageShoot(int nextPathState) {
-        if(!shooter.shotbegan) {
-            if(!hasShotThisState) {
-                shooter.AutoBeginShot();
-                hasShotThisState = true;
-            } else {
-                setPathState(nextPathState);
-                hasShotThisState = false;
-            }
-        }
-    }
-
     public void buildPaths(){
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
@@ -61,8 +45,8 @@ public class RedAuto1WithShoot extends OpMode {
                 .setLinearHeadingInterpolation(rotation1Pose.getHeading(), pickup1Pose.getHeading())
                 .build();
         shootPickup1= follower.pathBuilder()
-                .addPath(new BezierLine(leverPose, scorePose))
-                .setLinearHeadingInterpolation(leverPose.getHeading(), scorePose.getHeading())
+                .addPath(new BezierLine(pickup1Pose, scorePose))
+                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), scorePose.getHeading())
                 .build();
         rotate2= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, rotation2Pose))
@@ -92,10 +76,17 @@ public class RedAuto1WithShoot extends OpMode {
                 .addPath(new BezierLine(scorePose, finalPose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), finalPose.getHeading())
                 .build();
-        hitLever= follower.pathBuilder()
-                .addPath(new BezierLine(pickup1Pose, leverPose))
-                .setLinearHeadingInterpolation(pickup1Pose.getHeading(), leverPose.getHeading())
-                .build();
+    }
+    private void manageShoot(int nextPathState) {
+        if(!shooter.shotbegan) {
+            if(!hasShotThisState) {
+                shooter.AutoBeginShot();
+                hasShotThisState = true;
+            } else {
+                setPathState(nextPathState);
+                hasShotThisState = false;
+            }
+        }
     }
     public void setPathState(int pState) {
         pathState = pState;
@@ -107,7 +98,9 @@ public class RedAuto1WithShoot extends OpMode {
                 setPathState(1);
                 break;
             case 1:
+
                 if (!follower.isBusy()) {
+
                     follower.followPath(rotate1, true);
                     setPathState(2);
                 }
@@ -124,25 +117,24 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(hitLever, true);
-                    setPathState(4);
+                    follower.followPath(shootPickup1, true);
                 }
+
+                manageShoot(4);
                 break;
             case 4:
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(shootPickup1, true);
+                    follower.followPath(rotate2, true);
+                    setPathState(5);
                 }
-
-                manageShoot(5);
-
                 break;
             case 5:
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(rotate2, true);
+                    follower.followPath(grabPickup2, true);
                     setPathState(6);
                 }
                 break;
@@ -150,25 +142,24 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2, true);
-                    setPathState(7);
+                    follower.followPath(shootPickup2, true);
                 }
 
+                manageShoot(7);
                 break;
             case 7:
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(shootPickup2, true);
+                    follower.followPath(rotate3, true);
+                    setPathState(8);
                 }
-
-                manageShoot(8);
                 break;
             case 8:
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(rotate3, true);
+                    follower.followPath(grabPickup3, true);
                     setPathState(9);
                 }
                 break;
@@ -176,20 +167,12 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3, true);
-                    setPathState(10);
-                }
-                break;
-            case 10:
-
-                if (!follower.isBusy()) {
-
                     follower.followPath(shootPickup3, true);
                 }
 
-                manageShoot(11);
+                manageShoot(10);
                 break;
-            case 11:
+            case 10:
 
                 if (!follower.isBusy()) {
 
