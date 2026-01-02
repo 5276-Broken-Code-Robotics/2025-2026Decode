@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.Path;
+import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,20 +24,11 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 public class HoodedShooterTest extends OpMode {
-
-
-
     private Servo pan;
     private Servo tilt;
 
     float power = 0.75f;
-
-
-
-
-
     double tiltangle = 0.3f;
-    private DcMotor fr;
 
 
 
@@ -45,7 +39,11 @@ public class HoodedShooterTest extends OpMode {
     boolean beganshot = false;
 
     double initpos = 0f;
+
+    private DcMotor fr;
+
     private DcMotor fl;
+
     private DcMotor br;
     private DcMotor bl;
 
@@ -95,11 +93,6 @@ public class HoodedShooterTest extends OpMode {
 
         num = 0;
 
-
-
-
-
-//
 //        follower = Constants.createFollower(hardwareMap);
 //
 //        follower.setPose(new Pose(0,144));
@@ -109,7 +102,15 @@ public class HoodedShooterTest extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setPose(new Pose(0,0, Math.PI));
+
+
+
+        follower.setStartingPose(new Pose(0,0, 0));
+
+
+        follower.setPose(new Pose(0,0,0));
+
+        follower.update();
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
         fl = hardwareMap.get(DcMotor.class, "fl");
@@ -121,10 +122,11 @@ public class HoodedShooterTest extends OpMode {
 
 
 
+        pan.setPosition(0);
+
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
-
         intake.setDirection(DcMotor.Direction.REVERSE);
 
         timer.reset();
@@ -135,43 +137,57 @@ public class HoodedShooterTest extends OpMode {
 
         hShooter = new HoodedShooter();
 
-        hShooter.init(hardwareMap,telemetry, follower);
-
+        hShooter.init(hardwareMap,telemetry, follower, fl, fr, bl, br);
 
         state=  0;
     }
 
-
-
-
-
-
-
-
-
     public void loop(){
+
+        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
 
         telemetry.addData("ms", elapsedTime.milliseconds());
         intake.setPower(1);
 
+
+
+
         telemetry.addData("Num : " , num);
 
+        if(gamepad1.left_bumper && num == 0){
 
 
+            follower.breakFollowing();
+            PathChain path1= follower.pathBuilder()
+                    .addPath(new BezierLine(follower.getPose(), new Pose(0,0, 0)))
+                    .setLinearHeadingInterpolation(follower.getPose().getHeading(),0)
+                    .build();
+
+            follower.followPath(path1);
+
+        }
 
 
         if(gamepad1.right_bumper && num == 0){
+
+            follower.update();
             hShooter.BeginShot(24);
+
+
             num = 1;
             elapsedTime.reset();
 
+
         }
+
 
         if(elapsedTime.seconds() > 2){
             num = 0;
         }
 
 
+        transfer.setPower(-1);
 
 
         hShooter.loop();
@@ -179,6 +195,29 @@ public class HoodedShooterTest extends OpMode {
         if(num == 1){
             telemetry.addData("We", "Are being run2");
         }
+
+        follower.update();
+    }
+
+
+    public void drive(double forward, double strafe, double rotate) {
+        double flPower = forward + strafe + rotate;
+        double frPower = forward - strafe - rotate;
+        double blPower = forward - strafe + rotate;
+        double brPower = forward + strafe - rotate;
+
+        double maxPower = 1.0;
+        double maxSpeed = 1.0;
+
+        maxPower = Math.max(maxPower, Math.abs(flPower));
+        maxPower = Math.max(maxPower, Math.abs(frPower));
+        maxPower = Math.max(maxPower, Math.abs(blPower));
+        maxPower = Math.max(maxPower, Math.abs(brPower));
+
+        fl.setPower((maxSpeed * (flPower / maxPower)));
+        fr.setPower((maxSpeed * (frPower / maxPower)));
+        bl.setPower((maxSpeed * (blPower / maxPower)));
+        br.setPower((maxSpeed * (brPower / maxPower)));
     }
 
 
