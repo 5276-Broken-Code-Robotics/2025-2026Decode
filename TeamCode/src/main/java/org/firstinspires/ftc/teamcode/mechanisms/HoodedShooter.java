@@ -289,6 +289,8 @@ public class HoodedShooter {
                         state = "found_tag_orienting";
                         aprilTag = aprilTagWebCam.getDetectedTags().get(i);
                         found = true;
+                        pan.setPosition(pan.getPosition());
+
                     }
                 }
 

@@ -26,7 +26,7 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
     private Servo pan;
     private Servo tilt;
 
-    float power = 0.75f;
+    float power = 0.63f;
 
 
     double tiltangle = 0f;
@@ -137,10 +137,10 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
         telemetry.addData("Is empty ? : ", aprilTagWebCam.getDetectedTags().isEmpty());
         if(gamepad1.squareWasPressed()){
-            power+=0.025f;
+            power+=0.01f;
         }
         if(gamepad1.circleWasPressed()){
-            power-=0.025f;
+            power-=0.01f;
         }
         if(power > 1){
             power = 1;
@@ -179,7 +179,6 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
             telemetry.addData("Scanning", " Yes i am scanning");
 
-            telemetry.update();
         }
 
 
@@ -190,11 +189,11 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
 
-            if (elapsedTime.seconds() <= 0.4) {
+            if (elapsedTime.seconds() <= 1) {
                 waiting = false;
-            } else if (elapsedTime.seconds() >= 0.4 && elapsedTime.seconds() <= 0.8) {
+            } else if (elapsedTime.seconds() >= 1 && elapsedTime.seconds() <= 2) {
                 waiting = true;
-            } else if (elapsedTime.seconds() >= 0.8) {
+            } else if (elapsedTime.seconds() >= 2) {
                 waiting = false;
                 elapsedTime.reset();
 
@@ -207,7 +206,13 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
                 if (!waiting) pan.setPosition(initpos + 0.1);
 
 
+
+
+                telemetry.addData("We are empty", "for some reason");
+
             } else {
+
+
 
                 seen = true;
 
@@ -216,6 +221,8 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
                 telemetry.addData("We did it", "john");
                 scanstate = 1;
 
+
+                pan.setPosition(pan.getPosition());
                 currOne = aprilTagWebCam.getDetectedTags().get(0);
             }
 
@@ -223,19 +230,28 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         }
         if(scanstate == 1){
 
-            if(Math.abs(currOne.ftcPose.bearing) > 3){
+            if(Math.abs(currOne.ftcPose.bearing) > 5){
 
                 positionnecessary = pan.getPosition() + currOne.ftcPose.bearing * 0.4/180;
 
+
+                telemetry.addData("Bearing : ", currOne.ftcPose.bearing);
                 initposforseeingpreorient = (float)pan.getPosition();
+
+                telemetry.addData("Current position :", pan.getPosition());
                 telemetry.addData("position going to" ,  pan.getPosition() + currOne.ftcPose.bearing * 0.4/180);
 
+
+                telemetry.update();
                 pan.setPosition(positionnecessary);
+                scanstate = -1;
+
+            }else{
+                scanstate = -1;
 
             }
 
 
-            scanstate = -1;
         }
 
 
