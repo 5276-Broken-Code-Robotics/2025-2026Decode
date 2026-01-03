@@ -35,7 +35,7 @@ public class RedSlave1 extends OpMode {
                 .addPath(new BezierLine(scorePose, rotation1Pose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), rotation1Pose.getHeading())
                 .build();
-                follower.setMaxPower(.2);
+                follower.setMaxPower(.000000001);
         grabPickup1= follower.pathBuilder()
                 .addPath(new BezierLine(rotation1Pose, pickup1Pose))
                 .setLinearHeadingInterpolation(rotation1Pose.getHeading(), pickup1Pose.getHeading())
@@ -49,7 +49,7 @@ public class RedSlave1 extends OpMode {
                 .addPath(new BezierLine(scorePose, rotation2Pose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), rotation2Pose.getHeading())
                 .build();
-                follower.setMaxPower(.2);
+                follower.setMaxPower(.00001);
         grabPickup2= follower.pathBuilder()
                 .addPath(new BezierLine(rotation2Pose, pickup2Pose))
                 .setLinearHeadingInterpolation(rotation2Pose.getHeading(), pickup2Pose.getHeading())
@@ -189,6 +189,7 @@ public class RedSlave1 extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
+        
         telemetry.update();
     }
     @Override
