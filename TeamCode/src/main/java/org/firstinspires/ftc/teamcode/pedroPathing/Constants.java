@@ -27,7 +27,7 @@ public class Constants {
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(
                             RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                            RevHubOrientationOnRobot.UsbFacingDirection.LEFT
+                            RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
                     )
             );
 
