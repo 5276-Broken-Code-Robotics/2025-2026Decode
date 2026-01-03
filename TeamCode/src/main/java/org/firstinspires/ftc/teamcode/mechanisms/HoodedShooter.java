@@ -152,11 +152,13 @@ public class HoodedShooter {
     }
 
     public void AutoBeginShot(){
-        BeginShot(24);
+
         isAutoShot = true;
 
         flywheelPower = 0.65; // Needs testing for accurate value
         tilt.setPosition(0.5); // Needs testing for accurate value
+        BeginShot(24);
+
     }
 
     public void BeginShot(int id){
@@ -190,6 +192,13 @@ public class HoodedShooter {
 
 
         if(state.equals("chassis_orient_to_tag")){
+
+            if(isAutoShot){
+                state = "shoot";
+                positionnecessary = pan.getPosition();
+
+                return;
+            }
             angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
 
 
@@ -350,7 +359,7 @@ public class HoodedShooter {
                 shotbegan = false;
                 isAutoShot = false;
 
-                //flywheel.setPower(0); probably better to keep flywheel running
+                flywheel.setPower(0);
                 transfer.setPower(-1);
 
             }
