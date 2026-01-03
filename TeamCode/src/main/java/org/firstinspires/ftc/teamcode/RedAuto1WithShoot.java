@@ -107,11 +107,16 @@ public class RedAuto1WithShoot extends OpMode {
                 if (!follower.isBusy()) {
 
                     follower.followPath(shootPickup1, true);
-                    setPathState(4);
-
-                    shooter.AutoBeginShot();
+                    setPathState(21);
                 }
+                break;
 
+
+            case 21:
+                if (!follower.isBusy()) {
+                    shooter.AutoBeginShot();
+                    if(!shooter.shotbegan)setPathState(4);
+                }
                 break;
             case 4:
                 if(shooter.shotbegan) return; // Wait until the shot is done
