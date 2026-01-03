@@ -93,7 +93,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, .6,true);
+                    follower.followPath(grabPickup1, .8,true);
                     setPathState(3);
                 }
                 break;
@@ -117,7 +117,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2,.6, true);
+                    follower.followPath(grabPickup2,.8, true);
                     setPathState(6);
                 }
                 break;
@@ -141,7 +141,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3,.6, true);
+                    follower.followPath(grabPickup3,.8, true);
                     setPathState(9);
                 }
                 break;
