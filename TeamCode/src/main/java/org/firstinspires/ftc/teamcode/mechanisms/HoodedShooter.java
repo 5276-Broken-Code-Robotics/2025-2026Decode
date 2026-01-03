@@ -152,11 +152,13 @@ public class HoodedShooter {
     }
 
     public void AutoBeginShot(){
-        BeginShot(24);
+
         isAutoShot = true;
 
         flywheelPower = 0.65; // Needs testing for accurate value
         tilt.setPosition(0.5); // Needs testing for accurate value
+        BeginShot(24);
+
     }
 
     public void BeginShot(int id){
@@ -190,6 +192,13 @@ public class HoodedShooter {
 
 
         if(state.equals("chassis_orient_to_tag")){
+
+            if(isAutoShot){
+                state = "shoot";
+                positionnecessary = pan.getPosition();
+
+                return;
+            }
             angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
 
 
@@ -198,7 +207,7 @@ public class HoodedShooter {
             telemetry.addData("Angle to aprilTag" , angleToAprilTag);
 
 
-            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/2) {
+            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/3) {
 
 
 
@@ -242,7 +251,7 @@ public class HoodedShooter {
 
 
 
-        if(resetElapsedtime.seconds()> 2){
+        if(resetElapsedtime.seconds()> 4){
             resetting = false;
         }
 
@@ -262,23 +271,6 @@ public class HoodedShooter {
 
                 initpos = pan.getPosition();
             }
-
-
-            if (aprilTagWebCam.getDetectedTags().isEmpty()) {
-
-                if (!waiting){
-
-                    if(initpos > 0.4){
-
-
-                        resetElapsedtime.reset();
-                        resetting = true;
-                        initpos = 0;
-                    }
-                    pan.setPosition(initpos + 0.05f);
-                }
-
-            } else {
                 boolean found = false;
 
                 //telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
@@ -295,9 +287,18 @@ public class HoodedShooter {
                 }
 
                 if(!found){
-                    if (!waiting) pan.setPosition(initpos + 0.05f);
+                    if (!waiting){
+                        if(initpos > 0.4){
+
+
+                            resetElapsedtime.reset();
+                            resetting = true;
+                            initpos = 0;
+                        }
+                        pan.setPosition(initpos + 0.05f);
+                    }
                 }
-            }
+
 
 
         }
@@ -358,7 +359,7 @@ public class HoodedShooter {
                 shotbegan = false;
                 isAutoShot = false;
 
-                //flywheel.setPower(0); probably better to keep flywheel running
+                flywheel.setPower(0);
                 transfer.setPower(-1);
 
             }

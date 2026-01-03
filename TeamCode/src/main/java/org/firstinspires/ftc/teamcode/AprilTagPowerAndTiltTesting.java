@@ -155,6 +155,8 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         if(elapsedTime.seconds() > 2){
             resetting = false;
         }
+
+
         if(power < 0) power = 0;
 
         if(gamepad1.triangleWasPressed() && state == -1){

@@ -21,7 +21,7 @@ public class RedAuto1WithShoot extends OpMode {
 
     private int pathState;
     private Follower follower;
-    private ElapsedTime pathTimer, actionTimer, opmodeTimer;
+    private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
     private final Pose startPose = new Pose(125, 119.80230642504118, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 93, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pickup1Pose = new Pose(125, 81, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
@@ -77,17 +77,7 @@ public class RedAuto1WithShoot extends OpMode {
                 .setLinearHeadingInterpolation(scorePose.getHeading(), finalPose.getHeading())
                 .build();
     }
-    private void manageShoot(int nextPathState) {
-        if(!shooter.shotbegan) {
-            if(!hasShotThisState) {
-                shooter.AutoBeginShot();
-                hasShotThisState = true;
-            } else {
-                setPathState(nextPathState);
-                hasShotThisState = false;
-            }
-        }
-    }
+
     public void setPathState(int pState) {
         pathState = pState;
     }
@@ -114,21 +104,25 @@ public class RedAuto1WithShoot extends OpMode {
                 }
                 break;
             case 3:
-
                 if (!follower.isBusy()) {
 
                     follower.followPath(shootPickup1, true);
+                    setPathState(4);
+
+                    shooter.AutoBeginShot();
                 }
 
-                manageShoot(4);
                 break;
             case 4:
+                if(shooter.shotbegan) return; // Wait until the shot is done
 
-                if (!follower.isBusy()) {
 
+
+                if(!follower.isBusy()) {
                     follower.followPath(rotate2, true);
                     setPathState(5);
                 }
+
                 break;
             case 5:
 
@@ -143,11 +137,14 @@ public class RedAuto1WithShoot extends OpMode {
                 if (!follower.isBusy()) {
 
                     follower.followPath(shootPickup2, true);
+                    setPathState(7);
+
+                    shooter.AutoBeginShot();
                 }
 
-                manageShoot(7);
                 break;
             case 7:
+                if(shooter.shotbegan) return; // Wait until the shot is done
 
                 if (!follower.isBusy()) {
 
@@ -168,11 +165,14 @@ public class RedAuto1WithShoot extends OpMode {
                 if (!follower.isBusy()) {
 
                     follower.followPath(shootPickup3, true);
+                    setPathState(10);
+
+                    shooter.AutoBeginShot();
                 }
 
-                manageShoot(10);
                 break;
             case 10:
+                if(shooter.shotbegan) return; // Wait until the shot is done
 
                 if (!follower.isBusy()) {
 
@@ -197,6 +197,7 @@ public class RedAuto1WithShoot extends OpMode {
 
     @Override
     public void loop() {
+
 
         follower.update();
         autonomousPathUpdate();

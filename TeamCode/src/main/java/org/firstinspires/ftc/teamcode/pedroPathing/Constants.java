@@ -22,12 +22,12 @@ public class Constants {
             .forwardPodY(6.75)
             .strafePodX(-3.375)
             .forwardTicksToInches(.00198)
-            .forwardTicksToInches(.00199)
+            .strafeTicksToInches(.00199)
             .IMU_HardwareMapName("imu")
             .IMU_Orientation(
                     new RevHubOrientationOnRobot(
-                            RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                            RevHubOrientationOnRobot.UsbFacingDirection.LEFT
+                            RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                            RevHubOrientationOnRobot.UsbFacingDirection.UP
                     )
             );
 
