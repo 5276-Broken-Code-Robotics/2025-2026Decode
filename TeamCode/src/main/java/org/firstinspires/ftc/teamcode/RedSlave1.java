@@ -44,7 +44,10 @@ public class RedSlave1 extends OpMode {
                 follower.followPath(scorePreload);
                 setPathState(-1);
 
+
         }
+
+
     }
 
     @Override

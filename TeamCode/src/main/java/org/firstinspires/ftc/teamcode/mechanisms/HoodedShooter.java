@@ -192,6 +192,10 @@ public class HoodedShooter {
             currentAprilTagPos = aprilTagRed;
         }
 
+        if(id == 20){
+            currentAprilTagPos = aprilTagBlue;
+        }
+
 
 
 
