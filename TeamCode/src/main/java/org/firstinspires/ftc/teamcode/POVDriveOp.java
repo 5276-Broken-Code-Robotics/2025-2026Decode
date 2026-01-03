@@ -28,10 +28,14 @@
  */
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 /*
  * This OpMode illustrates how to program your robot to drive field relative.  This means
@@ -51,6 +55,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class POVDriveOp extends OpMode {
     // This declares the four motors needed
+
+    Follower follower;
     DcMotor fl;
     DcMotor fr;
     DcMotor bl;
@@ -60,14 +66,22 @@ public class POVDriveOp extends OpMode {
     public void init() {
         fl = hardwareMap.get(DcMotor.class, "fl");
         fr = hardwareMap.get(DcMotor.class, "fr");
+
+
         bl = hardwareMap.get(DcMotor.class, "bl");
         br = hardwareMap.get(DcMotor.class, "br");
 
         // We set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
 
+        follower = Constants.createFollower(hardwareMap);
+
+        follower.setPose(new Pose(0,0,0));
+
         fl.setDirection(DcMotor.Direction.REVERSE);
         bl.setDirection(DcMotor.Direction.REVERSE);
+
+
 
         // This uses RUN_USING_ENCODER to be more accurate.   If you don't have the encoder
         // wires, you should remove these
@@ -81,6 +95,16 @@ public class POVDriveOp extends OpMode {
     @Override
     public void loop() {
         drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        follower.update();
+
+        telemetry.addData("Hello", "guys");
+        telemetry.addData("Position : ", follower.getPose().getX() + " , " + follower.getPose().getY());
+
+        telemetry.addData("Heading : ", follower.getPose().getHeading());
+
+
+
+        telemetry.update();
     }
 
     public void drive(double forward, double strafe, double rotate) {
@@ -104,7 +128,4 @@ public class POVDriveOp extends OpMode {
     }
 
 
-    public void init(HardwareMap hardwareMap) {
-
-    }
 }
