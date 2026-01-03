@@ -24,7 +24,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 
-public class TeleOpRedSlave1 extends OpMode {
+public class TeleOpRedMain1 extends OpMode {
     private Servo pan;
     private Servo tilt;
 
@@ -85,8 +85,8 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
 
-    Pose aprilTagRed = new Pose(144,144);
-    Pose aprilTagBlue = new Pose(0,144);
+    Pose aprilTagRed = new Pose(129.61653272101034,128.62456946039035);
+    Pose aprilTagBlue = new Pose(15.2,128.62456946039035);
 
     HoodedShooter hShooter;
 
@@ -108,10 +108,10 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
 
-        follower.setStartingPose(new Pose(96, 24, Math.toRadians(0)));
+        follower.setStartingPose(new Pose(103, 68, Math.toRadians(0)));
 
 
-        follower.setPose(new Pose(96, 24, Math.toRadians(0)));
+        follower.setPose(new Pose(103, 68, Math.toRadians(0)));
 
         follower.update();
         timer = new ElapsedTime();

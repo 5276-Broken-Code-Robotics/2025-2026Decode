@@ -24,7 +24,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 
-public class TeleOpRedSlave1 extends OpMode {
+public class TeleOpBlueMain1 extends OpMode {
     private Servo pan;
     private Servo tilt;
 
@@ -106,12 +106,13 @@ public class TeleOpRedSlave1 extends OpMode {
         follower = Constants.createFollower(hardwareMap);
 
 
+        // Lowest (Third Set) of Artifacts from the Spike Mark.
 
 
-        follower.setStartingPose(new Pose(96, 24, Math.toRadians(0)));
+        follower.setStartingPose(new Pose(144-103, 68, Math.toRadians(180)));
 
 
-        follower.setPose(new Pose(96, 24, Math.toRadians(0)));
+        follower.setPose(new Pose(144-103, 68, Math.toRadians(180)));
 
         follower.update();
         timer = new ElapsedTime();
@@ -151,6 +152,11 @@ public class TeleOpRedSlave1 extends OpMode {
     public void loop(){
 
         drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
+
+
+
+
         if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)drive(-gamepad2.left_stick_y/2, gamepad2.left_stick_x/2, gamepad2.right_stick_x/2);
 
 
@@ -162,7 +168,18 @@ public class TeleOpRedSlave1 extends OpMode {
             intake.setPower(1);
         }
 
+        if(gamepad1.left_bumper && num == 0){
+            follower.update();
+            hShooter.AutoBeginShot(true);
+
+            pan.setPosition(0.29);
+            num = 1;
+            elapsedTime.reset();
+        }
+
+
         telemetry.addData("ms", elapsedTime.milliseconds());
+
 
 
 
@@ -172,7 +189,7 @@ public class TeleOpRedSlave1 extends OpMode {
         if(gamepad1.right_bumper && num == 0){
 
             follower.update();
-            hShooter.BeginShot(24);
+            hShooter.BeginShot(20);
 
 
             num = 1;
@@ -183,9 +200,9 @@ public class TeleOpRedSlave1 extends OpMode {
 
         if(gamepad1.left_bumper && num == 0){
             follower.update();
-            hShooter.AutoBeginShot(true);
+            hShooter.AutoBeginShot(false);
 
-            pan.setPosition(0.29);
+            pan.setPosition(0.11);
             num = 1;
             elapsedTime.reset();
         }

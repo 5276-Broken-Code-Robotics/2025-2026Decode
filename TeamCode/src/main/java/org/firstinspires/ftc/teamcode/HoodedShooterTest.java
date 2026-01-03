@@ -121,9 +121,7 @@ public class HoodedShooterTest extends OpMode {
 
 
 
-
-        pan.setPosition(0);
-
+        
         intake = hardwareMap.get(DcMotor.class, "intake");
         transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
@@ -186,7 +184,7 @@ public class HoodedShooterTest extends OpMode {
 
         if(gamepad1.left_bumper && num == 0){
             follower.update();
-            hShooter.AutoBeginShot();
+            hShooter.AutoBeginShot(true);
 
             pan.setPosition(0.29);
             num = 1;

@@ -146,10 +146,10 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
         telemetry.addData("Is empty ? : ", aprilTagWebCam.getDetectedTags().isEmpty());
         if(gamepad1.squareWasPressed()){
-            power+=0.1f;
+            power+=0.05f;
         }
         if(gamepad1.circleWasPressed()){
-            power-=0.1f;
+            power-=0.05f;
         }
         if(power > 1){
             power = 1;
@@ -289,12 +289,12 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
         if(gamepad1.dpadUpWasPressed()){
-            intakepower+=0.1;
+            intakepower+=0.05f;
         }
 
 
         if(gamepad1.dpadDownWasPressed()){
-            intakepower-=0.1f;
+            intakepower-=0.05f;
         }
 
 
@@ -341,8 +341,6 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
         if(state == 3){
-            flywheel.setPower(power);
-
 
             if(elapsedTime.seconds() > 3){
                 transfer.setPower(1);

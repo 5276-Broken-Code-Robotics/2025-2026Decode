@@ -120,7 +120,7 @@ public class BlueAuto1 extends OpMode {
                 if (!follower.isBusy()) {
 
                     if(!shooter.shotbegan){
-                        shooter.AutoBeginShot();
+                        shooter.AutoBeginShot(true);
                         setPathState(4);
                     }
                 }
@@ -151,7 +151,7 @@ public class BlueAuto1 extends OpMode {
                     follower.followPath(shootPickup2, true);
                     setPathState(7);
 
-                    shooter.AutoBeginShot();
+                    shooter.AutoBeginShot(true);
                 }
 
                 break;
@@ -179,7 +179,7 @@ public class BlueAuto1 extends OpMode {
                     follower.followPath(shootPickup3, true);
                     setPathState(10);
 
-                    shooter.AutoBeginShot();
+                    shooter.AutoBeginShot(true);
                 }
 
                 break;

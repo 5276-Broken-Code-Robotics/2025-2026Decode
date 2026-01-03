@@ -165,18 +165,24 @@ public class HoodedShooter {
         telemetry.update();
     }
 
-    public void AutoBeginShot(){
+    public void AutoBeginShot(boolean isRed){
 
         isAutoShot = true;
 
-        flywheelPower = 0.575; // Needs testing for accurate value
+        flywheelPower = 0.63; // Needs testing for accurate value
         tilt.setPosition(0); // Needs testing for accurate value
         elapsedTime.reset();
 
 
         state = "shoot";
 
-        positionnecessary = 0.29;
+        if(isRed){
+            positionnecessary = 0.29;
+        }else{
+            positionnecessary = 0.11;
+        }
+
+        pan.setPosition(positionnecessary);
 
         shotbegan = true;
 
