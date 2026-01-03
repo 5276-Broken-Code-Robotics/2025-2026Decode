@@ -8,22 +8,31 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
 @Autonomous
 public class BlueAuto1 extends OpMode {
+    boolean hasShotThisState;
+    HoodedShooter shooter;
+
     private int pathState;
+
+    private DcMotor intake;
+
     private Follower follower;
-    private ElapsedTime pathTimer, actionTimer, opmodeTimer;
-    private final Pose startPose = new Pose(144-125, 118.37891268533772, Math.toRadians(144)); // Start Pose of our robot.
+    private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
+    private final Pose startPose = new Pose(144-125, 118.37891268533772, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(144-96, 99, Math.toRadians(180)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pickup1Pose = new Pose(144-125, 87, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
-    private final Pose pickup2Pose = new Pose(144-125, 63, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(144-125, 60, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
     private final Pose pickup3Pose = new Pose(144-130, 39, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose rotation1Pose = new Pose(144-96, 87, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation2Pose = new Pose(144-96, 57, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation2Pose = new Pose(144-96, 60, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose rotation3Pose = new Pose(144-96, 39, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose finalPose = new Pose(144-103, 68, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
@@ -72,6 +81,7 @@ public class BlueAuto1 extends OpMode {
                 .setLinearHeadingInterpolation(scorePose.getHeading(), finalPose.getHeading())
                 .build();
     }
+
     public void setPathState(int pState) {
         pathState = pState;
     }
@@ -93,32 +103,44 @@ public class BlueAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, .8,true);
+                    follower.followPath(grabPickup1, .8,false);
                     setPathState(3);
                 }
                 break;
             case 3:
-
                 if (!follower.isBusy()) {
 
                     follower.followPath(shootPickup1, true);
-                    setPathState(4);
-                    //after shoot pickup goes to score position which the endpoint you want to shoot for all 3 cases
+                    setPathState(21);
+                }
+                break;
+
+
+            case 21:
+                if (!follower.isBusy()) {
+
+                    if(!shooter.shotbegan){
+                        shooter.AutoBeginShot();
+                        setPathState(4);
+                    }
                 }
                 break;
             case 4:
+                if(shooter.shotbegan) return; // Wait until the shot is done
 
-                if (!follower.isBusy()) {
-//
+
+
+                if(!follower.isBusy()) {
                     follower.followPath(rotate2, true);
                     setPathState(5);
                 }
+
                 break;
             case 5:
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2,.8, true);
+                    follower.followPath(grabPickup2,.8, false);
                     setPathState(6);
                 }
                 break;
@@ -128,9 +150,13 @@ public class BlueAuto1 extends OpMode {
 
                     follower.followPath(shootPickup2, true);
                     setPathState(7);
+
+                    shooter.AutoBeginShot();
                 }
+
                 break;
             case 7:
+                if(shooter.shotbegan) return; // Wait until the shot is done
 
                 if (!follower.isBusy()) {
 
@@ -142,7 +168,7 @@ public class BlueAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3,.8, true);
+                    follower.followPath(grabPickup3,.8, false);
                     setPathState(9);
                 }
                 break;
@@ -152,9 +178,13 @@ public class BlueAuto1 extends OpMode {
 
                     follower.followPath(shootPickup3, true);
                     setPathState(10);
+
+                    shooter.AutoBeginShot();
                 }
+
                 break;
             case 10:
+                if(shooter.shotbegan) return; // Wait until the shot is done
 
                 if (!follower.isBusy()) {
 
@@ -168,24 +198,47 @@ public class BlueAuto1 extends OpMode {
     @Override
     public void init() {
         opmodeTimer = new ElapsedTime();
+
+
+
+
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+
+        shooter = new HoodedShooter();
+
+
+
+
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        intake.setDirection(DcMotor.Direction.REVERSE);
+
+        intake.setPower(1);
+        DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
+        DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
+        DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
+        DcMotor br = hardwareMap.get(DcMotor.class, "br");
+
+        shooter.init(hardwareMap, telemetry, follower, fl, fr, bl, br);
     }
 
     @Override
     public void loop() {
 
+
         follower.update();
+
+        shooter.loop();
+
+
         autonomousPathUpdate();
         // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
-
-        telemetry.update();
     }
     @Override
     public void start() {
