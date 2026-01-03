@@ -197,7 +197,15 @@ public class RedAuto1WithShoot extends OpMode {
         follower.setStartingPose(startPose);
 
         shooter = new HoodedShooter();
-        shooter.init(hardwareMap, telemetry, follower, hardwareMap.get(DcMotor.class, "fl"), hardwareMap.get(DcMotor.class, "fr"), hardwareMap.get(DcMotor.class, "bl"), hardwareMap.get(DcMotor.class, "br"));
+
+
+
+        DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
+        DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
+        DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
+        DcMotor br = hardwareMap.get(DcMotor.class, "br");
+
+        shooter.init(hardwareMap, telemetry, follower, fl, fr, bl, br);
     }
 
     @Override
@@ -205,6 +213,10 @@ public class RedAuto1WithShoot extends OpMode {
 
 
         follower.update();
+
+        shooter.loop();
+
+
         autonomousPathUpdate();
         // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);

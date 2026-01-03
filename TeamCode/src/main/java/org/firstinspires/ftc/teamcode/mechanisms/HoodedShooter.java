@@ -7,6 +7,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -100,6 +101,8 @@ public class HoodedShooter {
         resetElapsedtime = new ElapsedTime();
 
 
+
+
         resetting = false;
         this.fl = fl;
         this.fr = fr;
@@ -123,6 +126,7 @@ public class HoodedShooter {
 
         telemetry.addData("Follower Busy", follower.isBusy());
         telemetry.addData("Heading", follower.getHeading());
+        telemetry.addData("State : ", state);
         telemetry.addData("Shot status : ", shotbegan);
         if(shotbegan){
 
@@ -176,6 +180,8 @@ public class HoodedShooter {
         initpos = 0;
 
         posePreRotate = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
+
+
 
 
     }
