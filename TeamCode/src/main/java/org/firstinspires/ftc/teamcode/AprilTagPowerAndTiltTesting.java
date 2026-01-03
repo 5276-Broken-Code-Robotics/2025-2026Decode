@@ -193,6 +193,8 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         }
 
 
+        telemetry.addData("Pan position : ", pan.getPosition());
+
 
         telemetry.addData("Power : ", flywheel.getPower());
         telemetry.addData("Scan state : ", scanstate);

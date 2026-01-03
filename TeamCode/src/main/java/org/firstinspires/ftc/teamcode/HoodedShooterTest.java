@@ -137,6 +137,9 @@ public class HoodedShooterTest extends OpMode {
 
         hShooter = new HoodedShooter();
 
+
+
+
         hShooter.init(hardwareMap,telemetry, follower, fl, fr, bl, br);
 
         state=  0;
@@ -185,7 +188,7 @@ public class HoodedShooterTest extends OpMode {
             follower.update();
             hShooter.AutoBeginShot();
 
-
+            pan.setPosition(0.29);
             num = 1;
             elapsedTime.reset();
         }
