@@ -211,7 +211,6 @@ public class RedAuto1WithShoot extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
-        telemetry.update();
     }
     @Override
     public void start() {
