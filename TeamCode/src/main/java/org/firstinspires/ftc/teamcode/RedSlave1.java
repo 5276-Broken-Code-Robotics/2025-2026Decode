@@ -35,12 +35,10 @@ public class RedSlave1 extends OpMode {
                 .addPath(new BezierLine(scorePose, rotation1Pose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), rotation1Pose.getHeading())
                 .build();
-                follower.setMaxPower(.000000001);
         grabPickup1= follower.pathBuilder()
                 .addPath(new BezierLine(rotation1Pose, pickup1Pose))
                 .setLinearHeadingInterpolation(rotation1Pose.getHeading(), pickup1Pose.getHeading())
                 .build();
-                follower.setMaxPower(1);
         shootPickup1= follower.pathBuilder()
                 .addPath(new BezierLine(pickup1Pose, scorePose))
                 .setLinearHeadingInterpolation(pickup1Pose.getHeading(), scorePose.getHeading())
@@ -49,12 +47,10 @@ public class RedSlave1 extends OpMode {
                 .addPath(new BezierLine(scorePose, rotation2Pose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), rotation2Pose.getHeading())
                 .build();
-                follower.setMaxPower(.00001);
         grabPickup2= follower.pathBuilder()
                 .addPath(new BezierLine(rotation2Pose, pickup2Pose))
                 .setLinearHeadingInterpolation(rotation2Pose.getHeading(), pickup2Pose.getHeading())
                 .build();
-                follower.setMaxPower(1);
         shootPickup2= follower.pathBuilder()
                 .addPath(new BezierLine(pickup2Pose, scorePose))
                 .setLinearHeadingInterpolation(pickup2Pose.getHeading(), scorePose.getHeading())
@@ -63,12 +59,10 @@ public class RedSlave1 extends OpMode {
                 .addPath(new BezierLine(scorePose, rotation3Pose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), rotation3Pose.getHeading())
                 .build();
-                follower.setMaxPower(.2);
         grabPickup3= follower.pathBuilder()
                 .addPath(new BezierLine(rotation3Pose, pickup3Pose))
                 .setLinearHeadingInterpolation(rotation3Pose.getHeading(), pickup3Pose.getHeading())
                 .build();
-                follower.setMaxPower(1);
         shootPickup3= follower.pathBuilder()
                 .addPath(new BezierLine(pickup3Pose, scorePose))
                 .setLinearHeadingInterpolation(pickup3Pose.getHeading(), scorePose.getHeading())
@@ -99,7 +93,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, true);
+                    follower.followPath(grabPickup1, .2,true);
                     setPathState(3);
                 }
                 break;
@@ -123,7 +117,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2, true);
+                    follower.followPath(grabPickup2,.2, true);
                     setPathState(6);
                 }
                 break;
@@ -147,7 +141,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3, true);
+                    follower.followPath(grabPickup3,.2, true);
                     setPathState(9);
                 }
                 break;
@@ -189,7 +183,7 @@ public class RedSlave1 extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
-        
+
         telemetry.update();
     }
     @Override
