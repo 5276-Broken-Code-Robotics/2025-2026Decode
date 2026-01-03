@@ -161,7 +161,16 @@ public class HoodedShooter {
 
         flywheelPower = 0.65; // Needs testing for accurate value
         tilt.setPosition(0.5); // Needs testing for accurate value
-        BeginShot(24);
+        elapsedTime.reset();
+
+
+        state = "shoot";
+
+        positionnecessary = pan.getPosition();
+
+        shotbegan = true;
+
+
 
     }
 
@@ -172,6 +181,8 @@ public class HoodedShooter {
         if(id == 24){
             currentAprilTagPos = aprilTagRed;
         }
+
+
 
 
         initPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
@@ -199,12 +210,8 @@ public class HoodedShooter {
 
         if(state.equals("chassis_orient_to_tag")){
 
-            if(isAutoShot){
-                state = "shoot";
-                positionnecessary = pan.getPosition();
 
-                return;
-            }
+
             angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
 
 
