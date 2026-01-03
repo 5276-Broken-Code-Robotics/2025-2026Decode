@@ -103,12 +103,13 @@ public class RedSlave1 extends OpMode {
 
                     follower.followPath(shootPickup1, true);
                     setPathState(4);
+                    //after shoot pickup goes to score position which the endpoint you want to shoot for all 3 cases
                 }
                 break;
             case 4:
 
                 if (!follower.isBusy()) {
-
+//
                     follower.followPath(rotate2, true);
                     setPathState(5);
                 }
