@@ -73,6 +73,8 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
     boolean resetting = false;
     CRServo transfer;
+
+    float intakepower = 1;
     ElapsedTime timer;
 
 
@@ -130,17 +132,24 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
     public void loop(){
 
+
+        telemetry.addData("Controls : ", "Square to increase power, circle to decrease. Triangle to fire. Right and left bumpers to increase and decrease tilt angles. Triangle to fire. X to stop." );
         telemetry.addData("Power : ", power);
 
         telemetry.addData("Tilt : ", tiltangle);
 
 
+
+        telemetry.addData("intake power : ", intakepower );
+
+
+
         telemetry.addData("Is empty ? : ", aprilTagWebCam.getDetectedTags().isEmpty());
         if(gamepad1.squareWasPressed()){
-            power+=0.01f;
+            power+=0.1f;
         }
         if(gamepad1.circleWasPressed()){
-            power-=0.01f;
+            power-=0.1f;
         }
         if(power > 1){
             power = 1;
@@ -184,6 +193,8 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         }
 
 
+
+        telemetry.addData("Power : ", flywheel.getPower());
         telemetry.addData("Scan state : ", scanstate);
 
         if(scanstate == 0 && ! resetting){
@@ -275,10 +286,23 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
 
+        if(gamepad1.dpadUpWasPressed()){
+            intakepower+=0.1;
+        }
+
+
+        if(gamepad1.dpadDownWasPressed()){
+            intakepower-=0.1f;
+        }
+
+
+
+
+
 
         telemetry.addData("curr y : ", follower.getPose().getY());
 
-        intake.setPower(1);
+        intake.setPower(intakepower);
         if(state <= 2)transfer.setPower(-1);
 
 
@@ -297,99 +321,7 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         }
 
 
-        if(state == 0) {
-
-
-            /*
-
-            if (elapsedTime.seconds() <= 1f) {
-                waiting = false;
-            } else if (elapsedTime.seconds() >= 1f && elapsedTime.seconds() <= 2f) {
-                waiting = true;
-            } else if (elapsedTime.seconds() >= 2f) {
-                waiting = false;
-                elapsedTime.reset();
-
-                initpos = pan.getPosition();
-            }
-
-
-            if (aprilTagWebCam.getDetectedTags().isEmpty()) {
-
-                if (!waiting) pan.setPosition(initpos + 0.05f);
-
-
-
-
-
-            } else {
-
-                seen = true;
-
-                telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
-
-                telemetry.addData("We did it", "john");
-                state = 1;
-
-                currOne = aprilTagWebCam.getDetectedTags().get(0);
-            }
-
-            */
-
-
-            state = 1;
-
-
-
-        }
-
-        if(state == 1){
-
-
-
-            /*
-            //positionnecessary = pan.getPosition() + currOne.ftcPose.bearing * 0.4/180;
-
-            initposforseeingpreorient = (float)pan.getPosition();
-            telemetry.addData("position going to" ,  pan.getPosition() + currOne.ftcPose.bearing * 0.4/180);
-
-
-            //tilt.setPosition(tilt.getPosition() + currOne.ftcPose.elevation);
-             */
-            state = 2;
-        }
-
-        if(state == 2){
-
-
-
-
-            /*
-            telemetry.addData("curpos" , pan.getPosition());
-
-            telemetry.addData("position going to" ,  positionnecessary);
-
-            telemetry.addData("initpos" ,  initposforseeingpreorient);
-
-            pan.setPosition(positionnecessary);
-
-
-            telemetry.addData("bearing is this : ", currOne.ftcPose.bearing);
-
-
-            if(pan.getPosition() == positionnecessary){
-                state = 3;
-
-
-                elapsedTime.reset();
-                flywheel.setPower(power);
-            }
-
-
-            aprilTagWebCam.displayDetectionTelemetry(currOne);
-
-
-            */
+        if(state == 0){
 
             state = 3;
             flywheel.setPower(power);
@@ -407,11 +339,15 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
         if(state == 3){
+            flywheel.setPower(power);
 
-            if(elapsedTime.seconds() > 3)transfer.setPower(1);
+
+            if(elapsedTime.seconds() > 3){
+                transfer.setPower(1);
+            }
 
             //aprilTagWebCam.displayDetectionTelemetry(currOne);
-            if(gamepad1.dpad_down){
+            if(gamepad1.xWasPressed()){
 
                 flywheel.setPower(0);
                 state = -1;
