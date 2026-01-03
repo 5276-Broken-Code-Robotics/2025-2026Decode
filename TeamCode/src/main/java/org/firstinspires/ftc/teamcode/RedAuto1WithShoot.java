@@ -103,7 +103,7 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, true);
+                    follower.followPath(grabPickup1, .8,false);
                     setPathState(3);
                 }
                 break;
@@ -140,7 +140,7 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2, true);
+                    follower.followPath(grabPickup2,.8, false);
                     setPathState(6);
                 }
                 break;
@@ -168,7 +168,7 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3, true);
+                    follower.followPath(grabPickup3,.8, false);
                     setPathState(9);
                 }
                 break;

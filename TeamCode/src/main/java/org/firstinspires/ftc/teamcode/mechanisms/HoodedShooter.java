@@ -333,7 +333,7 @@ public class HoodedShooter {
                 tilt.setPosition(ShootConstants.tiltFromDistance(distance));
             }
 
-            positionnecessary = pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180;
+            positionnecessary = pan.getPosition() + aprilTag.ftcPose.bearing * 0.4/180 ;
 
 
 
