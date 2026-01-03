@@ -181,6 +181,15 @@ public class HoodedShooterTest extends OpMode {
 
         }
 
+        if(gamepad1.left_bumper && num == 0){
+            follower.update();
+            hShooter.AutoBeginShot();
+
+
+            num = 1;
+            elapsedTime.reset();
+        }
+
 
         if(elapsedTime.seconds() > 2){
             num = 0;
