@@ -189,7 +189,7 @@ public class RedSlave1 extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
-        telemetry.addData("Maxpower", follower.p());
+        
         telemetry.update();
     }
     @Override
