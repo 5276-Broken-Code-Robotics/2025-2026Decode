@@ -20,7 +20,7 @@ public class RedSlave1 extends OpMode {
     private final Pose startPose = new Pose(125, 118.37891268533772, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 99, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pickup1Pose = new Pose(125, 87, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    private final Pose pickup2Pose = new Pose(130, 63, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(125, 63, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
     private final Pose pickup3Pose = new Pose(130, 39, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose rotation1Pose = new Pose(96, 87, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose rotation2Pose = new Pose(96, 57, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
@@ -85,7 +85,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(rotate1, true);
+                    follower.followPath(rotate1, false);
                     setPathState(2);
                 }
                 break;
@@ -93,7 +93,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, .8,true);
+                    follower.followPath(grabPickup1, .8,false);
                     setPathState(3);
                 }
                 break;
@@ -110,7 +110,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 //
-                    follower.followPath(rotate2, true);
+                    follower.followPath(rotate2, false);
                     setPathState(5);
                 }
                 break;
@@ -118,7 +118,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2,.8, true);
+                    follower.followPath(grabPickup2,.8, false);
                     setPathState(6);
                 }
                 break;
@@ -134,7 +134,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(rotate3, true);
+                    follower.followPath(rotate3, false);
                     setPathState(8);
                 }
                 break;
@@ -142,7 +142,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3,.8, true);
+                    follower.followPath(grabPickup3,.8, false);
                     setPathState(9);
                 }
                 break;
@@ -158,7 +158,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(finalPosition, true);
+                    follower.followPath(finalPosition, false);
                     setPathState(-1);
                 }
                 break;

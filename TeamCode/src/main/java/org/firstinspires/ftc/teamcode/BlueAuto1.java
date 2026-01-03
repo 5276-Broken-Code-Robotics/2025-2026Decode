@@ -17,16 +17,15 @@ public class BlueAuto1 extends OpMode {
     private int pathState;
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer;
-    private final Pose startPose = new Pose(18.978583196046127, 118.37891268533772, Math.toRadians(36)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(48, 96, Math.toRadians(180)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pickup1Pose = new Pose(17, 84, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
-    private final Pose pickup2Pose = new Pose(10, 60, Math.toRadians(180)); // Middle (Second Set) of Artifacts from the Spike Mark.
-    private final Pose pickup3Pose = new Pose(10, 36, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation1Pose = new Pose(48, 84, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation2Pose = new Pose(48, 60, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose rotation3Pose = new Pose(48, 36, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose finalPose = new Pose(41, 65, Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-
+    private final Pose startPose = new Pose(125, 118.37891268533772, Math.toRadians(36)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(96, 99, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose pickup1Pose = new Pose(125, 87, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pickup2Pose = new Pose(130, 63, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
+    private final Pose pickup3Pose = new Pose(130, 39, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation1Pose = new Pose(96, 87, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation2Pose = new Pose(96, 57, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose rotation3Pose = new Pose(96, 39, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose finalPose = new Pose(103, 68, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
     private Path scorePreload;
     public void buildPaths(){
@@ -94,7 +93,7 @@ public class BlueAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, true);
+                    follower.followPath(grabPickup1, .8,true);
                     setPathState(3);
                 }
                 break;
@@ -104,12 +103,13 @@ public class BlueAuto1 extends OpMode {
 
                     follower.followPath(shootPickup1, true);
                     setPathState(4);
+                    //after shoot pickup goes to score position which the endpoint you want to shoot for all 3 cases
                 }
                 break;
             case 4:
 
                 if (!follower.isBusy()) {
-
+//
                     follower.followPath(rotate2, true);
                     setPathState(5);
                 }
@@ -118,7 +118,7 @@ public class BlueAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2, true);
+                    follower.followPath(grabPickup2,.8, true);
                     setPathState(6);
                 }
                 break;
@@ -142,7 +142,7 @@ public class BlueAuto1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3, true);
+                    follower.followPath(grabPickup3,.8, true);
                     setPathState(9);
                 }
                 break;
@@ -184,6 +184,7 @@ public class BlueAuto1 extends OpMode {
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
+
         telemetry.update();
     }
     @Override
