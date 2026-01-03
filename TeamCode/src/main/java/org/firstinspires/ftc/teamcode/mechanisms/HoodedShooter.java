@@ -62,8 +62,8 @@ public class HoodedShooter {
 
 
     double angleToAprilTag = 0;
-    Pose aprilTagRed = new Pose(129.61653272101034,128.62456946039035);
-    Pose aprilTagBlue = new Pose(15.2,128.62456946039035);
+    Pose aprilTagRed = new Pose(144,144);
+    Pose aprilTagBlue = new Pose(0,144);
     private PathChain rotate1;
 
     boolean rotated = false;
@@ -121,6 +121,8 @@ public class HoodedShooter {
 
     public void loop()
     {
+
+        telemetry.addData("Flywheel power", flywheel.getPower());
         telemetry.addData("Pan position : ", pan.getPosition());
 
 
@@ -134,6 +136,8 @@ public class HoodedShooter {
         telemetry.addData("numchanges", numchanges);
         telemetry.addData("IsAutoShot : ", isAutoShot);
         telemetry.addData("Shot status : ", shotbegan);
+
+
         if(shotbegan){
 
             OrientAndShoot();
@@ -165,14 +169,14 @@ public class HoodedShooter {
 
         isAutoShot = true;
 
-        flywheelPower = 0.65; // Needs testing for accurate value
-        tilt.setPosition(0.5); // Needs testing for accurate value
+        flywheelPower = 0.575; // Needs testing for accurate value
+        tilt.setPosition(0); // Needs testing for accurate value
         elapsedTime.reset();
 
 
         state = "shoot";
 
-        positionnecessary = pan.getPosition();
+        positionnecessary = 0.29;
 
         shotbegan = true;
 
@@ -191,7 +195,9 @@ public class HoodedShooter {
 
 
 
-        initPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
+
+
+            initPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         rotated = false;
         shotbegan = true;
         initpos = 0;
@@ -358,6 +364,8 @@ public class HoodedShooter {
                 state = "cleanup_shoot";
 
                 flywheel.setPower(flywheelPower);
+
+
                 elapsedTime.reset();
             }
 
@@ -418,4 +426,10 @@ public class HoodedShooter {
 
         return error;
     }
+
+    public static double distToTag(Pose tagPos, Pose ourPos){
+        return Math.sqrt((ourPos.getY() - tagPos.getY())*(ourPos.getY() - tagPos.getY()) + (ourPos.getX() - tagPos.getX())*(ourPos.getX() - tagPos.getX()));
+    }
 }
+
+
