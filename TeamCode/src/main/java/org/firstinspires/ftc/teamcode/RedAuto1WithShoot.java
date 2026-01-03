@@ -9,6 +9,7 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
@@ -20,6 +21,9 @@ public class RedAuto1WithShoot extends OpMode {
     HoodedShooter shooter;
 
     private int pathState;
+
+    private DcMotor intake;
+
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
     private final Pose startPose = new Pose(125, 118.37891268533772, Math.toRadians(36)); // Start Pose of our robot.
@@ -114,8 +118,11 @@ public class RedAuto1WithShoot extends OpMode {
 
             case 21:
                 if (!follower.isBusy()) {
-                    shooter.AutoBeginShot();
-                    if(!shooter.shotbegan)setPathState(4);
+
+                    if(!shooter.shotbegan){
+                        shooter.AutoBeginShot();
+                        setPathState(4);
+                    }
                 }
                 break;
             case 4:
@@ -191,6 +198,10 @@ public class RedAuto1WithShoot extends OpMode {
     @Override
     public void init() {
         opmodeTimer = new ElapsedTime();
+
+
+
+
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -200,6 +211,11 @@ public class RedAuto1WithShoot extends OpMode {
 
 
 
+
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        intake.setDirection(DcMotor.Direction.REVERSE);
+
+        intake.setPower(1);
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
