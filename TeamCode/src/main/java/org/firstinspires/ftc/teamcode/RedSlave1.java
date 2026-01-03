@@ -85,7 +85,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(rotate1, true);
+                    follower.followPath(rotate1, false);
                     setPathState(2);
                 }
                 break;
@@ -93,7 +93,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, .8,true);
+                    follower.followPath(grabPickup1, .8,false);
                     setPathState(3);
                 }
                 break;
@@ -110,7 +110,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 //
-                    follower.followPath(rotate2, true);
+                    follower.followPath(rotate2, false);
                     setPathState(5);
                 }
                 break;
@@ -118,7 +118,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2,.8, true);
+                    follower.followPath(grabPickup2,.8, false);
                     setPathState(6);
                 }
                 break;
@@ -134,7 +134,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(rotate3, true);
+                    follower.followPath(rotate3, false);
                     setPathState(8);
                 }
                 break;
@@ -142,7 +142,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3,.8, true);
+                    follower.followPath(grabPickup3,.8, false);
                     setPathState(9);
                 }
                 break;
@@ -158,7 +158,7 @@ public class RedSlave1 extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(finalPosition, true);
+                    follower.followPath(finalPosition, false);
                     setPathState(-1);
                 }
                 break;
