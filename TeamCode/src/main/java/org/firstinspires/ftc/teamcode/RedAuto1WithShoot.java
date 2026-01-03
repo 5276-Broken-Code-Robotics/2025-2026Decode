@@ -87,9 +87,16 @@ public class RedAuto1WithShoot extends OpMode {
     }
     public void autonomousPathUpdate() {
         switch (pathState) {
+
             case 0:
-                follower.followPath(scorePreload);
-                setPathState(1);
+                shooter.AutoBeginShot();
+                setPathState(-10);
+                break;
+            case -10:
+                if(!shooter.shotbegan){
+                    follower.followPath(scorePreload);
+                    setPathState(1);
+                }
                 break;
             case 1:
 
