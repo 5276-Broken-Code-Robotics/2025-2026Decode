@@ -26,7 +26,7 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
     private Servo pan;
     private Servo tilt;
 
-    float power = 0.63f;
+    float power = 0.45f;
 
 
     double tiltangle = 0f;
@@ -155,7 +155,7 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
             power = 1;
         }
 
-        if(pan.getPosition() > 0.4){
+        if(pan.getPosition() > 0.7){
             pan.setPosition(0);
             elapsedTime.reset();
             resetting = true;
@@ -247,14 +247,14 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
             if(Math.abs(currOne.ftcPose.bearing) > 5){
 
-                positionnecessary = pan.getPosition() + currOne.ftcPose.bearing * 0.4/180;
+                positionnecessary = pan.getPosition() +currOne.ftcPose.bearing * 0.45/180 + currOne.ftcPose.yaw * 5/45 *0.45/180;
 
 
                 telemetry.addData("Bearing : ", currOne.ftcPose.bearing);
                 initposforseeingpreorient = (float)pan.getPosition();
 
                 telemetry.addData("Current position :", pan.getPosition());
-                telemetry.addData("position going to" ,  pan.getPosition() + currOne.ftcPose.bearing * 0.4/180);
+                telemetry.addData("position going to" ,   pan.getPosition() +currOne.ftcPose.bearing * 0.45/180 + currOne.ftcPose.yaw * 5/45 *0.45/180);
 
 
                 telemetry.update();
@@ -279,11 +279,11 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
         if(gamepad1.dpadLeftWasPressed()){
-            pan.setPosition(pan.getPosition() -  0.1);
+            pan.setPosition(pan.getPosition() -  0.025);
         }
 
         if(gamepad1.dpadRightWasPressed()){
-            pan.setPosition(pan.getPosition() + 0.1);
+            pan.setPosition(pan.getPosition() + 0.025);
         }
 
 
@@ -361,6 +361,5 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
     }
-
 
 }

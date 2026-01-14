@@ -26,8 +26,8 @@ public class RedSlave1 extends OpMode {
 
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
-    private final Pose startPose = new Pose(80, 24, Math.toRadians(0)); // Start Pose of our robot.
-    private final Pose finalPose = new Pose(96, 24, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose startPose = new Pose(80, 0, Math.toRadians(0)); // Start Pose of our robot.
+    private final Pose finalPose = new Pose(96, 0, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain finalPosition;
     private Path scorePreload;
     public void buildPaths(){
@@ -41,16 +41,18 @@ public class RedSlave1 extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(scorePreload);
+                shooter.AutoBeginShot(true,true);
+                setPathState(1);
+            case 1:
+                if(!shooter.shotbegan)follower.followPath(scorePreload);
                 setPathState(-1);
-
-
         }
 
 
     }
 
     @Override
+
     public void init() {
         opmodeTimer = new ElapsedTime();
 
@@ -70,7 +72,6 @@ public class RedSlave1 extends OpMode {
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
 
-        intake.setPower(1);
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
@@ -81,7 +82,6 @@ public class RedSlave1 extends OpMode {
 
     @Override
     public void loop() {
-
 
         follower.update();
 
@@ -98,6 +98,8 @@ public class RedSlave1 extends OpMode {
     @Override
     public void start() {
         opmodeTimer.reset();
+        intake.setPower(1);
+
         setPathState(0);
     }
 }

@@ -41,8 +41,14 @@ public class BlueSlave1 extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                follower.followPath(scorePreload);
-                setPathState(-1);
+                shooter.AutoBeginShot(false,true);
+                setPathState(1);
+            case 1:
+
+                if(!shooter.shotbegan){
+                    follower.followPath(scorePreload);
+                    setPathState(-1);
+                }
 
         }
     }
@@ -66,8 +72,6 @@ public class BlueSlave1 extends OpMode {
 
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
-
-        intake.setPower(1);
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
@@ -94,6 +98,8 @@ public class BlueSlave1 extends OpMode {
     }
     @Override
     public void start() {
+        intake.setPower(1);
+
         opmodeTimer.reset();
         setPathState(0);
     }

@@ -90,9 +90,15 @@ public class TeleOpRedSlave1 extends OpMode {
 
     HoodedShooter hShooter;
 
+    ElapsedTime rewindTimer;
 
+
+    boolean rewinding = false;
     int num = 0;
     public void init() {
+
+        rewindTimer = new ElapsedTime();
+        rewindTimer.reset();
 
         num = 0;
 
@@ -101,6 +107,10 @@ public class TeleOpRedSlave1 extends OpMode {
 //        follower.setPose(new Pose(0,144));
 
 
+
+        fieldDrive = new FieldRelativeDrive();
+
+        fieldDrive.init(hardwareMap);
 
 
         follower = Constants.createFollower(hardwareMap);
@@ -146,17 +156,53 @@ public class TeleOpRedSlave1 extends OpMode {
         hShooter.init(hardwareMap,telemetry, follower, fl, fr, bl, br);
 
         state=  0;
+        intake.setPower(0);
+
+    }
+
+    @Override
+    public void start(){
+        intake.setPower(1);
     }
 
     public void loop(){
 
-        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)drive(-gamepad2.left_stick_y/2, gamepad2.left_stick_x/2, gamepad2.right_stick_x/2);
+
+        if(gamepad2.b){
+            //rewindTimer.reset();
+            if(intake.getPower() == 1 )intake.setPower(-1);
+
+
+            //rewinding = true;
+        }else{
+
+            if(intake.getPower() == -1)intake.setPower(1);
+        }
+
+
+        /*
+
+        if(rewindTimer.seconds() > 3 && rewinding){
+            intake.setPower(1);
+
+            rewinding = false;
+        }
+
+         */
+
+
+
+        fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
 
 
         if(gamepad2.leftBumperWasPressed()){
             intake.setPower(0.25);
         }
+
+
+
+
 
         if(gamepad2.rightBumperWasPressed()){
             intake.setPower(1);
@@ -169,6 +215,8 @@ public class TeleOpRedSlave1 extends OpMode {
         telemetry.addData("Num : " , num);
 
 
+
+        telemetry.addData("Heading : ", follower.getHeading());
         if(gamepad1.right_bumper && num == 0){
 
             follower.update();
@@ -183,7 +231,7 @@ public class TeleOpRedSlave1 extends OpMode {
 
         if(gamepad1.left_bumper && num == 0){
             follower.update();
-            hShooter.AutoBeginShot(true);
+            hShooter.AutoBeginShot(true, true);
 
             pan.setPosition(0.29);
             num = 1;
@@ -196,7 +244,7 @@ public class TeleOpRedSlave1 extends OpMode {
         }
 
 
-        transfer.setPower(-1);
+        if(!hShooter.shotbegan)transfer.setPower(-1);
 
 
         hShooter.loop();

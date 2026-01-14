@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -51,7 +52,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  *
  */
 
-public class FieldRelativeDrive extends OpMode {
+public class FieldRelativeDrive {
     // This declares the four motors needed
     DcMotor fl;
     DcMotor fr;
@@ -61,8 +62,8 @@ public class FieldRelativeDrive extends OpMode {
     // This declares the IMU needed to get the current direction the robot is facing
     IMU imu;
 
-    @Override
-    public void init() {
+
+    public void init(HardwareMap hardwareMap) {
         fl = hardwareMap.get(DcMotor.class, "fl");
         fr = hardwareMap.get(DcMotor.class, "fr");
         bl = hardwareMap.get(DcMotor.class, "bl");
@@ -83,6 +84,8 @@ public class FieldRelativeDrive extends OpMode {
 
         imu = hardwareMap.get(IMU.class, "imu");
         // This needs to be changed to match the orientation on your robot
+
+        /*
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection =
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection =
@@ -91,22 +94,13 @@ public class FieldRelativeDrive extends OpMode {
         RevHubOrientationOnRobot orientationOnRobot = new
                 RevHubOrientationOnRobot(logoDirection, usbDirection);
         imu.initialize(new IMU.Parameters(orientationOnRobot));
+
+         */
     }
 
-    @Override
-    public void loop() {
-        // If you press the A button, then you reset the Yaw to be zero from the way
-        // the robot is currently pointing
-        //if (gamepad1.a) {
-        //    imu.resetYaw();
-        //}
-        //    driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        //Paste this into teleop code ^^^
-
-    }
 
     // This routine drives the robot field relative
-    private void driveFieldRelative(double forward, double right, double rotate) {
+    public void driveFieldRelative(double forward, double right, double rotate) {
         // First, convert direction being asked to drive to polar coordinates
         double theta = Math.atan2(forward, right);
         double r = Math.hypot(right, forward);

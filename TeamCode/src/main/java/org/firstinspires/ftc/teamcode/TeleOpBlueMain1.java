@@ -85,16 +85,29 @@ public class TeleOpBlueMain1 extends OpMode {
 
 
 
+    boolean rewinding = false;
+
     Pose aprilTagRed = new Pose(144,144);
     Pose aprilTagBlue = new Pose(0,144);
 
     HoodedShooter hShooter;
 
 
+    ElapsedTime rewindTimer;
+
     int num = 0;
     public void init() {
 
+        rewindTimer = new ElapsedTime();
+        rewindTimer.reset();
+
+
+
         num = 0;
+
+        fieldDrive = new FieldRelativeDrive();
+
+        fieldDrive.init(hardwareMap);
 
 //        follower = Constants.createFollower(hardwareMap);
 //
@@ -151,14 +164,24 @@ public class TeleOpBlueMain1 extends OpMode {
 
     public void loop(){
 
-        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
 
+        if(gamepad2.bWasPressed()){
+            rewindTimer.reset();
+            intake.setPower(-1);
+
+            rewinding = true;
+        }
+
+        if(rewindTimer.seconds() > 3 && rewinding){
+            intake.setPower(1);
+
+            rewinding = false;
+        }
 
 
-
-        if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)drive(-gamepad2.left_stick_y/2, gamepad2.left_stick_x/2, gamepad2.right_stick_x/2);
-
+        if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
 
         if(gamepad2.leftBumperWasPressed()){
             intake.setPower(0.25);
@@ -170,7 +193,7 @@ public class TeleOpBlueMain1 extends OpMode {
 
         if(gamepad1.left_bumper && num == 0){
             follower.update();
-            hShooter.AutoBeginShot(true);
+            hShooter.AutoBeginShot(true,false);
 
             pan.setPosition(0.29);
             num = 1;
@@ -200,7 +223,7 @@ public class TeleOpBlueMain1 extends OpMode {
 
         if(gamepad1.left_bumper && num == 0){
             follower.update();
-            hShooter.AutoBeginShot(false);
+            hShooter.AutoBeginShot(false,false);
 
             pan.setPosition(0.11);
             num = 1;
@@ -213,7 +236,7 @@ public class TeleOpBlueMain1 extends OpMode {
         }
 
 
-        transfer.setPower(-1);
+        if(!hShooter.shotbegan)transfer.setPower(-1);
 
 
         hShooter.loop();

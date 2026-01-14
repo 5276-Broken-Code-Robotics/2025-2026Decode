@@ -91,12 +91,12 @@ public class BlueAuto1WithShoot extends OpMode {
             case 0:
 
                 follower.followPath(scorePreload);
-                setPathState(1);
+                setPathState(-10);
                 break;
 
             case -10:
                 if(!follower.isBusy()){
-                    shooter.AutoBeginShot(false);
+                    shooter.AutoBeginShot(false, false);
                     setPathState(1);
                 }
 
@@ -130,7 +130,7 @@ public class BlueAuto1WithShoot extends OpMode {
                 if (!follower.isBusy()) {
 
                     if(!shooter.shotbegan){
-                        shooter.AutoBeginShot(false);
+                        shooter.AutoBeginShot(false, false);
                         setPathState(4);
                     }
                 }
@@ -161,7 +161,7 @@ public class BlueAuto1WithShoot extends OpMode {
                     follower.followPath(shootPickup2, true);
                     setPathState(7);
 
-                    shooter.AutoBeginShot(false);
+                    shooter.AutoBeginShot(false, false);
                 }
 
                 break;
@@ -189,7 +189,7 @@ public class BlueAuto1WithShoot extends OpMode {
                     follower.followPath(shootPickup3, true);
                     setPathState(10);
 
-                    shooter.AutoBeginShot(false);
+                    shooter.AutoBeginShot(false, false);
                 }
 
 
@@ -227,7 +227,6 @@ public class BlueAuto1WithShoot extends OpMode {
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
 
-        intake.setPower(1);
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
@@ -238,7 +237,6 @@ public class BlueAuto1WithShoot extends OpMode {
 
     @Override
     public void loop() {
-
 
         follower.update();
 
@@ -254,6 +252,8 @@ public class BlueAuto1WithShoot extends OpMode {
     }
     @Override
     public void start() {
+        intake.setPower(1);
+
         opmodeTimer.reset();
         setPathState(0);
     }

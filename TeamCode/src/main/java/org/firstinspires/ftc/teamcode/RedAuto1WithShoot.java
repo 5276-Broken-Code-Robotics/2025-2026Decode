@@ -90,13 +90,13 @@ public class RedAuto1WithShoot extends OpMode {
 
             case 0:
 
-                follower.followPath(scorePreload);
-                setPathState(1);
+                follower.followPath(scorePreload, true);
+                setPathState(-10);
                 break;
 
             case -10:
                 if(!follower.isBusy()){
-                    shooter.AutoBeginShot(true);
+                    shooter.AutoBeginShot(true,false);
                     setPathState(1);
                 }
 
@@ -130,7 +130,7 @@ public class RedAuto1WithShoot extends OpMode {
                 if (!follower.isBusy()) {
 
                     if(!shooter.shotbegan){
-                        shooter.AutoBeginShot(true);
+                        shooter.AutoBeginShot(true,false);
                         setPathState(4);
                     }
                 }
@@ -161,7 +161,7 @@ public class RedAuto1WithShoot extends OpMode {
                     follower.followPath(shootPickup2, true);
                     setPathState(7);
 
-                    shooter.AutoBeginShot(true);
+                    shooter.AutoBeginShot(true,false);
                 }
 
                 break;
@@ -189,7 +189,7 @@ public class RedAuto1WithShoot extends OpMode {
                     follower.followPath(shootPickup3, true);
                     setPathState(10);
 
-                    shooter.AutoBeginShot(true);
+                    shooter.AutoBeginShot(true,false);
                 }
 
                 break;
@@ -225,14 +225,16 @@ public class RedAuto1WithShoot extends OpMode {
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
 
-        intake.setPower(1);
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
 
         shooter.init(hardwareMap, telemetry, follower, fl, fr, bl, br);
+        intake.setPower(0);
+
     }
+
 
     @Override
     public void loop() {
@@ -254,5 +256,8 @@ public class RedAuto1WithShoot extends OpMode {
     public void start() {
         opmodeTimer.reset();
         setPathState(0);
+
+        intake.setPower(1);
+
     }
 }
