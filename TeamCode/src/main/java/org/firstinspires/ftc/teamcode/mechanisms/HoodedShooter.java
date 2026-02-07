@@ -61,6 +61,9 @@ public class HoodedShooter {
     public boolean shotbegan = false;
 
     Follower follower;
+
+    ElapsedTime movementTrackCD;
+
     boolean resetting = false;
 
     ElapsedTime waitrotate;
@@ -86,6 +89,8 @@ public class HoodedShooter {
 
     private DcMotor fl;
 
+    Pose previousPoseLastMovementTracked;
+
     private DcMotor br;
     private DcMotor bl;
 
@@ -94,12 +99,16 @@ public class HoodedShooter {
 
     int numshots = 0;
 
+    boolean moving = false;
+
 
     boolean waitedforautorotate = false;
     int numchanges = 0;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
     public void init(HardwareMap hardwareMap, Telemetry telemetry, Follower follower, DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br) {
+
+        moving = false;
         aprilTagWebCam = new AprilTagWebcam();
         aprilTagWebCam.init(hardwareMap, telemetry);
         tilt = hardwareMap.get(Servo.class, "tilt");
@@ -118,6 +127,8 @@ public class HoodedShooter {
 
 
         resetting = false;
+
+
         this.fl = fl;
         this.fr = fr;
         this.bl = bl;
@@ -133,6 +144,22 @@ public class HoodedShooter {
 
     public void loop()
     {
+
+
+        if(movementTrackCD.seconds() > 0.05){
+
+            if(distTo(follower.getPose(), previousPoseLastMovementTracked) > 20){
+                moving = true;
+            }else{
+                moving = false;
+            }
+
+            previousPoseLastMovementTracked = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
+
+
+            movementTrackCD.reset();
+        }
+
 
         telemetry.addData("Flywheel power", flywheel.getPower());
         telemetry.addData("Pan position : ", pan.getPosition());
@@ -245,7 +272,14 @@ public class HoodedShooter {
         initPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         rotated = false;
         shotbegan = true;
-        initpos = 0;
+
+        angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
+
+
+
+
+        initpos = 0.2;
+
 
 
 
@@ -256,6 +290,17 @@ public class HoodedShooter {
 
     public void OrientAndShoot(){
 
+        angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
+
+        if(moving){
+            initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
+        }
+
+        if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/6) {
+            state = "chassis_orient_to_tag";
+        }
+
+
 
         transfer.setPower(-1);
         if(aprilTagWebCam.getDetectedTags() != null){
@@ -264,7 +309,7 @@ public class HoodedShooter {
 
 
 
-        if(state.equals("chassis_orient_to_tag")){
+        if(state.equals("chassis_orient_to_tag") && !moving){
 
 
 
@@ -277,7 +322,7 @@ public class HoodedShooter {
             telemetry.addData("Angle to aprilTag" , angleToAprilTag);
 
 
-            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/3) {
+            if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/6) {
 
 
 
@@ -301,12 +346,15 @@ public class HoodedShooter {
             else{
                 follower.setPose(new Pose(initPose.getX(), initPose.getY(), follower.getPose().getHeading()));
                 state = "looking_for_april_tag";
+                
 
                 fl.setPower(0);
                 fr.setPower(0);
                 br.setPower(0);
                 bl.setPower(0);
 
+
+                initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
 
 
 
@@ -328,7 +376,9 @@ public class HoodedShooter {
 
 
 
-        if(state.equals("looking_for_april_tag") && !resetting) {
+
+
+        if(state.equals("looking_for_april_tag") && !resetting && !moving) {
 
 
 
@@ -364,7 +414,7 @@ public class HoodedShooter {
 
                 if(!found){
                     if (!waiting){
-                        if(initpos > 0.4){
+                        if(initpos > 0.45){
 
 
                             resetElapsedtime.reset();
@@ -380,7 +430,7 @@ public class HoodedShooter {
 
         }
 
-        if(state.equals("found_tag_orienting")){
+        if(state.equals("found_tag_orienting") && !moving){
 
             double distance = aprilTag.ftcPose.y;
 
@@ -486,13 +536,14 @@ public class HoodedShooter {
         return error;
     }
 
-    public static double distToTag(Pose tagPos, Pose ourPos){
+    public static double distTo(Pose tagPos, Pose ourPos){
         return Math.sqrt((ourPos.getY() - tagPos.getY())*(ourPos.getY() - tagPos.getY()) + (ourPos.getX() - tagPos.getX())*(ourPos.getX() - tagPos.getX()));
     }
 
     public static double AngleToTag(Pose tagPos, Pose ourPos){
         return Math.atan2(tagPos.getY() - ourPos.getY(), tagPos.getX() - ourPos.getX());
     }
+
 
 }
 

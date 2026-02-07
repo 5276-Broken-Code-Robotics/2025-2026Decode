@@ -26,6 +26,11 @@ public class BlueSlave1 extends OpMode {
 
     private Follower follower;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
+
+
+
+    //Why is y = 24?
+
     private final Pose startPose = new Pose(144-80, 24, Math.toRadians(180)); // Start Pose of our robot.
     private final Pose finalPose = new Pose(144-96, 24, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain finalPosition;
