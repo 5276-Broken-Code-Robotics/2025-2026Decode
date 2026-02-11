@@ -10,12 +10,12 @@ public class AbeTeleopTest extends OpMode {
     DcMotor flywheel;
     @Override
     public void init() {
-        intake = hardwareMap.get(DcMotor.class, "intake");
+
         flywheel = hardwareMap.get(DcMotor.class, "flywheel");
 
     }
     @Override
     public void loop(){
-        intake.setPower(gamepad1.left_stick_y);
+        flywheel.setPower(1);
     }
 }
