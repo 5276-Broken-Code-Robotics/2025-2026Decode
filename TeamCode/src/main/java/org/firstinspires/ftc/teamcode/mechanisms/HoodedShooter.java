@@ -190,9 +190,6 @@ public class HoodedShooter {
 
 
 
-
-
-
         }else{
             telemetry.addData("we are not shooting", "i cry");
         }
@@ -288,7 +285,58 @@ public class HoodedShooter {
     }
 
 
+    boolean foundCorrectTag = false;
+    public void Orienting(){
+
+        if(!foundCorrectTag){
+            initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
+            pan.setPosition(initpos);
+        }else{
+            positionnecessary = pan.getPosition() +aprilTag.ftcPose.bearing * 0.45/180 + aprilTag.ftcPose.yaw * 5/45 *0.45/180;
+            pan.setPosition(positionnecessary);
+        }
+
+
+
+
+        for(int i =0; i < aprilTagWebCam.getDetectedTags().size();i++){
+            if(aprilTagWebCam.getDetectedTags().get(i).id == currentID){
+                aprilTag = aprilTagWebCam.getDetectedTags().get(i);
+                Pose realPose = new Pose(currentAprilTagPos.getX() -( aprilTag.ftcPose.x * Math.cos(follower.getHeading()) -aprilTag.ftcPose.y * Math.sin(follower.getHeading())),currentAprilTagPos.getY() - ( aprilTag.ftcPose.x * Math.sin(follower.getHeading())  + aprilTag.ftcPose.y * Math.cos(follower.getHeading())));
+                follower.setPose(realPose);
+                foundCorrectTag = true;
+
+            }
+
+        }
+
+    }
+
+
     public void OrientAndShoot(){
+
+
+        //Skips stage
+
+
+        if(state.equals("chassis_orient_to_tag")){
+            follower.setPose(new Pose(initPose.getX(), initPose.getY(), follower.getPose().getHeading()));
+            state = "looking_for_april_tag";
+
+
+            resetting = true;
+            fl.setPower(0);
+            fr.setPower(0);
+            br.setPower(0);
+            bl.setPower(0);
+
+
+            initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
+
+
+            resetElapsedtime.reset();
+        }
+
 
         angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
 
@@ -357,7 +405,7 @@ public class HoodedShooter {
                 initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
 
 
-
+                resetElapsedtime.reset();
 
 
             }
@@ -396,6 +444,8 @@ public class HoodedShooter {
                 boolean found = false;
 
                 //telemetry.addData("Num : ", aprilTagWebCam.getDetectedTags().size());
+
+
 
                 for(int i =0; i < aprilTagWebCam.getDetectedTags().size();i++){
                     if(aprilTagWebCam.getDetectedTags().get(i).id == currentID){
@@ -457,6 +507,9 @@ public class HoodedShooter {
             state = "shoot";
         }
 
+
+
+        
         if(state.equals("shoot")){
 
             if(waitrotate.seconds() < 5 && !waitedforautorotate){
