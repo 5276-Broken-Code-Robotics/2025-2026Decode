@@ -187,6 +187,7 @@ public class HoodedShooter {
 
             OrientAndShoot();
 
+
             double angleDiff = 0;
             if(!isAutoShot) angleDiff = 180/Math.PI * turnAngle(follower.getPose().getHeading(), Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX())));
             telemetry.addData("Angle difference in Degrees : ", angleDiff);
@@ -289,13 +290,15 @@ public class HoodedShooter {
     }
 
 
-    boolean foundCorrectTag = false;
     public void Orienting(){
+
+
+        angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
 
         if(isRed) {
             angleToAprilTag = Math.atan2(144-follower.getPose().getY(), 144-follower.getPose().getX());
         }else{
-            angleToAprilTag = Math.atan2(144-follower.getPose().getY(), follower.getPose().getX());
+            angleToAprilTag = Math.atan2(144-follower.getPose().getY(), - follower.getPose().getX());
         }
 
         initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
@@ -310,7 +313,6 @@ public class HoodedShooter {
                 aprilTag = aprilTagWebCam.getDetectedTags().get(i);
                 Pose realPose = new Pose(currentAprilTagPos.getX() -( aprilTag.ftcPose.x * Math.cos(follower.getHeading()) -aprilTag.ftcPose.y * Math.sin(follower.getHeading())),currentAprilTagPos.getY() - ( aprilTag.ftcPose.x * Math.sin(follower.getHeading())  + aprilTag.ftcPose.y * Math.cos(follower.getHeading())));
                 follower.setPose(realPose);
-                foundCorrectTag = true;
             }
         }
 
