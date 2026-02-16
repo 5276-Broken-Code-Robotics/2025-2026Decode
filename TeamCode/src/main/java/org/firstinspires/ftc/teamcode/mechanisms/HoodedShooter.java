@@ -103,7 +103,6 @@ public class HoodedShooter {
 
     int numshots = 0;
 
-    boolean moving = false;
 
 
     boolean waitedforautorotate = false;
@@ -112,7 +111,6 @@ public class HoodedShooter {
     double maxTilt = 0.59;
     public void init(HardwareMap hardwareMap, Telemetry telemetry, Follower follower, DcMotor fl, DcMotor fr, DcMotor bl, DcMotor br) {
 
-        moving = false;
         aprilTagWebCam = new AprilTagWebcam();
         aprilTagWebCam.init(hardwareMap, telemetry);
         tilt = hardwareMap.get(Servo.class, "tilt");
@@ -148,21 +146,6 @@ public class HoodedShooter {
 
     public void loop()
     {
-
-
-        if(movementTrackCD.seconds() > 0.05){
-
-            if(distTo(follower.getPose(), previousPoseLastMovementTracked) > 20){
-                moving = true;
-            }else{
-                moving = false;
-            }
-
-            previousPoseLastMovementTracked = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
-
-
-            movementTrackCD.reset();
-        }
 
 
         telemetry.addData("Flywheel power", flywheel.getPower());
@@ -340,9 +323,7 @@ public class HoodedShooter {
 
         angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
 
-        if(moving){
-            initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
-        }
+
 
         if(Math.abs(turnAngle(follower.getPose().getHeading(),angleToAprilTag)) > Math.PI/6) {
             state = "chassis_orient_to_tag";
@@ -357,7 +338,7 @@ public class HoodedShooter {
 
 
 
-        if(state.equals("chassis_orient_to_tag") && !moving){
+        if(state.equals("chassis_orient_to_tag")){
 
 
 
@@ -426,7 +407,7 @@ public class HoodedShooter {
 
 
 
-        if(state.equals("looking_for_april_tag") && !resetting && !moving) {
+        if(state.equals("looking_for_april_tag") && !resetting) {
 
 
 
@@ -480,7 +461,7 @@ public class HoodedShooter {
 
         }
 
-        if(state.equals("found_tag_orienting") && !moving){
+        if(state.equals("found_tag_orienting")){
 
             double distance = aprilTag.ftcPose.y;
 
