@@ -30,6 +30,8 @@ public class HoodedShooter {
 
 
 
+
+    boolean firing = false;
     float initposforseeingpreorient = 0f;
 
     double initpos = 0f;
@@ -51,6 +53,8 @@ public class HoodedShooter {
     //0.75 for close sec 2
 
     boolean seen = false;
+
+    public boolean isRed = false;
 
     double flywheelPower;
 
@@ -288,13 +292,15 @@ public class HoodedShooter {
     boolean foundCorrectTag = false;
     public void Orienting(){
 
-        if(!foundCorrectTag){
-            initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
-            pan.setPosition(initpos);
+        if(isRed) {
+            angleToAprilTag = Math.atan2(144-follower.getPose().getY(), 144-follower.getPose().getX());
         }else{
-            positionnecessary = pan.getPosition() +aprilTag.ftcPose.bearing * 0.45/180 + aprilTag.ftcPose.yaw * 5/45 *0.45/180;
-            pan.setPosition(positionnecessary);
+            angleToAprilTag = Math.atan2(144-follower.getPose().getY(), follower.getPose().getX());
         }
+
+        initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
+        pan.setPosition(initpos);
+
 
 
 
@@ -305,9 +311,7 @@ public class HoodedShooter {
                 Pose realPose = new Pose(currentAprilTagPos.getX() -( aprilTag.ftcPose.x * Math.cos(follower.getHeading()) -aprilTag.ftcPose.y * Math.sin(follower.getHeading())),currentAprilTagPos.getY() - ( aprilTag.ftcPose.x * Math.sin(follower.getHeading())  + aprilTag.ftcPose.y * Math.cos(follower.getHeading())));
                 follower.setPose(realPose);
                 foundCorrectTag = true;
-
             }
-
         }
 
     }
