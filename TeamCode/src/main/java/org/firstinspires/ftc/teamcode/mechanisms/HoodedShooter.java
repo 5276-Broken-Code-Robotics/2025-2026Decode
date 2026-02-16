@@ -295,12 +295,6 @@ public class HoodedShooter {
 
         angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
 
-        if(isRed) {
-            angleToAprilTag = Math.atan2(144-follower.getPose().getY(), 144-follower.getPose().getX());
-        }else{
-            angleToAprilTag = Math.atan2(144-follower.getPose().getY(), - follower.getPose().getX());
-        }
-
         initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
         pan.setPosition(initpos);
 
