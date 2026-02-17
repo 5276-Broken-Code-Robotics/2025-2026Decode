@@ -52,6 +52,8 @@ public class FreeSort {
 
     public DetectedColor getDetectedColor() {
         NormalizedRGBA colors = sensor1.getNormalizedColors();
+
+        return null;
     }
 
     public void shootAll(){
