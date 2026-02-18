@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -68,6 +69,34 @@ public class limelight3ATesting extends OpMode {
             }
 
         }
+
+        LLResultTypes.FiducialResult tag = null;
+
+
+        if(!limelight3A.getLatestResult().getFiducialResults().isEmpty()){
+            tag =  limelight3A.getLatestResult().getFiducialResults().get(0);
+
+        }
+
+
+
+        if(tag!= null){
+
+            Pose3D camPose = tag.getRobotPoseTargetSpace();
+
+            double x = camPose.getPosition().x;   // meters (left/right)
+            double z = camPose.getPosition().z;   // meters (forward)
+
+            double yaw   = camPose.getOrientation().getYaw();
+
+            telemetry.addData("Tag ID", tag.getFiducialId());
+            telemetry.addData("X (m)", 144 + x);
+            telemetry.addData("Z (m)", 144 + z);
+            telemetry.addData("Yaw (deg)", yaw);
+        }
+
+
+
 
 
         telemetry.addData("Why is this happening squad + ", jklm);
