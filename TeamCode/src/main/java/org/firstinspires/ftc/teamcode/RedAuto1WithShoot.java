@@ -217,9 +217,7 @@ public class RedAuto1WithShoot extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
-
-
-
+        limelight.pipelineSwitch(2);
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -246,22 +244,15 @@ public class RedAuto1WithShoot extends OpMode {
 
     @Override
     public void loop() {
-
-
+        int obeliskId=0;
+        if(obeliskId!=0){
+            limelight.pipelineSwitch(2);
+        }
+        telemetry.addData("obeliskId", obeliskId);
         follower.update();
 
         shooter.loop();
-        LLResult result = limelight.getLatestResult();
-        if (result != null && result.isValid()) {
-            double tx = result.getTx(); // How far left or right the target is (degrees)
-            double ty = result.getTy(); // How far up or down the target is (degrees)
-
-            telemetry.addData("Target X", tx);
-            telemetry.addData("Target Y", ty);
-
-        } else {
-            telemetry.addData("Limelight", "No Targets");
-        }
+        
 
         autonomousPathUpdate();
         // Feedback to Driver Hub for debugging
