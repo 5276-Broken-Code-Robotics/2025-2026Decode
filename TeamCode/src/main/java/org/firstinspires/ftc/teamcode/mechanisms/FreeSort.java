@@ -42,10 +42,6 @@ public class FreeSort {
 
     float sensorGain = 10.0f;
 
-    ElapsedTime
-
-    boolean
-
     float purpleR = 1.0f;
     float purpleG = 1.0f;
     float purpleB = 1.0f;
