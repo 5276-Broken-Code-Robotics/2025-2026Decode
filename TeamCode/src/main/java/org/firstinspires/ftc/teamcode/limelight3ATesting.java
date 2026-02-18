@@ -52,6 +52,7 @@ public class limelight3ATesting extends OpMode {
 
         LLResult Llresult = limelight3A.getLatestResult();
 
+
         if(Llresult!= null){
 
             if(Llresult.isValid()){
@@ -64,23 +65,10 @@ public class limelight3ATesting extends OpMode {
                 telemetry.addData("Orient : ", botpose.getOrientation());
 
                 telemetry.update();
-            }else{
-                Pose3D botpose = Llresult.getBotpose_MT2();
-
-                telemetry.addData("PX : ",botpose.getPosition().x);
-
-                telemetry.addData("PY :", botpose.getPosition().y);
-
-                telemetry.addData("Orient : ", botpose.getOrientation());
-
-
-                telemetry.addData("Invalid", " Bro");
-                telemetry.update();
-
-
             }
 
         }
+
 
         telemetry.addData("Why is this happening squad + ", jklm);
 
