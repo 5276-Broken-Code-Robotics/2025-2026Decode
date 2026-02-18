@@ -48,11 +48,11 @@ public class FreeSort {
     float greenR = 1.0f;
     float greenG = 1.0f;
     float greenB = 1.0f;
-
+    //TODO test to find rgb values
     double kickRot = 1;
     /*
-    TODO calculate kickPos once cad done
-    kickPos = degrees needed to kick ball into turret/270
+    TODO calculate kickRot once cad done
+    kickRot = degrees needed to kick ball into turret/270
      */
 
 
