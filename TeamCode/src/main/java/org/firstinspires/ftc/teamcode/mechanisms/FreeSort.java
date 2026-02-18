@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -41,6 +42,10 @@ public class FreeSort {
 
     float sensorGain = 10.0f;
 
+    ElapsedTime
+
+    boolean
+
     float purpleR = 1.0f;
     float purpleG = 1.0f;
     float purpleB = 1.0f;
@@ -48,6 +53,13 @@ public class FreeSort {
     float greenR = 1.0f;
     float greenG = 1.0f;
     float greenB = 1.0f;
+
+    boolean arm1Shooting = false;
+    boolean arm2Shooting = false;
+    boolean arm3Shooting = false;
+
+
+    ElapsedTime shootCD;
     //TODO test to find rgb values
     double kickRot = 1;
     /*
@@ -62,6 +74,10 @@ public class FreeSort {
 
     public void init(HardwareMap hardwareMap) {
 
+
+        shootCD = new ElapsedTime();
+
+        shootCD.reset();
         arm1 = hardwareMap.get(Servo.class, "arm1");
         arm2 = hardwareMap.get(Servo.class, "arm2");
         arm3 = hardwareMap.get(Servo.class, "arm3");
@@ -78,25 +94,82 @@ public class FreeSort {
 
 
     public void shootAll(){
-        if (pos1 != 'e') {shoot(arm1); pos1 = 'e';}
-        if (pos2 != 'e') {shoot(arm2); pos2 = 'e';}
-        if (pos3 != 'e') {shoot(arm3); pos3 = 'e';}
+        if (pos1 != 'e' && !arm1Shooting) {
+            shoot(arm1); pos1 = 'e';
+        }
+        if (pos2 != 'e' && !arm2Shooting) {
+            shoot(arm2); pos2 = 'e';
+        }
+        if (pos3 != 'e' && !arm3Shooting) {
+            shoot(arm3); pos3 = 'e';
+        }
     }
     public void shootGreen(){
-        if (pos1 == 'g') {shoot(arm1); pos1 = 'e';}
-        else if (pos2 == 'g') {shoot(arm2); pos2 = 'e';}
-        else if (pos3 == 'g') {shoot(arm3); pos3 = 'e';}
+
+        if (pos1 == 'g' && !arm1Shooting) {
+            shoot(arm1); pos1 = 'e';
+        }
+        else if (pos2 == 'g' && !arm2Shooting) {
+            shoot(arm2); pos2 = 'e';
+        }
+        else if (pos3 == 'g' && !arm3Shooting) {
+            shoot(arm3); pos3 = 'e';
+        }
     }
     public void shootPurple(){
-        if (pos1 == 'p') {shoot(arm1); pos1 = 'e';}
-        else if (pos2 == 'p') {shoot(arm2); pos2 = 'e';}
-        else if (pos3 == 'p') {shoot(arm3); pos3 = 'e';}
+
+        if (pos1 == 'p' && !arm1Shooting) {
+            shoot(arm1); pos1 = 'e';
+
+        }
+        else if (pos2 == 'p' && !arm2Shooting) {
+            shoot(arm2); pos2 = 'e';
+        }
+        else if (pos3 == 'p' && !arm3Shooting) {
+            shoot(arm3); pos3 = 'e';
+        }
     }
 
     public void shoot(Servo arm){
+        shootCD.reset();
         arm.setPosition(kickRot);
-        arm.setPosition(0);
+
     }
+
+
+    void loop(){
+        if(arm1.getPosition() == kickRot){
+            if(shootCD.seconds() >= 0.05f){
+                arm1.setPosition(0);
+                shootCD.reset();
+                arm1Shooting = false;
+            }else{
+                arm1Shooting = true;
+            }
+        }
+
+        if(arm2.getPosition() == kickRot){
+            if(shootCD.seconds() >= 0.05f){
+                arm2.setPosition(0);
+                shootCD.reset();
+                arm2Shooting = false;
+            }else{
+                arm2Shooting = true;
+
+            }
+        }
+
+        if(arm3.getPosition() == kickRot){
+            if(shootCD.seconds() >= 0.05f){
+                arm3.setPosition(0);
+                shootCD.reset();
+                arm3Shooting = false;
+            }else{
+                arm3Shooting = true;
+            }
+        }
+    }
+
     public void updateColors(Telemetry telemetry) {
         NormalizedRGBA sensor1Colors = sensor1.getNormalizedColors();
         NormalizedRGBA sensor2Colors = sensor2.getNormalizedColors();
