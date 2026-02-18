@@ -14,17 +14,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
-
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLStatus;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
+import org.firstinspires.ftc.teamcode.mechanisms.FreeSort;
 @Autonomous
 public class RedAuto1WithShoot extends OpMode {
     boolean hasShotThisState;
     HoodedShooter shooter;
 
     private int pathState;
+    FreeSort freesort = new FreeSort();
 
     private DcMotor intake;
 
     private Follower follower;
+    Limelight3A limelight;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
     private final Pose startPose = new Pose(125, 118.37891268533772, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 99, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
@@ -208,7 +214,9 @@ public class RedAuto1WithShoot extends OpMode {
     @Override
     public void init() {
         opmodeTimer = new ElapsedTime();
-
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.setPollRateHz(100);
+        limelight.start();
 
 
 
@@ -243,7 +251,17 @@ public class RedAuto1WithShoot extends OpMode {
         follower.update();
 
         shooter.loop();
+        LLResult result = limelight.getLatestResult();
+        if (result != null && result.isValid()) {
+            double tx = result.getTx(); // How far left or right the target is (degrees)
+            double ty = result.getTy(); // How far up or down the target is (degrees)
 
+            telemetry.addData("Target X", tx);
+            telemetry.addData("Target Y", ty);
+
+        } else {
+            telemetry.addData("Limelight", "No Targets");
+        }
 
         autonomousPathUpdate();
         // Feedback to Driver Hub for debugging
