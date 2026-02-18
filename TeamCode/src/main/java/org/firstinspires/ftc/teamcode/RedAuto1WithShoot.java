@@ -25,6 +25,7 @@ public class RedAuto1WithShoot extends OpMode {
     HoodedShooter shooter;
 
     private int pathState;
+    FreeSort freesort = new FreeSort();
 
     private DcMotor intake;
 
