@@ -9,23 +9,20 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import org.firstinspires.ftc.teamcode.mechanisms.FreeSort;
+import org.firstinspires.ftc.teamcode.mechanisms.FreeSortRGB;
 @Autonomous
 public class RedAuto1WithShoot extends OpMode {
     boolean hasShotThisState;
     HoodedShooter shooter;
 
     private int pathState;
-    FreeSort freesort = new FreeSort();
+    FreeSortRGB freesort = new FreeSortRGB();
 
     private DcMotor intake;
 

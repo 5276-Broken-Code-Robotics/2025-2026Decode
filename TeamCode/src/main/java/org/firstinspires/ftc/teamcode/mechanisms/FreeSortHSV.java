@@ -1,54 +1,55 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class FreeSort {
+public class FreeSortHSV {
 
-    char pos1 = 'g';
-    char pos2 = 'p';
-    char pos3 = 'p';
+    char pos1;
+    char pos2;
+    char pos3;
 
     /*
     g = green
     p = purple
     e = empty
 
-    always preload like this:
-               (g)
-             (p)(p)
-             |intake|
 
-     */
-
-    //     (pos1)
-    //  (pos2) (pos3)
-    //    |intake|
-    //
+         (pos1)
+      (pos2) (pos3)
+        |intake|
+    */
 
     Servo arm1;
     Servo arm2;
     Servo arm3;
 
-    NormalizedColorSensor sensor1;
-    NormalizedColorSensor sensor2;
-    NormalizedColorSensor sensor3;
+    RevColorSensorV3 sensor1;
+    RevColorSensorV3 sensor2;
+    ColorRangeSensor sensor3;
 
-    float sensorGain = 10.0f;
+    float sensorGain = 30f;
 
-    float purpleR = 1.0f;
-    float purpleG = 1.0f;
-    float purpleB = 1.0f;
+    float purpleHMaxV3 = 245;
+    float purpleHMinV3 = 185;
+    float greenHMaxV3 = 175;
+    float greenHMinV3 = 145;
 
-    float greenR = 1.0f;
-    float greenG = 1.0f;
-    float greenB = 1.0f;
+    float purpleHMaxV2 = 290;
+    float purpleHMinV2 = 180;
+    float greenHMaxV2 = 160;
+    float greenHMinV2 = 120;
+
+
+
 
     boolean arm1Shooting = false;
     boolean arm2Shooting = false;
@@ -56,7 +57,7 @@ public class FreeSort {
 
 
     ElapsedTime shootCD;
-    //TODO test to find rgb values
+
     double kickRot = 1;
     /*
     TODO calculate kickRot once cad done
@@ -78,9 +79,9 @@ public class FreeSort {
         arm2 = hardwareMap.get(Servo.class, "arm2");
         arm3 = hardwareMap.get(Servo.class, "arm3");
 
-        sensor1 = hardwareMap.get(NormalizedColorSensor.class, "sensor1");
-        sensor2 = hardwareMap.get(NormalizedColorSensor.class, "sensor2");
-        sensor3 = hardwareMap.get(NormalizedColorSensor.class, "sensor3");
+        sensor1 = hardwareMap.get(RevColorSensorV3.class, "sensor1");
+        sensor2 = hardwareMap.get(RevColorSensorV3.class, "sensor2");
+        sensor3 = hardwareMap.get(ColorRangeSensor.class, "sensor3");
 
         sensor1.setGain(sensorGain);
         sensor2.setGain(sensorGain);
@@ -133,7 +134,8 @@ public class FreeSort {
     }
 
 
-    void loop(){
+    public void loop(){
+
         if(arm1.getPosition() == kickRot){
             if(shootCD.seconds() >= 0.05f){
                 arm1.setPosition(0);
@@ -171,30 +173,60 @@ public class FreeSort {
         NormalizedRGBA sensor2Colors = sensor2.getNormalizedColors();
         NormalizedRGBA sensor3Colors = sensor3.getNormalizedColors();
 
+
+        float sensor1hue, sensor1sat, sensor1val;
+        float sensor2hue, sensor2sat, sensor2val;
+        float sensor3hue, sensor3sat, sensor3val;
+
+        sensor1hue = JavaUtil.colorToHue(sensor1Colors.toColor());
+        sensor1sat = JavaUtil.colorToSaturation(sensor1Colors.toColor());
+        sensor1val = JavaUtil.colorToValue(sensor1Colors.toColor());
+
+        sensor2hue = JavaUtil.colorToHue(sensor2Colors.toColor());
+        sensor2sat = JavaUtil.colorToSaturation(sensor2Colors.toColor());
+        sensor2val = JavaUtil.colorToValue(sensor2Colors.toColor());
+
+        sensor3hue = JavaUtil.colorToHue(sensor3Colors.toColor());
+        sensor3sat = JavaUtil.colorToSaturation(sensor3Colors.toColor());
+        sensor3val = JavaUtil.colorToValue(sensor3Colors.toColor());
+
+
+
+
+
+
+
+
+
         telemetry.addLine("Sensor 1");
-        telemetry.addData("red", sensor1Colors.red);
-        telemetry.addData("green", sensor1Colors.green);
-        telemetry.addData("blue", sensor1Colors.blue);
+        telemetry.addData("hue", sensor1hue);
+        telemetry.addData("sat", sensor1sat);
+        telemetry.addData("value", sensor1val);
         telemetry.addData("Pos1", pos1);
 
+
         telemetry.addLine("Sensor 2");
-        telemetry.addData("red", sensor2Colors.red);
-        telemetry.addData("green", sensor2Colors.green);
-        telemetry.addData("blue", sensor2Colors.blue);
+        telemetry.addData("hue", sensor2hue);
+        telemetry.addData("sat", sensor2sat);
+        telemetry.addData("value", sensor2val);
         telemetry.addData("Pos2", pos2);
 
         telemetry.addLine("Sensor 3");
-        telemetry.addData("red", sensor3Colors.red);
-        telemetry.addData("green", sensor3Colors.green);
-        telemetry.addData("blue", sensor3Colors.blue);
+        telemetry.addData("hue", sensor3hue);
+        telemetry.addData("sat", sensor3sat);
+        telemetry.addData("value", sensor3val);
         telemetry.addData("Pos3", pos3);
+
+
+
+
 
         //TODO assign color values to certain balls for certain colors + change from > to < if needed
 
-        if (sensor1Colors.red > purpleR && sensor1Colors.green > purpleG && sensor1Colors.blue > purpleB){
+        if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
             pos1 = 'p';
         }
-        else if (sensor1Colors.red > greenR && sensor1Colors.green > greenG && sensor1Colors.blue > greenB){
+        else if (greenHMaxV3 > sensor1hue && sensor1hue > greenHMinV3){
             pos1 = 'g';
         }
         else{
@@ -202,20 +234,20 @@ public class FreeSort {
         }
 
 
-        if (sensor2Colors.red > purpleR && sensor2Colors.green > purpleG && sensor2Colors.blue > purpleB){
+        if (purpleHMaxV3 > sensor2hue && sensor2hue > purpleHMinV3){
             pos2 = 'p';
         }
-        else if (sensor2Colors.red > greenR && sensor2Colors.green > greenG && sensor2Colors.blue > greenB){
+        else if (greenHMaxV3 > sensor2hue && sensor2hue > greenHMinV3){
             pos2 = 'g';
         }
         else{
             pos2 = 'e';
         }
 
-        if (sensor3Colors.red > purpleR && sensor3Colors.green > purpleG && sensor3Colors.blue > purpleB){
+        if (purpleHMaxV2 > sensor3hue && sensor3hue > purpleHMinV2){
             pos3 = 'p';
         }
-        else if (sensor3Colors.red > greenR && sensor3Colors.green > greenG && sensor3Colors.blue > greenB){
+        else if (greenHMaxV2 > sensor3hue && sensor3hue > greenHMinV2){
             pos3 = 'g';
         }
         else{
