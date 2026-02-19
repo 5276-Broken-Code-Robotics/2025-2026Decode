@@ -134,9 +134,9 @@ public class FreeSort {
 
     }
 
-    public void shootPattern(char[] sigma){
+    public void shootPattern(char[] colorList){
         for (int i=0; i<3;i++){
-            if(sigma[i]=='p'){
+            if(colorList[i]=='p'){
                 shootPurple();
             }else{
                 shootGreen();
