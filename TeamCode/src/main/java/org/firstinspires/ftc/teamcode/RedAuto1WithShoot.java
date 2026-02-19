@@ -19,6 +19,9 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import org.firstinspires.ftc.teamcode.mechanisms.FreeSort;
+
+import java.util.List;
+
 @Autonomous
 public class RedAuto1WithShoot extends OpMode {
     boolean hasShotThisState;
@@ -245,14 +248,27 @@ public class RedAuto1WithShoot extends OpMode {
     @Override
     public void loop() {
         int obeliskId=0;
+        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+        for (LLResultTypes.FiducialResult fiducial : fiducials) {
+            obeliskId = fiducial.getFiducialId();
+        }
         if(obeliskId!=0){
             limelight.pipelineSwitch(2);
         }
         telemetry.addData("obeliskId", obeliskId);
+        if (obeliskId==21){
+            char[] pattern={'g','p','p'};
+        }
+        if (obeliskId==22){
+            char[] pattern={'p','g','p'};
+        }
+        if (obeliskId==23){
+            char[] pattern={'p','p','g'};
+        }
         follower.update();
 
         shooter.loop();
-        
+
 
         autonomousPathUpdate();
         // Feedback to Driver Hub for debugging
