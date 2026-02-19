@@ -134,7 +134,15 @@ public class FreeSort {
 
     }
 
-
+    public void shootPattern(char[] sigma){
+        for (int i=0; i<3;i++){
+            if(sigma[i]=='p'){
+                shootPurple();
+            }else{
+                shootGreen();
+            }
+        }
+    }
     void loop(){
         if(arm1.getPosition() == kickRot){
             if(shootCD.seconds() >= 0.05f){
