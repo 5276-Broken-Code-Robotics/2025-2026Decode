@@ -9,20 +9,26 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import org.firstinspires.ftc.teamcode.mechanisms.FreeSortRGB;
+import org.firstinspires.ftc.teamcode.mechanisms.FreeSort;
+
+import java.util.List;
+
 @Autonomous
 public class RedAuto1WithShoot extends OpMode {
     boolean hasShotThisState;
     HoodedShooter shooter;
 
     private int pathState;
-    FreeSortRGB freesort = new FreeSortRGB();
+    FreeSort freesort = new FreeSort();
 
     private DcMotor intake;
 
@@ -214,9 +220,7 @@ public class RedAuto1WithShoot extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
-
-
-
+        limelight.pipelineSwitch(2);
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -243,22 +247,28 @@ public class RedAuto1WithShoot extends OpMode {
 
     @Override
     public void loop() {
-
-
+        int obeliskId=0;
+        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+        for (LLResultTypes.FiducialResult fiducial : fiducials) {
+            obeliskId = fiducial.getFiducialId();
+        }
+        if(obeliskId!=0){
+            limelight.pipelineSwitch(2);
+        }
+        telemetry.addData("obeliskId", obeliskId);
+        if (obeliskId==21){
+            char[] pattern={'g','p','p'};
+        }
+        if (obeliskId==22){
+            char[] pattern={'p','g','p'};
+        }
+        if (obeliskId==23){
+            char[] pattern={'p','p','g'};
+        }
         follower.update();
 
         shooter.loop();
-        LLResult result = limelight.getLatestResult();
-        if (result != null && result.isValid()) {
-            double tx = result.getTx(); // How far left or right the target is (degrees)
-            double ty = result.getTy(); // How far up or down the target is (degrees)
 
-            telemetry.addData("Target X", tx);
-            telemetry.addData("Target Y", ty);
-
-        } else {
-            telemetry.addData("Limelight", "No Targets");
-        }
 
         autonomousPathUpdate();
         // Feedback to Driver Hub for debugging
