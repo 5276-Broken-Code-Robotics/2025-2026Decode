@@ -6,6 +6,9 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,11 +18,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
+import java.util.List;
+
 @Autonomous
 public class BlueAuto1WithShoot extends OpMode {
     boolean hasShotThisState;
     HoodedShooter shooter;
-
+    Limelight3A limelight;
+    int obeliskId=0;
     private int pathState;
 
     private DcMotor intake;
@@ -210,10 +216,10 @@ public class BlueAuto1WithShoot extends OpMode {
     @Override
     public void init() {
         opmodeTimer = new ElapsedTime();
-
-
-
-
+        limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        limelight.setPollRateHz(100);
+        limelight.start();
+        limelight.pipelineSwitch(2);
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -241,6 +247,26 @@ public class BlueAuto1WithShoot extends OpMode {
         follower.update();
 
         shooter.loop();
+        LLResult result = limelight.getLatestResult();
+        if(obeliskId==2) {
+            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+            for (LLResultTypes.FiducialResult fiducial : fiducials) {
+                obeliskId = fiducial.getFiducialId();
+            }
+        }
+        if(obeliskId!=0){
+            limelight.pipelineSwitch(2);
+        }
+        telemetry.addData("obeliskId", obeliskId);
+        if (obeliskId==21){
+            char[] pattern={'g','p','p'};
+        }
+        if (obeliskId==22){
+            char[] pattern={'p','g','p'};
+        }
+        if (obeliskId==23){
+            char[] pattern={'p','p','g'};
+        }
 
 
         autonomousPathUpdate();

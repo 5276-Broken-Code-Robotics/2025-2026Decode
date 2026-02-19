@@ -26,7 +26,7 @@ import java.util.List;
 public class RedAuto1WithShoot extends OpMode {
     boolean hasShotThisState;
     HoodedShooter shooter;
-
+    int obeliskId=0;
     private int pathState;
     FreeSort freesort = new FreeSort();
 
@@ -247,10 +247,13 @@ public class RedAuto1WithShoot extends OpMode {
 
     @Override
     public void loop() {
-        int obeliskId=0;
-        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-        for (LLResultTypes.FiducialResult fiducial : fiducials) {
-            obeliskId = fiducial.getFiducialId();
+
+        LLResult result = limelight.getLatestResult();
+        if(obeliskId==2) {
+            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+            for (LLResultTypes.FiducialResult fiducial : fiducials) {
+                obeliskId = fiducial.getFiducialId();
+            }
         }
         if(obeliskId!=0){
             limelight.pipelineSwitch(2);
@@ -265,6 +268,7 @@ public class RedAuto1WithShoot extends OpMode {
         if (obeliskId==23){
             char[] pattern={'p','p','g'};
         }
+
         follower.update();
 
         shooter.loop();
