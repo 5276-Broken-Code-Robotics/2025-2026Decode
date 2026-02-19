@@ -192,38 +192,28 @@ public class FreeSortHSV {
 
 
 
-
-
-
-
-
-
         telemetry.addLine("Sensor 1");
         telemetry.addData("hue", sensor1hue);
-        telemetry.addData("sat", sensor1sat);
-        telemetry.addData("value", sensor1val);
+        //telemetry.addData("sat", sensor1sat);
+        //telemetry.addData("value", sensor1val);
         telemetry.addData("Pos1", pos1);
 
 
         telemetry.addLine("Sensor 2");
         telemetry.addData("hue", sensor2hue);
-        telemetry.addData("sat", sensor2sat);
-        telemetry.addData("value", sensor2val);
+        //telemetry.addData("sat", sensor2sat);
+        //telemetry.addData("value", sensor2val);
         telemetry.addData("Pos2", pos2);
 
         telemetry.addLine("Sensor 3");
         telemetry.addData("hue", sensor3hue);
-        telemetry.addData("sat", sensor3sat);
-        telemetry.addData("value", sensor3val);
+        //telemetry.addData("sat", sensor3sat);
+        //telemetry.addData("value", sensor3val);
         telemetry.addData("Pos3", pos3);
 
 
 
-
-
-        //TODO assign color values to certain balls for certain colors + change from > to < if needed
-
-        if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
+          if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
             pos1 = 'p';
         }
         else if (greenHMaxV3 > sensor1hue && sensor1hue > greenHMinV3){
