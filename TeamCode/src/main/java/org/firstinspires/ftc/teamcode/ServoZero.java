@@ -7,19 +7,19 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "ServoZero")
 public class ServoZero extends OpMode {
 
-    Servo pan;
+    Servo tilt;
 
     @Override
     public void init() {
 
-        pan = hardwareMap.get(Servo.class, "pan");
-        
+        tilt = hardwareMap.get(Servo.class, "tilt");
+        tilt.setDirection(Servo.Direction.FORWARD);
     }
 
     @Override
     public void loop() {
 
-        pan.setPosition(0);
+        tilt.setPosition(0);
 
     }
 }

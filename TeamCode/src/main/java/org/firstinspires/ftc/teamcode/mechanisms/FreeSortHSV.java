@@ -28,9 +28,9 @@ public class FreeSortHSV {
         |intake|
     */
 
-    Servo arm1;
-    Servo arm2;
-    Servo arm3;
+    public Servo arm1;
+    public Servo arm2;
+    public Servo arm3;
 
     RevColorSensorV3 sensor1;
     RevColorSensorV3 sensor2;
@@ -58,7 +58,8 @@ public class FreeSortHSV {
 
     ElapsedTime shootCD;
 
-    double kickRot = 1;
+    double kickRot = .3;
+    double emptyRot = .15;
     /*
     TODO calculate kickRot once cad done
     kickRot = degrees needed to kick ball into turret/270
@@ -129,6 +130,11 @@ public class FreeSortHSV {
 
     public void shoot(Servo arm){
         shootCD.reset();
+
+        if (arm!=arm1 && pos1 == 'e'){arm1.setPosition(emptyRot);}
+        if (arm!=arm2 && pos2 == 'e'){arm2.setPosition(emptyRot);}
+        if (arm!=arm3 && pos3 == 'e'){arm3.setPosition(emptyRot);}
+
         arm.setPosition(kickRot);
 
     }
@@ -166,7 +172,40 @@ public class FreeSortHSV {
                 arm3Shooting = true;
             }
         }
+
+        if(arm1.getPosition() == emptyRot){
+        if(shootCD.seconds() >= 0.05f){
+            arm1.setPosition(0);
+            shootCD.reset();
+            arm1Shooting = false;
+        }else{
+            arm1Shooting = true;
+        }
     }
+
+        if(arm2.getPosition() == emptyRot){
+        if(shootCD.seconds() >= 0.05f){
+            arm2.setPosition(0);
+            shootCD.reset();
+            arm2Shooting = false;
+        }else{
+            arm2Shooting = true;
+
+        }
+    }
+
+        if(arm3.getPosition() == emptyRot){
+        if(shootCD.seconds() >= 0.05f){
+            arm3.setPosition(0);
+            shootCD.reset();
+            arm3Shooting = false;
+        }else{
+            arm3Shooting = true;
+        }
+    }
+}
+
+
 
     public void updateColors(Telemetry telemetry) {
         NormalizedRGBA sensor1Colors = sensor1.getNormalizedColors();
