@@ -28,7 +28,6 @@ public class limelight3ATesting extends OpMode {
 
 
 
-    float range = 0;
     DcMotor pan;
     int jklm = 0;
     private GoBildaPinpointDriver pinpoint;
@@ -54,14 +53,13 @@ public class limelight3ATesting extends OpMode {
     }
     @Override
     public void start(){
-
     }
     @Override
     public void loop(){
 
         pinpoint.update();
         double robotHeading = pinpoint.getHeading(AngleUnit.RADIANS);
-        limelight3A.updateRobotOrientation(robotHeading + pan.getCurrentPosition() / range * PI);
+        limelight3A.updateRobotOrientation(robotHeading + pan.getCurrentPosition() / 537.7/2 * PI);
 
         LLResult Llresult = limelight3A.getLatestResult();
 
@@ -89,10 +87,6 @@ public class limelight3ATesting extends OpMode {
         if(!limelight3A.getLatestResult().getFiducialResults().isEmpty()) {
             tag = limelight3A.getLatestResult().getFiducialResults().get(0);
 
-
-
-
-
             Pose3D camPose = tag.getRobotPoseTargetSpace();
 
             double x = camPose.getPosition().x;   // meters (left/right)
@@ -104,6 +98,8 @@ public class limelight3ATesting extends OpMode {
             telemetry.addData("Xpos", 144 + x * 39.37);
             telemetry.addData("Zpos", 144 - z * 39.37);
             telemetry.addData("Yaw (deg)", yaw);
+
+
 
         }
 
