@@ -28,7 +28,7 @@ import java.util.List;
 
 
 @TeleOp
-public class limelight3ATesting extends OpMode {
+public class panTester extends OpMode {
 
 
     Follower follower;
@@ -103,75 +103,29 @@ public class limelight3ATesting extends OpMode {
 
 
 
+
+
         telemetry.addData("Init pos variable : ", initpos);
+
+
+        telemetry.addData("Turn angle : ", turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * 180/PI);
+
+        telemetry.addData("Angle to tag : ", angleToAprilTag * 180/PI);
+
+        if(gamepad1.aWasPressed())pan.setTargetPosition((int)initpos);
+
+        if(gamepad1.rightBumperWasPressed()){
+            pan.setTargetPosition(pan.getTargetPosition()-15);
+        }
+
+        if(gamepad1.leftBumperWasPressed()){
+            pan.setTargetPosition(pan.getTargetPosition()+15);
+        }
 
         telemetry.addData("Current position on pan", pan.getCurrentPosition());
 
-        pan.setTargetPosition((int)initpos);
 
-
-
-
-
-
-        LLResult Llresult = limelight3A.getLatestResult();
-
-
-
-
-        if(Llresult!= null){
-
-            if(Llresult.isValid()){
-                Pose3D botpose = Llresult.getBotpose_MT2();
-
-                telemetry.addData("PX : ",botpose.getPosition().x);
-
-                telemetry.addData("PY :", botpose.getPosition().y);
-
-                telemetry.addData("Orient : ", botpose.getOrientation());
-
-                telemetry.update();
-            }
-
-        }
-
-
-
-
-
-        List<LLResultTypes.FiducialResult> Atagresults = limelight3A.getLatestResult().getFiducialResults();
-
-        for(int i =0; i < Atagresults.size();i++){
-            if(Atagresults.get(i).getFiducialId() == 24){
-                LLResultTypes.FiducialResult tag = Atagresults.get(i);
-                Pose3D camPose = tag.getRobotPoseTargetSpace();
-
-                double x = tag.getRobotPoseFieldSpace().getPosition().x;
-                double y = tag.getRobotPoseFieldSpace().getPosition().y;
-                double z = tag.getRobotPoseFieldSpace().getPosition().z;
-
-                telemetry.addData("Tag ID", tag.getFiducialId());
-                telemetry.addData("FidEstim Xpos", x);
-                telemetry.addData("FidEstim Ypos", y );
-                telemetry.addData("FidEstim Zpos", z);
-            }
-        }
-
-
-
-
-
-        telemetry.addData("Why is this happening squad + ", jklm);
-
-        jklm++;
-
-
-
-        telemetry.addData("Follower ", "Estimation");
-        telemetry.addData("Position : ", follower.getPose().getX() + " , " + follower.getPose().getY());
-
-        telemetry.addData("Heading : ", follower.getPose().getHeading());
-
+        telemetry.update();
 
     }
 

@@ -26,7 +26,7 @@ import java.util.List;
 public class RedAuto1WithShoot extends OpMode {
     boolean hasShotThisState;
     HoodedShooter shooter;
-
+    int obeliskId = 0;
     private int pathState;
     FreeSortHSV freesort = new FreeSortHSV();
 
@@ -35,7 +35,7 @@ public class RedAuto1WithShoot extends OpMode {
     private Follower follower;
     Limelight3A limelight;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
-    private final Pose startPose = new Pose(125, 118.37891268533772, Math.toRadians(36)); // Start Pose of our robot.
+    private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 99, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pickup1Pose = new Pose(125, 87, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
     private final Pose pickup2Pose = new Pose(125, 60, Math.toRadians(0)); // Middle (Second Set) of Artifacts from the Spike Mark.
@@ -44,48 +44,49 @@ public class RedAuto1WithShoot extends OpMode {
     private final Pose rotation2Pose = new Pose(96, 60, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose rotation3Pose = new Pose(96, 39, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose finalPose = new Pose(103, 68, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3,finalPosition;
+    private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3, finalPosition;
     private Path scorePreload;
-    public void buildPaths(){
+
+    public void buildPaths() {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
-        rotate1= follower.pathBuilder()
+        rotate1 = follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, rotation1Pose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), rotation1Pose.getHeading())
                 .build();
-        grabPickup1= follower.pathBuilder()
+        grabPickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(rotation1Pose, pickup1Pose))
                 .setLinearHeadingInterpolation(rotation1Pose.getHeading(), pickup1Pose.getHeading())
                 .build();
-        shootPickup1= follower.pathBuilder()
+        shootPickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup1Pose, scorePose))
                 .setLinearHeadingInterpolation(pickup1Pose.getHeading(), scorePose.getHeading())
                 .build();
-        rotate2= follower.pathBuilder()
+        rotate2 = follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, rotation2Pose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), rotation2Pose.getHeading())
                 .build();
-        grabPickup2= follower.pathBuilder()
+        grabPickup2 = follower.pathBuilder()
                 .addPath(new BezierLine(rotation2Pose, pickup2Pose))
                 .setLinearHeadingInterpolation(rotation2Pose.getHeading(), pickup2Pose.getHeading())
                 .build();
-        shootPickup2= follower.pathBuilder()
+        shootPickup2 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup2Pose, scorePose))
                 .setLinearHeadingInterpolation(pickup2Pose.getHeading(), scorePose.getHeading())
                 .build();
-        rotate3= follower.pathBuilder()
+        rotate3 = follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, rotation3Pose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), rotation3Pose.getHeading())
                 .build();
-        grabPickup3= follower.pathBuilder()
+        grabPickup3 = follower.pathBuilder()
                 .addPath(new BezierLine(rotation3Pose, pickup3Pose))
                 .setLinearHeadingInterpolation(rotation3Pose.getHeading(), pickup3Pose.getHeading())
                 .build();
-        shootPickup3= follower.pathBuilder()
+        shootPickup3 = follower.pathBuilder()
                 .addPath(new BezierLine(pickup3Pose, scorePose))
                 .setLinearHeadingInterpolation(pickup3Pose.getHeading(), scorePose.getHeading())
                 .build();
-        finalPosition= follower.pathBuilder()
+        finalPosition = follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, finalPose))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), finalPose.getHeading())
                 .build();
@@ -94,6 +95,7 @@ public class RedAuto1WithShoot extends OpMode {
     public void setPathState(int pState) {
         pathState = pState;
     }
+
     public void autonomousPathUpdate() {
         switch (pathState) {
 
@@ -104,8 +106,8 @@ public class RedAuto1WithShoot extends OpMode {
                 break;
 
             case -10:
-                if(!follower.isBusy()){
-                    shooter.AutoBeginShot(true,false);
+                if (!follower.isBusy()) {
+                    shooter.AutoBeginShot(true, false);
                     setPathState(1);
                 }
 
@@ -122,7 +124,7 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, .8,false);
+                    follower.followPath(grabPickup1, .8, false);
                     setPathState(3);
                 }
                 break;
@@ -138,18 +140,17 @@ public class RedAuto1WithShoot extends OpMode {
             case 21:
                 if (!follower.isBusy()) {
 
-                    if(!shooter.shotbegan){
-                        shooter.AutoBeginShot(true,false);
+                    if (!shooter.shotbegan) {
+                        shooter.AutoBeginShot(true, false);
                         setPathState(4);
                     }
                 }
                 break;
             case 4:
-                if(shooter.shotbegan) return; // Wait until the shot is done
+                if (shooter.shotbegan) return; // Wait until the shot is done
 
 
-
-                if(!follower.isBusy()) {
+                if (!follower.isBusy()) {
                     follower.followPath(rotate2, true);
                     setPathState(5);
                 }
@@ -159,7 +160,7 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup2,.8, false);
+                    follower.followPath(grabPickup2, .8, false);
                     setPathState(6);
                 }
                 break;
@@ -170,12 +171,12 @@ public class RedAuto1WithShoot extends OpMode {
                     follower.followPath(shootPickup2, true);
                     setPathState(7);
 
-                    shooter.AutoBeginShot(true,false);
+                    shooter.AutoBeginShot(true, false);
                 }
 
                 break;
             case 7:
-                if(shooter.shotbegan) return; // Wait until the shot is done
+                if (shooter.shotbegan) return; // Wait until the shot is done
 
                 if (!follower.isBusy()) {
 
@@ -187,7 +188,7 @@ public class RedAuto1WithShoot extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup3,.8, false);
+                    follower.followPath(grabPickup3, .8, false);
                     setPathState(9);
                 }
                 break;
@@ -198,12 +199,12 @@ public class RedAuto1WithShoot extends OpMode {
                     follower.followPath(shootPickup3, true);
                     setPathState(10);
 
-                    shooter.AutoBeginShot(true,false);
+                    shooter.AutoBeginShot(true, false);
                 }
 
                 break;
             case 10:
-                if(shooter.shotbegan) return; // Wait until the shot is done
+                if (shooter.shotbegan) return; // Wait until the shot is done
 
                 if (!follower.isBusy()) {
 
@@ -229,8 +230,6 @@ public class RedAuto1WithShoot extends OpMode {
         shooter = new HoodedShooter();
 
 
-
-
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
 
@@ -247,42 +246,51 @@ public class RedAuto1WithShoot extends OpMode {
 
     @Override
     public void loop() {
-        int obeliskId=0;
-        //List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-        for (LLResultTypes.FiducialResult fiducial : fiducials) {
-            obeliskId = fiducial.getFiducialId();
-        }
-        if(obeliskId!=0){
-            limelight.pipelineSwitch(2);
-        }
-        telemetry.addData("obeliskId", obeliskId);
-        if (obeliskId==21){
-            char[] pattern={'g','p','p'};
-        }
-        if (obeliskId==22){
-            char[] pattern={'p','g','p'};
-        }
-        if (obeliskId==23){
-            char[] pattern={'p','p','g'};
-        }
-        follower.update();
 
-        shooter.loop();
+        LLResult result = limelight.getLatestResult();
+        if (obeliskId == 2) {
+            List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+            for (LLResultTypes.FiducialResult fiducial : fiducials) {
+                obeliskId = fiducial.getFiducialId();
+            }
+            int obeliskId = 0;
+            fiducials = limelight.getLatestResult().getFiducialResults();
+            for (LLResultTypes.FiducialResult fiducial : fiducials) {
+                obeliskId = fiducial.getFiducialId();
+            }
+            if (obeliskId != 0) {
+                limelight.pipelineSwitch(2);
+            }
+            telemetry.addData("obeliskId", obeliskId);
+            if (obeliskId == 21) {
+                char[] pattern = {'g', 'p', 'p'};
+            }
+            if (obeliskId == 22) {
+                char[] pattern = {'p', 'g', 'p'};
+            }
+            if (obeliskId == 23) {
+                char[] pattern = {'p', 'p', 'g'};
+            }
+
+            follower.update();
+
+            shooter.loop();
 
 
-        autonomousPathUpdate();
-        // Feedback to Driver Hub for debugging
-        telemetry.addData("path state", pathState);
-        telemetry.addData("x", follower.getPose().getX());
-        telemetry.addData("y", follower.getPose().getY());
-        telemetry.addData("heading", follower.getPose().getHeading());
+            autonomousPathUpdate();
+            // Feedback to Driver Hub for debugging
+            telemetry.addData("path state", pathState);
+            telemetry.addData("x", follower.getPose().getX());
+            telemetry.addData("y", follower.getPose().getY());
+            telemetry.addData("heading", follower.getPose().getHeading());
+        }
     }
-    @Override
-    public void start() {
-        opmodeTimer.reset();
-        setPathState(0);
+        @Override
+        public void start () {
+            opmodeTimer.reset();
+            setPathState(0);
 
-        intake.setPower(1);
+            intake.setPower(1);
 
+        }
     }
-}
