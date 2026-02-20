@@ -72,7 +72,7 @@ public class limelight3ATesting extends OpMode {
         limelight3A.updateRobotOrientation(robotHeading + pan.getCurrentPosition() / 537.7/2 * PI);
 
 
-        double angleToAprilTag = Math.atan2((double)(144 - pinpoint.getPosY(DistanceUnit.INCH)),(double)(144 - pinpoint.getPosX(DistanceUnit.INCH)));
+        double angleToAprilTag = Math.atan2((144 - pinpoint.getPosY(DistanceUnit.INCH)),(144 - pinpoint.getPosX(DistanceUnit.INCH)));
 
         float initpos = (float) (turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (537.7/2)/(Math.PI));
 
@@ -84,25 +84,7 @@ public class limelight3ATesting extends OpMode {
 
 
 
-        List<LLResultTypes.FiducialResult> Atagresults = limelight3A.getLatestResult().getFiducialResults();
 
-        for(int i =0; i < Atagresults.size();i++){
-            if(Atagresults.get(i).getFiducialId() == 24){
-                LLResultTypes.FiducialResult tag = Atagresults.get(i);
-                Pose3D camPose = tag.getRobotPoseTargetSpace();
-
-                double x = camPose.getPosition().x;   // meters (left/right)
-                double z = camPose.getPosition().z;   // meters (forward)
-
-                double yaw = camPose.getOrientation().getYaw();
-
-                telemetry.addData("Tag ID", tag.getFiducialId());
-                telemetry.addData("Xpos", 144 + x * 39.37);
-                telemetry.addData("Zpos", 144 - z * 39.37);
-                telemetry.addData("Yaw (deg)", yaw);
-                pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 144 + x * 39.37,144 - z * 39.37, AngleUnit.RADIANS, pinpoint.getHeading(AngleUnit.RADIANS)));
-            }
-        }
 
         LLResult Llresult = limelight3A.getLatestResult();
 
@@ -125,35 +107,26 @@ public class limelight3ATesting extends OpMode {
 
         }
 
-        LLResultTypes.FiducialResult tag;
+
+        /*
 
 
-        if(!limelight3A.getLatestResult().getFiducialResults().isEmpty()) {
-            tag = limelight3A.getLatestResult().getFiducialResults().get(0);
+        List<LLResultTypes.FiducialResult> Atagresults = limelight3A.getLatestResult().getFiducialResults();
 
-            Pose3D camPose = tag.getRobotPoseTargetSpace();
-
-            double x = camPose.getPosition().x;   // meters (left/right)
-            double z = camPose.getPosition().z;   // meters (forward)
-
-            double yaw = camPose.getOrientation().getYaw();
-
-            telemetry.addData("Tag ID", tag.getFiducialId());
-            telemetry.addData("Xpos", 144 + x * 39.37);
-            telemetry.addData("Zpos", 144 - z * 39.37);
-            telemetry.addData("Yaw (deg)", yaw);
-
-
-
+        for(int i =0; i < Atagresults.size();i++){
+            if(Atagresults.get(i).getFiducialId() == 24){
+                LLResultTypes.FiducialResult tag = Atagresults.get(i);
+                Pose3D camPose = tag.getRobotPoseTargetSpace();
+                telemetry.addData("Tag ID", tag.getFiducialId());
+                telemetry.addData("Xpos Estim", 144 + x * 39.37);
+                telemetry.addData("Zpos Estim", 144 - z * 39.37);
+                telemetry.addData("Yaw (deg)", yaw);
+            }
         }
 
 
 
-
-
-
-
-
+         */
 
         telemetry.addData("Why is this happening squad + ", jklm);
 
