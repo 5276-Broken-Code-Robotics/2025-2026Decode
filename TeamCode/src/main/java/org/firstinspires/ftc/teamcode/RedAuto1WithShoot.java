@@ -18,7 +18,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import org.firstinspires.ftc.teamcode.mechanisms.FreeSort;
+import org.firstinspires.ftc.teamcode.mechanisms.FreeSortHSV;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class RedAuto1WithShoot extends OpMode {
     HoodedShooter shooter;
 
     private int pathState;
-    FreeSort freesort = new FreeSort();
+    FreeSortHSV freesort = new FreeSortHSV();
 
     private DcMotor intake;
 
@@ -247,8 +247,10 @@ public class RedAuto1WithShoot extends OpMode {
 
     @Override
     public void loop() {
+
+
         int obeliskId=0;
-        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+        List<LLResultTypes.FiducialResult> fiducials =limelight.getLatestResult().getFiducialResults();
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             obeliskId = fiducial.getFiducialId();
         }
