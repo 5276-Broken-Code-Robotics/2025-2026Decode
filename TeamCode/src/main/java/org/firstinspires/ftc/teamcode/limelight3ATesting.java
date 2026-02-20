@@ -55,9 +55,10 @@ public class limelight3ATesting extends OpMode {
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
         pinpoint.resetPosAndIMU();
+        pan.setPower(1);
 
 
-        pan.setTargetPosition(0);
+
 
     }
     @Override
@@ -75,6 +76,9 @@ public class limelight3ATesting extends OpMode {
 
         float initpos = (float) (turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (537.7/2)/(Math.PI));
 
+        telemetry.addData("Init pos variable : ", initpos);
+
+        telemetry.addData("Current position on pan", pan.getCurrentPosition());
 
         pan.setTargetPosition((int)initpos);
 
