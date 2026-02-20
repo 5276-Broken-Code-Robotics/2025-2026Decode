@@ -88,6 +88,9 @@ public class limelight3ATesting extends OpMode {
         drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
 
+
+        follower.update();
+
         telemetry.addData("Runnning?" , limelight3A.isRunning());
         pinpoint.update();
         double robotHeading = pinpoint.getHeading(AngleUnit.RADIANS);
@@ -105,6 +108,7 @@ public class limelight3ATesting extends OpMode {
         telemetry.addData("Current position on pan", pan.getCurrentPosition());
 
         pan.setTargetPosition((int)initpos);
+
 
 
 
@@ -132,7 +136,7 @@ public class limelight3ATesting extends OpMode {
         }
 
 
-        /*
+
 
 
         List<LLResultTypes.FiducialResult> Atagresults = limelight3A.getLatestResult().getFiducialResults();
@@ -141,27 +145,34 @@ public class limelight3ATesting extends OpMode {
             if(Atagresults.get(i).getFiducialId() == 24){
                 LLResultTypes.FiducialResult tag = Atagresults.get(i);
                 Pose3D camPose = tag.getRobotPoseTargetSpace();
+
+                double x = tag.getRobotPoseFieldSpace().getPosition().x;
+                double y = tag.getRobotPoseFieldSpace().getPosition().y;
+                double z = tag.getRobotPoseFieldSpace().getPosition().z;
+
                 telemetry.addData("Tag ID", tag.getFiducialId());
-                telemetry.addData("Xpos Estim", 144 + x * 39.37);
-                telemetry.addData("Zpos Estim", 144 - z * 39.37);
-                telemetry.addData("Yaw (deg)", yaw);
+                telemetry.addData("FidEstim Xpos", x);
+                telemetry.addData("FidEstim Ypos", y );
+                telemetry.addData("FidEstim Zpos", z);
             }
         }
 
 
 
-         */
+
 
         telemetry.addData("Why is this happening squad + ", jklm);
 
         jklm++;
 
-        follower.update();
 
-        telemetry.addData("Hello", "guys");
+
+        telemetry.addData("Follower ", "Estimation");
         telemetry.addData("Position : ", follower.getPose().getX() + " , " + follower.getPose().getY());
 
         telemetry.addData("Heading : ", follower.getPose().getHeading());
+
+
     }
 
     public static double turnAngle(double currentHeading, double targetAngle) {
@@ -173,6 +184,7 @@ public class limelight3ATesting extends OpMode {
 
         return error;
     }
+
 
     public void drive(double forward, double strafe, double rotate) {
         double flPower = forward + strafe + rotate;
