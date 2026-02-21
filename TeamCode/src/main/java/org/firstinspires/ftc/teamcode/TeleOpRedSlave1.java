@@ -200,9 +200,9 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
 
-        if(gamepad1.right_bumper && num == 0){
+        if(gamepad1.square){
+            hShooter.Fire(1);
 
-            hShooter.BeginShot(24);
 
 
             num = 1;
@@ -211,16 +211,15 @@ public class TeleOpRedSlave1 extends OpMode {
 
         }
 
-        if(gamepad1.left_bumper && num == 0){
-            hShooter.AutoBeginShot(true, true);
-
+        if(gamepad1.triangle){
+            hShooter.Fire(2);
             num = 1;
             elapsedTime.reset();
         }
 
+        if(gamepad1.circle){
+            hShooter.Fire(3);
 
-        if(elapsedTime.seconds() > 2){
-            num = 0;
         }
 
 
@@ -228,10 +227,6 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
         hShooter.loop();
-
-        if(num == 1){
-            telemetry.addData("We", "Are being run2");
-        }
 
     }
 

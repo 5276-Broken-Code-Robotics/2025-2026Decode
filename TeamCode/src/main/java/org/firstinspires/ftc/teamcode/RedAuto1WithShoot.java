@@ -6,12 +6,16 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -46,6 +50,8 @@ public class RedAuto1WithShoot extends OpMode {
     private final Pose finalPose = new Pose(103, 68, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain rotate1, grabPickup1, shootPickup1, rotate2, grabPickup2, shootPickup2, rotate3, grabPickup3, shootPickup3, finalPosition;
     private Path scorePreload;
+
+    GoBildaPinpointDriver pinpoint;
 
     public void buildPaths() {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
@@ -227,6 +233,15 @@ public class RedAuto1WithShoot extends OpMode {
         buildPaths();
         follower.setStartingPose(startPose);
 
+
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        pinpoint.resetPosAndIMU();
+
+
+        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(144)));
+
         shooter = new HoodedShooter();
 
 
@@ -238,7 +253,7 @@ public class RedAuto1WithShoot extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
 
-        shooter.init(hardwareMap, telemetry);
+        shooter.init(hardwareMap, telemetry, pinpoint);
         intake.setPower(0);
 
     }

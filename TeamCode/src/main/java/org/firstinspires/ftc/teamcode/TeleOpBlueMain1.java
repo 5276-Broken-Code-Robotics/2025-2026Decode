@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+/*
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -24,7 +25,9 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 
+
 public class TeleOpBlueMain1 extends OpMode {
+
     private Servo pan;
     private Servo tilt;
 
@@ -271,3 +274,4 @@ public class TeleOpBlueMain1 extends OpMode {
 
 
 }
+*/

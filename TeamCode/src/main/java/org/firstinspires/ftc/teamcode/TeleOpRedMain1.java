@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode;
-
+/*
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -265,3 +265,5 @@ public class TeleOpRedMain1 extends OpMode {
 
 
 }
+
+*/

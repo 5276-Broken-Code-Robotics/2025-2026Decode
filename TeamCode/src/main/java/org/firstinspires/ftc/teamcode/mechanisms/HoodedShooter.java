@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import static java.lang.Math.PI;
 
-import com.pedropathing.follower.Follower;
 
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -26,7 +25,7 @@ import java.util.*;
 
 public class HoodedShooter {
 
-    FreeSortHSV freeSort;
+    UseFreeSortHSV freeSort;
 
 
     private DcMotor pan;
@@ -60,7 +59,6 @@ public class HoodedShooter {
 
     public boolean shotbegan = false;
 
-    Follower follower;
     boolean resetting = false;
 
     ElapsedTime waitrotate;
@@ -87,11 +85,13 @@ public class HoodedShooter {
 
         shootTimer = new ElapsedTime();
 
-        freeSort = new FreeSortHSV();
+        freeSort = new UseFreeSortHSV();
 
         freeSort.init(hardwareMap);
 
         shootTimer.reset();
+
+
 
         tilt = hardwareMap.get(Servo.class, "tilt");
         intake = hardwareMap.get(DcMotor.class, "intake");
@@ -105,9 +105,10 @@ public class HoodedShooter {
         pan.setPower(1);
         pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        pinpoint.resetPosAndIMU();
+
+        this.pinpoint = pinpoint;
+
+
         intake.setDirection(DcMotor.Direction.REVERSE);
         flywheel1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -126,9 +127,6 @@ public class HoodedShooter {
 
     public void loop()
     {
-
-
-
         freeSort.loop();
         telemetry.addData("Flywheel power", flywheel1.getPower() + " " + flywheel2.getPower());
         telemetry.addData("Pan position : ", pan.getCurrentPosition());
@@ -136,7 +134,6 @@ public class HoodedShooter {
 
 
         telemetry.addData("Rotated : ", rotated);
-        telemetry.addData("Heading", follower.getHeading());
         telemetry.addData("State : ", state);
 
 
@@ -171,7 +168,12 @@ public class HoodedShooter {
 
 
         Orienting();
-        Firing();
+
+
+        pan.setTargetPosition(0);
+        flywheel1.setPower(0.75);
+        flywheel2.setPower(0.75);
+        tilt.setPosition(0.075);
 
     }
 
@@ -214,6 +216,8 @@ public class HoodedShooter {
         shotbegan = true;
     }
 
+
+
     public void BeginShot(int id){
 
         isAutoShot = false;
@@ -229,9 +233,6 @@ public class HoodedShooter {
         }
 
         rotated = false;
-
-        if(!shotbegan)Orienting();
-
         shotbegan = true;
 
 
@@ -247,37 +248,18 @@ public class HoodedShooter {
 
 
 
-    public void Firing(){
-        if(!isAutoShot){
-            if(shotbegan){
-                pan.setTargetPosition(0);
-                flywheel1.setPower(0.75);
-                flywheel2.setPower(0.75);
-                tilt.setPosition(0.075);
+    public void Fire(int num){
 
-                if(shootTimer.seconds() > 2){
-                    shootTimer.reset();
-                }
-
-                freeSort.allShootDone = false;
-                freeSort.shootAll();
-            }
+        if(num == 1){
+            freeSort.shootArm1();
         }
 
+        if(num == 2){
+            freeSort.shootArm2();
+        }
 
-        if(isAutoShot){
-            pan.setTargetPosition((int) positionnecessary);
-            flywheel2.setPower(flywheelPower);
-            flywheel1.setPower(flywheelPower);
-            tilt.setPosition(0.075);
-
-
-            if(shootTimer.seconds() > 2){
-                shootTimer.reset();
-            }
-            freeSort.allShootDone = false;
-            freeSort.shootAll();
-
+        if(num == 3){
+            freeSort.shootArm3();
         }
 
 

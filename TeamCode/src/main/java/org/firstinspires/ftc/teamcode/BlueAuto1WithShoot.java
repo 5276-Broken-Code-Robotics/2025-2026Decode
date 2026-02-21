@@ -6,6 +6,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -15,6 +16,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
@@ -31,6 +35,7 @@ public class BlueAuto1WithShoot extends OpMode {
     private DcMotor intake;
 
     private Follower follower;
+    private GoBildaPinpointDriver pinpoint;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
     private final Pose startPose = new Pose(144-125.4, 119.3, Math.toRadians(144)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(144-96, 99, Math.toRadians(180)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
@@ -230,6 +235,14 @@ public class BlueAuto1WithShoot extends OpMode {
 
 
 
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        pinpoint.resetPosAndIMU();
+
+
+        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,144-125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(144)));
+
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
 
@@ -238,7 +251,7 @@ public class BlueAuto1WithShoot extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
 
-        shooter.init(hardwareMap, telemetry);
+        shooter.init(hardwareMap, telemetry, pinpoint);
     }
 
     @Override

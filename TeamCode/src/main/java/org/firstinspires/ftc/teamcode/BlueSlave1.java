@@ -6,12 +6,16 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
@@ -25,6 +29,7 @@ public class BlueSlave1 extends OpMode {
     private DcMotor intake;
 
     private Follower follower;
+    GoBildaPinpointDriver pinpoint;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
 
 
@@ -63,7 +68,12 @@ public class BlueSlave1 extends OpMode {
         opmodeTimer = new ElapsedTime();
 
 
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        pinpoint.resetPosAndIMU();
 
+        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,144- 80, 0, AngleUnit.RADIANS, Math.toRadians(0)));
 
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
@@ -82,7 +92,7 @@ public class BlueSlave1 extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
 
-        shooter.init(hardwareMap, telemetry);
+        shooter.init(hardwareMap, telemetry, pinpoint);
     }
 
     @Override

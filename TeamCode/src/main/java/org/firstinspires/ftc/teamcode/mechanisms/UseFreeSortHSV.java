@@ -43,6 +43,8 @@ public class UseFreeSortHSV {
     float greenHMaxV3 = 175;
     float greenHMinV3 = 145;
 
+    ElapsedTime shootcd;
+
     float purpleHMaxV2 = 290;
     float purpleHMinV2 = 180;
     float greenHMaxV2 = 160;
@@ -117,6 +119,10 @@ public class UseFreeSortHSV {
 
     }
 
+
+    public void shootAll(){
+
+    }
 
     public void loop(){
 
