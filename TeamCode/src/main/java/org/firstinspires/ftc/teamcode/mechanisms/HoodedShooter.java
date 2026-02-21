@@ -87,7 +87,7 @@ public class HoodedShooter {
 
         freeSort = new UseFreeSortHSV();
 
-        freeSort.init(hardwareMap);
+        freeSort.init(hardwareMap, telemetry);
 
         shootTimer.reset();
 
@@ -214,11 +214,16 @@ public class HoodedShooter {
 
         pan.setTargetPosition((int)positionnecessary);
         shotbegan = true;
+
+
+
+        shotbegan = false;
     }
 
 
 
     public void BeginShot(int id){
+
 
         isAutoShot = false;
         elapsedTime.reset();
@@ -236,6 +241,14 @@ public class HoodedShooter {
         shotbegan = true;
 
 
+
+
+
+
+
+
+        shotbegan = false;
+
     }
 
 
@@ -250,17 +263,6 @@ public class HoodedShooter {
 
     public void Fire(int num){
 
-        if(num == 1){
-            freeSort.shootArm1();
-        }
-
-        if(num == 2){
-            freeSort.shootArm2();
-        }
-
-        if(num == 3){
-            freeSort.shootArm3();
-        }
 
 
     }

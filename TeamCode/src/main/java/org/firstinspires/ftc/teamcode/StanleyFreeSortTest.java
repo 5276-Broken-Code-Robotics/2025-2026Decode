@@ -32,7 +32,7 @@ public class StanleyFreeSortTest extends OpMode {
 
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 24, AngleUnit.RADIANS,0));
 
-        freeSort.init(hardwareMap);
+        freeSort.init(hardwareMap, telemetry);
 
 
 
@@ -41,17 +41,25 @@ public class StanleyFreeSortTest extends OpMode {
     public void loop(){
 
         if(gamepad1.squareWasPressed()){
-            freeSort.shootArm1();
+            freeSort.shootnum = 1;
+            freeSort.armsMoving = true;
         }
         if(gamepad1.triangleWasPressed()){
-            freeSort.shootArm2();
+            freeSort.shootnum = 2;
+
+            freeSort.armsMoving = true;
         }
         if(gamepad1.circleWasPressed()){
-            freeSort.shootArm3();
+            freeSort.shootnum = 3;
+
+            freeSort.armsMoving = true;
+
         }
 
         freeSort.loop();
+
     }
+
     public void start(){
 
     }

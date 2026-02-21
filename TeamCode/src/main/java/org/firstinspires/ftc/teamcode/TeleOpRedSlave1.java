@@ -79,6 +79,7 @@ public class TeleOpRedSlave1 extends OpMode {
     GoBildaPinpointDriver pinpoint;
 
 
+    Servo arm1;
 
     Limelight3A limelight;
     boolean rewinding = false;
@@ -112,6 +113,8 @@ public class TeleOpRedSlave1 extends OpMode {
         br = hardwareMap.get(DcMotor.class, "br");
         pan = hardwareMap.get(DcMotor.class, "rot");
 
+
+        arm1 = hardwareMap.get(Servo.class, "arm1");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
 
@@ -158,6 +161,7 @@ public class TeleOpRedSlave1 extends OpMode {
     public void start(){
         intake.setPower(1);
     }
+    double val = 0.6;
 
     public void loop(){
 
@@ -172,6 +176,8 @@ public class TeleOpRedSlave1 extends OpMode {
 
             if(intake.getPower() == -1)intake.setPower(1);
         }
+
+
 
 
 
@@ -198,7 +204,7 @@ public class TeleOpRedSlave1 extends OpMode {
 
         telemetry.addData("Num : " , num);
 
-
+/*
 
         if(gamepad1.square){
             hShooter.Fire(1);
@@ -222,13 +228,38 @@ public class TeleOpRedSlave1 extends OpMode {
 
         }
 
+ */
+
+
+
+
+        telemetry.addData("Val :", val);
+        if(gamepad1.square){
+
+            telemetry.addData("We are on square", "hooray");
+            arm1.setPosition(val);
+        }else{
+            arm1.setPosition(0);
+        }
+
+        if(gamepad1.triangleWasPressed()){
+            val+=0.05;
+        }
+
+        if(gamepad1.circle){
+            telemetry.addData("We are on circle", "Wow");
+            arm1.setPosition(0.4);
+        }
 
 
 
 
         hShooter.loop();
 
+
+        telemetry.update();
     }
+
 
 
     public void drive(double forward, double strafe, double rotate) {

@@ -39,6 +39,8 @@ public class UseFreeSortHSV {
     float sensorGain = 30f;
 
     float purpleHMaxV3 = 245;
+
+
     float purpleHMinV3 = 185;
     float greenHMaxV3 = 175;
     float greenHMinV3 = 145;
@@ -48,6 +50,8 @@ public class UseFreeSortHSV {
     float purpleHMaxV2 = 290;
     float purpleHMinV2 = 180;
     float greenHMaxV2 = 160;
+
+    ElapsedTime shootWaitTimer;
     float greenHMinV2 = 120;
 
 
@@ -61,8 +65,12 @@ public class UseFreeSortHSV {
 
     ElapsedTime shootCD;
 
+    public boolean armsMoving = false;
+
     double kickRot = .4;
     double emptyRot = kickRot/2;
+
+    public int shootnum;
     /*
 
     kickRot = degrees needed to kick ball into turret/270
@@ -71,13 +79,24 @@ public class UseFreeSortHSV {
 
 
 
+    Telemetry telemetry;
 
 
-    public void init(HardwareMap hardwareMap) {
 
 
+    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+
+
+
+
+        shootWaitTimer = new ElapsedTime();
         shootCD = new ElapsedTime();
 
+
+
+
+        this.telemetry = telemetry;
+        shootWaitTimer.reset();
         shootCD.reset();
         arm1 = hardwareMap.get(Servo.class, "arm1");
         arm2 = hardwareMap.get(Servo.class, "arm2");
@@ -90,104 +109,73 @@ public class UseFreeSortHSV {
         sensor1.setGain(sensorGain);
         sensor2.setGain(sensorGain);
         sensor3.setGain(sensorGain);
-    }
-
-
-    public void shootArm1() {
-        if (pos1!='e') {shoot(arm1); pos1 = 'e';}
-    }
-
-    public void shootArm2 () {
-        if (pos2!='e') {shoot(arm2); pos2 = 'e';}
-    }
-
-    public void shootArm3() {
-        if (pos3!='e') {shoot(arm3); pos3 = 'e';}
-    }
-
-
-
-
-    public void shoot(Servo arm){
-        shootCD.reset();
-
-        if (arm!=arm1 && pos1 == 'e'){arm1.setPosition(emptyRot);}
-        if (arm!=arm2 && pos2 == 'e'){arm2.setPosition(emptyRot);}
-        if (arm!=arm3 && pos3 == 'e'){arm3.setPosition(emptyRot);}
-
-        arm.setPosition(kickRot);
+        arm1CD = new ElapsedTime();
+        arm2CD = new ElapsedTime();
+        arm3CD = new ElapsedTime();
 
     }
 
 
-    public void shootAll(){
+
+
+
+
+
+    public void shoot(int armnum){
+
+        if (armnum!=1 && pos1 == 'e'){
+            arm1.setPosition(emptyRot);
+        }
+        if (armnum!=2 && pos2 == 'e'){
+            arm2.setPosition(emptyRot);
+        }
+        if (armnum!=3 && pos3 == 'e'){
+            arm3.setPosition(emptyRot);
+        }
+
+
+        if(armnum == 1)
+        {
+            arm1Shooting = true;
+            arm1.setPosition(kickRot);
+        }
+
+        if(armnum == 2)
+        {
+            arm2Shooting = true;
+            arm2.setPosition(kickRot);
+
+        }
+        if(armnum == 3)
+        {
+            arm3Shooting = true;
+            arm3.setPosition(kickRot);
+
+        }
+
 
     }
+
+
+    ElapsedTime arm1CD;
+    ElapsedTime arm2CD;
+    ElapsedTime arm3CD;
+
+
 
     public void loop(){
+        updateColors(telemetry);
 
-        if(arm1.getPosition() == kickRot){
-            if(shootCD.seconds() >= 0.05f){
-                arm1.setPosition(0);
-                shootCD.reset();
-                arm1Shooting = false;
-            }else{
-                arm1Shooting = true;
-            }
+        if(!arm1Shooting){
+            arm1CD.reset();
         }
-
-        if(arm2.getPosition() == kickRot){
-            if(shootCD.seconds() >= 0.05f){
-                arm2.setPosition(0);
-                shootCD.reset();
-                arm2Shooting = false;
-            }else{
-                arm2Shooting = true;
-
-            }
+        if(!arm2Shooting){
+            arm2CD.reset();
         }
-
-        if(arm3.getPosition() == kickRot){
-            if(shootCD.seconds() >= 0.05f){
-                arm3.setPosition(0);
-                shootCD.reset();
-                arm3Shooting = false;
-            }else{
-                arm3Shooting = true;
-            }
-        }
-
-        if(arm1.getPosition() == emptyRot){
-            if(shootCD.seconds() >= 0.05f){
-                arm1.setPosition(0);
-                shootCD.reset();
-                arm1Shooting = false;
-            }else{
-                arm1Shooting = true;
-            }
-        }
-
-        if(arm2.getPosition() == emptyRot){
-        if(shootCD.seconds() >= 0.05f){
-            arm2.setPosition(0);
-            shootCD.reset();
-            arm2Shooting = false;
-        }else{
-            arm2Shooting = true;
-
+        if(!arm3Shooting){
+            arm3CD.reset();
         }
     }
-
-    if(arm3.getPosition() == emptyRot){
-        if(shootCD.seconds() >= 0.05f){
-            arm3.setPosition(0);
-            shootCD.reset();
-            arm3Shooting = false;
-        }else{
-            arm3Shooting = true;
-        }
-    }
-}
 
 
 
@@ -236,7 +224,7 @@ public class UseFreeSortHSV {
 
 
 
-          if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
+        if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
             pos1 = 'p';
         }
         else if (greenHMaxV3 > sensor1hue && sensor1hue > greenHMinV3){
