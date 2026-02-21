@@ -17,6 +17,8 @@ public class FreeSortHSV {
     char pos2;
     char pos3;
 
+    public boolean allShootDone = false;
+
     /*
     g = green
     p = purple
@@ -102,6 +104,14 @@ public class FreeSortHSV {
         if (pos3 != 'e' && !arm3Shooting) {
             shoot(arm3); pos3 = 'e';
         }
+
+        if(pos1 == 'e' && pos2 == 'e' && pos3 == 'e'){
+            allShootDone = true;
+        }else{
+            allShootDone = false;
+        }
+
+
     }
     public void shootGreen(){
 

@@ -128,6 +128,8 @@ public class HoodedShooter {
     {
 
 
+
+        freeSort.loop();
         telemetry.addData("Flywheel power", flywheel1.getPower() + " " + flywheel2.getPower());
         telemetry.addData("Pan position : ", pan.getCurrentPosition());
 
@@ -256,6 +258,9 @@ public class HoodedShooter {
                 if(shootTimer.seconds() > 2){
                     shootTimer.reset();
                 }
+
+                freeSort.allShootDone = false;
+                freeSort.shootAll();
             }
         }
 
@@ -266,9 +271,13 @@ public class HoodedShooter {
             flywheel1.setPower(flywheelPower);
             tilt.setPosition(0.075);
 
+
             if(shootTimer.seconds() > 2){
                 shootTimer.reset();
             }
+            freeSort.allShootDone = false;
+            freeSort.shootAll();
+
         }
 
 
