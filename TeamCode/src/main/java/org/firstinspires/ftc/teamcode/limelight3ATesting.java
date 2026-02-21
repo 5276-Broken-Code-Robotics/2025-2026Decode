@@ -92,6 +92,8 @@ public class limelight3ATesting extends OpMode {
         follower.update();
 
         telemetry.addData("Runnning?" , limelight3A.isRunning());
+
+
         pinpoint.update();
         double robotHeading = pinpoint.getHeading(AngleUnit.RADIANS);
         limelight3A.updateRobotOrientation(robotHeading + pan.getCurrentPosition() / 537.7/2 * PI);
