@@ -131,13 +131,13 @@ public class TeleOpRedSlave1 extends OpMode {
         pinpoint.resetPosAndIMU();
 
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 24, AngleUnit.RADIANS,0));
-        intake.setDirection(DcMotor.Direction.REVERSE);
 
 
 
         intake = hardwareMap.get(DcMotor.class, "intake");
 
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        //intake.setDirection(DcMotor.Direction.REVERSE);
+
 
         timer.reset();
         beganshot = false;
@@ -160,6 +160,8 @@ public class TeleOpRedSlave1 extends OpMode {
     @Override
     public void start(){
         intake.setPower(1);
+
+
     }
     double val = 0.6;
 
@@ -198,42 +200,6 @@ public class TeleOpRedSlave1 extends OpMode {
             intake.setPower(1);
         }
 
-        telemetry.addData("ms", elapsedTime.milliseconds());
-
-
-
-        telemetry.addData("Num : " , num);
-
-/*
-
-        if(gamepad1.square){
-            hShooter.Fire(1);
-
-
-
-            num = 1;
-            elapsedTime.reset();
-
-
-        }
-
-        if(gamepad1.triangle){
-            hShooter.Fire(2);
-            num = 1;
-            elapsedTime.reset();
-        }
-
-        if(gamepad1.circle){
-            hShooter.Fire(3);
-
-        }
-
- */
-
-
-
-
-        telemetry.addData("Val :", val);
         if(gamepad1.square){
 
             telemetry.addData("We are on square", "hooray");
@@ -244,42 +210,18 @@ public class TeleOpRedSlave1 extends OpMode {
             telemetry.addData("We are on circle", "Wow");
             hShooter.Fire(2);
         }
+
         if(gamepad1.triangleWasPressed()){
+
             telemetry.addData("We are on triangle", "Wow");
-            hShooter.Fire(3);        }
-
-
-
-
-
+            hShooter.Fire(3);
+        }
 
 
         hShooter.loop();
 
 
-        telemetry.update();
-    }
-
-
-
-    public void drive(double forward, double strafe, double rotate) {
-        double flPower = forward + strafe + rotate;
-        double frPower = forward - strafe - rotate;
-        double blPower = forward - strafe + rotate;
-        double brPower = forward + strafe - rotate;
-
-        double maxPower = 1.0;
-        double maxSpeed = 1.0;
-
-        maxPower = Math.max(maxPower, Math.abs(flPower));
-        maxPower = Math.max(maxPower, Math.abs(frPower));
-        maxPower = Math.max(maxPower, Math.abs(blPower));
-        maxPower = Math.max(maxPower, Math.abs(brPower));
-
-        fl.setPower((maxSpeed * (flPower / maxPower)));
-        fr.setPower((maxSpeed * (frPower / maxPower)));
-        bl.setPower((maxSpeed * (blPower / maxPower)));
-        br.setPower((maxSpeed * (brPower / maxPower)));
+        //telemetry.update();
     }
 
 

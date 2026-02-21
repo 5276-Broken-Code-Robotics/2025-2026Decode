@@ -51,7 +51,7 @@ public class BlueSlave1 extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                shooter.AutoBeginShot(false,true);
+                //shooter.AutoBeginShot(false,true);
                 setPathState(1);
             case 1:
 

@@ -79,23 +79,27 @@ public class UseFreeSortHSV {
 
 
 
-    Telemetry telemetry;
+    private Telemetry telem;
 
 
 
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry) {
 
+        incrementCD = new ElapsedTime();
 
+        TMa1 = false;
+        TMa2 = false;
 
-
+        TMa3 = false;
+        stuckStartCD = new ElapsedTime();
         shootWaitTimer = new ElapsedTime();
         shootCD = new ElapsedTime();
 
 
 
 
-        this.telemetry = telemetry;
+        telem = telemetry;
         shootWaitTimer.reset();
         shootCD.reset();
         arm1 = hardwareMap.get(Servo.class, "arm1");
@@ -118,7 +122,7 @@ public class UseFreeSortHSV {
 
 
 
-    boolean shooting = false;
+    public boolean shooting = false;
 
     boolean arm1Stuck = false;
     boolean arm2Stuck = false;
@@ -127,23 +131,27 @@ public class UseFreeSortHSV {
 
 
 
-    ElapsedTime stuckEndCD;
+
+
+    ElapsedTime stuckStartCD;
+
     public void shoot(int armnum){
 
 
         shooting = true;
         if (armnum!=1 && pos1 == 'e'){
-            arm1.setPosition(emptyRot);
             arm1Stuck = true;
+            stuckStartCD.reset();
         }
         if (armnum!=2 && pos2 == 'e'){
-            arm2.setPosition(emptyRot);
             arm2Stuck = true;
+            stuckStartCD.reset();
+
         }
         if (armnum!=3 && pos3 == 'e'){
-            arm3.setPosition(emptyRot);
-
             arm3Stuck = true;
+            stuckStartCD.reset();
+
         }
 
 
@@ -156,18 +164,16 @@ public class UseFreeSortHSV {
         if(armnum == 2)
         {
             arm2Shooting = true;
-            arm2.setPosition(kickRot);
+            //arm2.setPosition(kickRot);
 
         }
         if(armnum == 3)
         {
             arm3Shooting = true;
             arm3.setPosition(kickRot);
-
         }
-
-
     }
+
 
 
     ElapsedTime arm1CD;
@@ -176,14 +182,91 @@ public class UseFreeSortHSV {
 
 
 
+    boolean TMa1 = false;
+    boolean TMa2= false;
+    boolean TMa3 = false;
+
+
+    ElapsedTime incrementCD;
+
+    int dex = 0;
+
+    int num = 0;
     public void loop(){
-        updateColors(telemetry);
+        updateColors();
+
+        if(!arm1Shooting && !arm1Stuck){
+            arm1.setPosition(0);
+        }
+        if(!arm2Shooting && !arm2Stuck){
+            arm2.setPosition(0);
+        }
+        if(!arm3Shooting && !arm3Stuck){
+            arm3.setPosition(0);
+        }
+
+        telem.addData("A1Shooting:", arm1Shooting);
+        telem.addData("A1Stuck:", arm1Stuck);
+
+
+        telem.addData("A2Shooting", arm2Shooting);
+        telem.addData("A2Stuck:", arm2Stuck);
+
+        telem.addData("A3Shooting", arm3Shooting);
+        telem.addData("A3Stuck:", arm3Stuck);
+
+        telem.addData("A1 shot yet", TMa1);
+        telem.addData("A2 shot yet", TMa2);
+        telem.addData("A3 shot yet", TMa3);
+
+
+
+
+        telem.addData("A1 pos", arm1.getPosition() );
+        telem.addData("A2 pos", arm2.getPosition() );
+        telem.addData("A3 pos", arm3.getPosition() );
+
+
+
+        telem.addData("Shooting : ", shooting);
+        telem.addData("NUM : ", num);
+
+        num++;
+
+        telem.update();
+
+        double[] posArr = {kickRot/3, 0, kickRot*2/3,0,kickRot};
+
+        if(arm2Shooting && incrementCD.seconds() > 0.2){
+
+
+            TMa2 = true;
+            if(dex > 4){
+
+                dex = 0;
+                arm2.setPosition(0);
+                incrementCD.reset();
+                arm2Shooting = false;
+                shooting = false;
+                arm1Stuck = false;
+                arm2Stuck = false;
+                arm3Stuck = false;
+            }else{
+                arm2.setPosition(posArr[dex]);
+            }
+
+            dex++;
+            incrementCD.reset();
+        }
+
+
 
 
         if(!arm1Shooting && !arm2Shooting && !arm3Shooting){
             arm1Stuck = false;
             arm2Stuck = false;
             arm3Stuck = false;
+            shooting = false;
         }
 
 
@@ -196,7 +279,8 @@ public class UseFreeSortHSV {
         if(!arm1Shooting){
             arm1CD.reset();
         }else{
-            if(arm1CD.seconds() > 0.05 && !arm1Stuck){
+            TMa1 = true;
+            if(arm1CD.seconds() > 0.3){
                 arm1.setPosition(0);
 
                 arm1Shooting = false;
@@ -205,15 +289,19 @@ public class UseFreeSortHSV {
                 arm1Stuck = false;
                 arm2Stuck = false;
                 arm3Stuck = false;
+            }else{
+                arm1.setPosition(kickRot);
             }
         }
 
 
 
+
+        /*
         if(!arm2Shooting){
             arm2CD.reset();
         }else{
-            if(arm2CD.seconds() > 0.05 && !arm2Stuck){
+            if(arm2CD.seconds() > 4){
                 arm2.setPosition(0);
                 arm2Shooting = false;
                 shooting = false;
@@ -225,18 +313,24 @@ public class UseFreeSortHSV {
 
         }
 
+         */
+
+
+
         if(!arm3Shooting){
             arm3CD.reset();
         }else{
-            if(arm3CD.seconds() > 0.05 && !  arm3Stuck){
+            TMa3 = true;
+            if(arm3CD.seconds() > 0.3){
                 arm3.setPosition(0);
                 arm3Shooting = false;
                 shooting = false;
 
-
                 arm1Stuck = false;
                 arm2Stuck = false;
                 arm3Stuck = false;
+            }else{
+                arm3.setPosition(kickRot);
             }
 
         }
@@ -244,7 +338,7 @@ public class UseFreeSortHSV {
 
 
 
-    public void updateColors(Telemetry telemetry) {
+    public void updateColors() {
         NormalizedRGBA sensor1Colors = sensor1.getNormalizedColors();
         NormalizedRGBA sensor2Colors = sensor2.getNormalizedColors();
         NormalizedRGBA sensor3Colors = sensor3.getNormalizedColors();
@@ -266,7 +360,7 @@ public class UseFreeSortHSV {
         sensor3sat = JavaUtil.colorToSaturation(sensor3Colors.toColor());
         sensor3val = JavaUtil.colorToValue(sensor3Colors.toColor());
 
-
+/*
 
         telemetry.addLine("Sensor 1");
         telemetry.addData("hue", sensor1hue);
@@ -288,6 +382,8 @@ public class UseFreeSortHSV {
         telemetry.addData("Pos3", pos3);
 
 
+
+ */
 
         if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
             pos1 = 'p';

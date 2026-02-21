@@ -94,7 +94,7 @@ public class panTester extends OpMode {
         telemetry.addData("Runnning?" , limelight3A.isRunning());
         pinpoint.update();
         double robotHeading = pinpoint.getHeading(AngleUnit.RADIANS);
-        limelight3A.updateRobotOrientation(robotHeading + pan.getCurrentPosition() / 537.7/2 * PI);
+        limelight3A.updateRobotOrientation(robotHeading + pan.getCurrentPosition() / (537.7/2) * PI);
 
 
         double angleToAprilTag = Math.atan2((144 - pinpoint.getPosY(DistanceUnit.INCH)),(144 - pinpoint.getPosX(DistanceUnit.INCH)));

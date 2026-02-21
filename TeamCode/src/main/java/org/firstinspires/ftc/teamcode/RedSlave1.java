@@ -42,16 +42,22 @@ public class RedSlave1 extends OpMode {
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), finalPose.getHeading());
     }
 
+    boolean tweaking = false;
+
     public void setPathState(int pState) {
         pathState = pState;
     }
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                shooter.AutoBeginShot(true,true);
+                //shooter.AutoBeginShot(true,true);
                 setPathState(1);
             case 1:
-                if(!shooter.shotbegan)follower.followPath(scorePreload);
+                if(!shooter.shotbegan){
+                    follower.followPath(scorePreload);
+                }else{
+                    tweaking = true;
+                }
                 setPathState(-1);
         }
 
@@ -101,6 +107,9 @@ public class RedSlave1 extends OpMode {
 
 
         autonomousPathUpdate();
+
+        if(tweaking)telemetry.addData("Hi", "Why are you tweaking lil bro");
+
         // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());

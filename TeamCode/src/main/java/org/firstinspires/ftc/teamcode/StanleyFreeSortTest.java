@@ -41,18 +41,13 @@ public class StanleyFreeSortTest extends OpMode {
     public void loop(){
 
         if(gamepad1.squareWasPressed()){
-            freeSort.shootnum = 1;
-            freeSort.armsMoving = true;
+
         }
         if(gamepad1.triangleWasPressed()){
-            freeSort.shootnum = 2;
 
-            freeSort.armsMoving = true;
         }
         if(gamepad1.circleWasPressed()){
-            freeSort.shootnum = 3;
 
-            freeSort.armsMoving = true;
 
         }
 
