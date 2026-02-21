@@ -13,9 +13,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class UseFreeSortHSV {
 
-    char pos1;
-    char pos2;
-    char pos3;
+    public char pos1;
+    public char pos2;
+    public char pos3;
 
     /*
     g = green
@@ -118,19 +118,32 @@ public class UseFreeSortHSV {
 
 
 
+    boolean shooting = false;
+
+    boolean arm1Stuck = false;
+    boolean arm2Stuck = false;
+    boolean arm3Stuck = false;
 
 
 
+
+    ElapsedTime stuckEndCD;
     public void shoot(int armnum){
 
+
+        shooting = true;
         if (armnum!=1 && pos1 == 'e'){
             arm1.setPosition(emptyRot);
+            arm1Stuck = true;
         }
         if (armnum!=2 && pos2 == 'e'){
             arm2.setPosition(emptyRot);
+            arm2Stuck = true;
         }
         if (armnum!=3 && pos3 == 'e'){
             arm3.setPosition(emptyRot);
+
+            arm3Stuck = true;
         }
 
 
@@ -166,14 +179,66 @@ public class UseFreeSortHSV {
     public void loop(){
         updateColors(telemetry);
 
+
+        if(!arm1Shooting && !arm2Shooting && !arm3Shooting){
+            arm1Stuck = false;
+            arm2Stuck = false;
+            arm3Stuck = false;
+        }
+
+
+
+        if(arm1Stuck)arm1.setPosition(emptyRot);
+        if(arm2Stuck)arm2.setPosition(emptyRot);
+        if(arm3Stuck)arm3.setPosition(emptyRot);
+
+
         if(!arm1Shooting){
             arm1CD.reset();
+        }else{
+            if(arm1CD.seconds() > 0.05 && !arm1Stuck){
+                arm1.setPosition(0);
+
+                arm1Shooting = false;
+                shooting = false;
+
+                arm1Stuck = false;
+                arm2Stuck = false;
+                arm3Stuck = false;
+            }
         }
+
+
+
         if(!arm2Shooting){
             arm2CD.reset();
+        }else{
+            if(arm2CD.seconds() > 0.05 && !arm2Stuck){
+                arm2.setPosition(0);
+                arm2Shooting = false;
+                shooting = false;
+
+                arm1Stuck = false;
+                arm2Stuck = false;
+                arm3Stuck = false;
+            }
+
         }
+
         if(!arm3Shooting){
             arm3CD.reset();
+        }else{
+            if(arm3CD.seconds() > 0.05 && !  arm3Stuck){
+                arm3.setPosition(0);
+                arm3Shooting = false;
+                shooting = false;
+
+
+                arm1Stuck = false;
+                arm2Stuck = false;
+                arm3Stuck = false;
+            }
+
         }
     }
 

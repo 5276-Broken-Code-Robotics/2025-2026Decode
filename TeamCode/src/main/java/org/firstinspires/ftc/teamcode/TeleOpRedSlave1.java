@@ -237,19 +237,19 @@ public class TeleOpRedSlave1 extends OpMode {
         if(gamepad1.square){
 
             telemetry.addData("We are on square", "hooray");
-            arm1.setPosition(val);
-        }else{
-            arm1.setPosition(0);
+            hShooter.Fire(1);
         }
+        if(gamepad1.circleWasPressed()){
 
-        if(gamepad1.triangleWasPressed()){
-            val+=0.05;
-        }
-
-        if(gamepad1.circle){
             telemetry.addData("We are on circle", "Wow");
-            arm1.setPosition(0.4);
+            hShooter.Fire(2);
         }
+        if(gamepad1.triangleWasPressed()){
+            telemetry.addData("We are on triangle", "Wow");
+            hShooter.Fire(3);        }
+
+
+
 
 
 
