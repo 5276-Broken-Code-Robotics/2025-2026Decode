@@ -92,18 +92,15 @@ public class UseFreeSortHSV {
 
 
     public void shootArm1() {
-        shoot(arm1);
-        pos1 = 'e';
+        if (pos1!='e') {shoot(arm1); pos1 = 'e';}
     }
 
     public void shootArm2 () {
-        shoot(arm2);
-        pos2 = 'e';
+        if (pos2!='e') {shoot(arm2); pos2 = 'e';}
     }
 
     public void shootArm3() {
-        shoot(arm3);
-        pos3 = 'e';
+        if (pos3!='e') {shoot(arm3); pos3 = 'e';}
     }
 
 
