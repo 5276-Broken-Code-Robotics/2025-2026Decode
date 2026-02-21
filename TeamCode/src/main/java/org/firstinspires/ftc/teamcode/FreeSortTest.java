@@ -26,6 +26,8 @@ public class FreeSortTest extends OpMode {
         if (gamepad1.right_trigger > .5) freesort.shootAll();
         if (gamepad1.right_bumper) freesort.shootPurple();
         if (gamepad1.left_bumper) freesort.shootGreen();
+
+
     }
 
 

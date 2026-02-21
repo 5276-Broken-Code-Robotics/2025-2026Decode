@@ -30,9 +30,9 @@ public class FreeSortHSV {
         |intake|
     */
 
-    public Servo arm1;
-    public Servo arm2;
-    public Servo arm3;
+    Servo arm1;
+    Servo arm2;
+    Servo arm3;
 
     RevColorSensorV3 sensor1;
     RevColorSensorV3 sensor2;
@@ -61,10 +61,10 @@ public class FreeSortHSV {
 
     ElapsedTime shootCD;
 
-    double kickRot = .3;
-    double emptyRot = .15;
+    double kickRot = .4;
+    double emptyRot = kickRot/2;
     /*
-    TODO calculate kickRot once cad done
+
     kickRot = degrees needed to kick ball into turret/270
      */
 

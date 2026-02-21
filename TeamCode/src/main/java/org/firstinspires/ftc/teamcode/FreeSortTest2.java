@@ -17,17 +17,26 @@ public class FreeSortTest2 extends OpMode {
 
     @Override
     public void init() {
-        Servo arm3 = hardwareMap.get(Servo.class, "arm3");
-        Servo arm2 = hardwareMap.get(Servo.class, "arm2");
 
+        arm1 = hardwareMap.get(Servo.class, "arm1");
+        arm2 = hardwareMap.get(Servo.class, "arm2");
+        arm3 = hardwareMap.get(Servo.class, "arm3");
+
+        
 
     }
 
     @Override
     public void loop() {
 
-        arm2.setPosition((.3 * (double) gamepad1.right_trigger));
-        arm3.setPosition((.3 * (double) gamepad1.left_trigger));
+        arm2.setPosition((.4 * (double) gamepad1.right_trigger));
+        arm3.setPosition((.4 * (double) gamepad1.left_trigger));
+
+        /*
+        arm1.setPosition(.15 * gamepad2.right_trigger);
+        arm2.setPosition((.15 * gamepad2.right_trigger));
+        arm3.setPosition((.3 * gamepad2.right_trigger));
+        */
 
     }
 
