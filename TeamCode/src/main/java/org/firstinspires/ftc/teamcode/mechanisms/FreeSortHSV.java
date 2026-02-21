@@ -56,6 +56,7 @@ public class FreeSortHSV {
     boolean arm3Shooting = false;
 
 
+
     ElapsedTime shootCD;
 
     double kickRot = .4;
@@ -174,14 +175,14 @@ public class FreeSortHSV {
         }
 
         if(arm1.getPosition() == emptyRot){
-        if(shootCD.seconds() >= 0.05f){
-            arm1.setPosition(0);
-            shootCD.reset();
-            arm1Shooting = false;
-        }else{
-            arm1Shooting = true;
+            if(shootCD.seconds() >= 0.05f){
+                arm1.setPosition(0);
+                shootCD.reset();
+                arm1Shooting = false;
+            }else{
+                arm1Shooting = true;
+            }
         }
-    }
 
         if(arm2.getPosition() == emptyRot){
         if(shootCD.seconds() >= 0.05f){
@@ -194,7 +195,7 @@ public class FreeSortHSV {
         }
     }
 
-        if(arm3.getPosition() == emptyRot){
+    if(arm3.getPosition() == emptyRot){
         if(shootCD.seconds() >= 0.05f){
             arm3.setPosition(0);
             shootCD.reset();

@@ -151,7 +151,7 @@ public class TeleOpBlueSlave1 extends OpMode {
 
         pan.setPosition(0);
 
-        hShooter.init(hardwareMap,telemetry, follower, fl, fr, bl, br);
+        hShooter.init(hardwareMap,telemetry);
 
         state=  0;
 

@@ -157,7 +157,7 @@ public class TeleOpBlueMain1 extends OpMode {
 
 
 
-        hShooter.init(hardwareMap,telemetry, follower, fl, fr, bl, br);
+        hShooter.init(hardwareMap,telemetry,pin);
 
         state=  0;
     }

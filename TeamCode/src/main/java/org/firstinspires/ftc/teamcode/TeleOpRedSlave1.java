@@ -5,6 +5,8 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -15,6 +17,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebcam;
 import org.firstinspires.ftc.teamcode.mechanisms.FieldRelativeDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
@@ -25,18 +30,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 public class TeleOpRedSlave1 extends OpMode {
-    private Servo pan;
-    private Servo tilt;
-
-    float power = 0.75f;
-    double tiltangle = 0.3f;
-
-
-
-
-    float turretangle = 0f;
-
-    float initposforseeingpreorient = 0f;
+    private DcMotor pan;
     boolean beganshot = false;
 
     double initpos = 0f;
@@ -53,12 +47,10 @@ public class TeleOpRedSlave1 extends OpMode {
 
     FieldRelativeDrive fieldDrive;
     ElapsedTime elapsedTime;
-    private DcMotor flywheel;
 
     private DcMotor intake;
 
 
-    Follower follower;
 
 
 
@@ -67,19 +59,11 @@ public class TeleOpRedSlave1 extends OpMode {
     //0 : looking for
     //1 : orienting correctly
 
-    boolean waiting = false;
 
-
-    //0.75 for close sec 2
-
-    boolean seen = false;
-
-    CRServo transfer;
     ElapsedTime timer;
 
 
 
-    //Follower follower;
     double positionnecessary = 0f;
 
 
@@ -92,7 +76,11 @@ public class TeleOpRedSlave1 extends OpMode {
 
     ElapsedTime rewindTimer;
 
+    GoBildaPinpointDriver pinpoint;
 
+
+
+    Limelight3A limelight;
     boolean rewinding = false;
     int num = 0;
     public void init() {
@@ -107,39 +95,45 @@ public class TeleOpRedSlave1 extends OpMode {
 //        follower.setPose(new Pose(0,144));
 
 
-
         fieldDrive = new FieldRelativeDrive();
 
         fieldDrive.init(hardwareMap);
 
 
-        follower = Constants.createFollower(hardwareMap);
 
 
 
 
-        follower.setStartingPose(new Pose(96, 24, Math.toRadians(0)));
 
-
-        follower.setPose(new Pose(96, 24, Math.toRadians(0)));
-
-        follower.update();
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
         fl = hardwareMap.get(DcMotor.class, "fl");
         bl = hardwareMap.get(DcMotor.class, "bl");
         br = hardwareMap.get(DcMotor.class, "br");
-        tilt = hardwareMap.get(Servo.class, "tilt");
-        pan = hardwareMap.get(Servo.class, "pan");
-
-
-
-
-        pan.setPosition(0);
+        pan = hardwareMap.get(DcMotor.class, "rot");
 
         intake = hardwareMap.get(DcMotor.class, "intake");
-        transfer = hardwareMap.get(CRServo.class, "transfer");
-        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
+
+
+        limelight = hardwareMap.get(Limelight3A.class,"limelight");
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
+
+
+        pan = hardwareMap.get(DcMotor.class,"rot");
+        pan.setTargetPosition(0);
+        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        pinpoint.resetPosAndIMU();
+
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 24, AngleUnit.RADIANS,0));
+        intake.setDirection(DcMotor.Direction.REVERSE);
+
+
+
+        intake = hardwareMap.get(DcMotor.class, "intake");
+
         intake.setDirection(DcMotor.Direction.REVERSE);
 
         timer.reset();
@@ -153,7 +147,7 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
 
-        hShooter.init(hardwareMap,telemetry, follower, fl, fr, bl, br);
+        hShooter.init(hardwareMap,telemetry, pinpoint);
 
         state=  0;
         intake.setPower(0);
@@ -179,16 +173,6 @@ public class TeleOpRedSlave1 extends OpMode {
             if(intake.getPower() == -1)intake.setPower(1);
         }
 
-
-        /*
-
-        if(rewindTimer.seconds() > 3 && rewinding){
-            intake.setPower(1);
-
-            rewinding = false;
-        }
-
-         */
 
 
 
@@ -216,10 +200,8 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
 
-        telemetry.addData("Heading : ", follower.getHeading());
         if(gamepad1.right_bumper && num == 0){
 
-            follower.update();
             hShooter.BeginShot(24);
 
 
@@ -230,10 +212,8 @@ public class TeleOpRedSlave1 extends OpMode {
         }
 
         if(gamepad1.left_bumper && num == 0){
-            follower.update();
             hShooter.AutoBeginShot(true, true);
 
-            pan.setPosition(0.29);
             num = 1;
             elapsedTime.reset();
         }
@@ -244,7 +224,7 @@ public class TeleOpRedSlave1 extends OpMode {
         }
 
 
-        if(!hShooter.shotbegan)transfer.setPower(-1);
+
 
 
         hShooter.loop();
@@ -253,7 +233,6 @@ public class TeleOpRedSlave1 extends OpMode {
             telemetry.addData("We", "Are being run2");
         }
 
-        follower.update();
     }
 
 
