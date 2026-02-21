@@ -22,6 +22,8 @@ public class FreeSortTest2 extends OpMode {
         arm2 = hardwareMap.get(Servo.class, "arm2");
         arm3 = hardwareMap.get(Servo.class, "arm3");
 
+        
+
     }
 
     @Override
