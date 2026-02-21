@@ -26,12 +26,13 @@ import java.util.*;
 
 public class HoodedShooter {
 
-    ElapsedTime resetElapsedtime;
-
+    FreeSortHSV freeSort;
 
 
     private DcMotor pan;
     private Servo tilt;
+
+    ElapsedTime shootTimer;
 
     double initpos = 0f;
 
@@ -40,6 +41,8 @@ public class HoodedShooter {
     String state;
 
     ElapsedTime elapsedTime;
+
+
     private DcMotor flywheel1;
 
     private DcMotor flywheel2;
@@ -52,7 +55,6 @@ public class HoodedShooter {
 
     double flywheelPower;
 
-    CRServo transfer;
 
     Telemetry telemetry;
 
@@ -81,18 +83,26 @@ public class HoodedShooter {
     GoBildaPinpointDriver pinpoint;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
-    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+
+        shootTimer = new ElapsedTime();
+
+        freeSort = new FreeSortHSV();
+
+        freeSort.init(hardwareMap);
+
+        shootTimer.reset();
+
         tilt = hardwareMap.get(Servo.class, "tilt");
         intake = hardwareMap.get(DcMotor.class, "intake");
-        transfer = hardwareMap.get(CRServo.class, "transfer");
         flywheel1 = hardwareMap.get(DcMotor.class, "flywheel1");
         flywheel2 = hardwareMap.get(DcMotor.class, "flywheel1");
         limelight = hardwareMap.get(Limelight3A.class,"limelight");
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
 
 
         pan = hardwareMap.get(DcMotor.class,"rot");
         pan.setTargetPosition(0);
+        pan.setPower(1);
         pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
@@ -103,7 +113,6 @@ public class HoodedShooter {
         flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitrotate = new ElapsedTime();
-        resetElapsedtime = new ElapsedTime();
         resetting = false;
 
 
@@ -159,21 +168,19 @@ public class HoodedShooter {
         }
 
 
+        Orienting();
+        Firing();
+
     }
 
     public void AutoBeginShot(boolean isRed, boolean isFar){
 
         isAutoShot = true;
-
-
-
-
         flywheelPower = 0.63; // Needs testing for accurate value
         tilt.setPosition(0); // Needs testing for accurate value
         elapsedTime.reset();
 
 
-        state = "shoot";
 
         waitrotate.reset();
 
@@ -201,16 +208,13 @@ public class HoodedShooter {
             tilt.setPosition(0.275); // Needs testing for accurate value
         }
 
-
         pan.setTargetPosition((int)positionnecessary);
-
         shotbegan = true;
-
-
-
     }
 
     public void BeginShot(int id){
+
+        isAutoShot = false;
         elapsedTime.reset();
         state = "chassis_orient_to_tag";
         currentID = id;
@@ -222,20 +226,11 @@ public class HoodedShooter {
             currentAprilTagPos = aprilTagBlue;
         }
 
-        initPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         rotated = false;
+
+        if(!shotbegan)Orienting();
+
         shotbegan = true;
-
-        angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - follower.getPose().getY()),(currentAprilTagPos.getX() - follower.getPose().getX()));
-
-
-
-
-        initpos = 0.2;
-
-
-
-
 
 
     }
@@ -243,19 +238,38 @@ public class HoodedShooter {
 
     public void Orienting(){
         angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - pinpoint.getPosY(DistanceUnit.INCH)),(currentAprilTagPos.getX() - pinpoint.getPosX(DistanceUnit.INCH)));
-
-        initpos = turnAngle(follower.getPose().getHeading(),angleToAprilTag) * (0.45)/(Math.PI);
+        initpos = turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (0.45)/(Math.PI);
         pan.setTargetPosition((int)initpos);
-
 
     }
 
 
 
     public void Firing(){
-        flywheel1.setPower(0.7);
-        flywheel2.setPower(0.7);
-        tilt.setPosition(0.075);
+        if(!isAutoShot){
+            if(shotbegan){
+                pan.setTargetPosition(0);
+                flywheel1.setPower(0.75);
+                flywheel2.setPower(0.75);
+                tilt.setPosition(0.075);
+
+                if(shootTimer.seconds() > 2){
+                    shootTimer.reset();
+                }
+            }
+        }
+
+
+        if(isAutoShot){
+            pan.setTargetPosition((int) positionnecessary);
+            flywheel2.setPower(flywheelPower);
+            flywheel1.setPower(flywheelPower);
+            tilt.setPosition(0.075);
+
+            if(shootTimer.seconds() > 2){
+                shootTimer.reset();
+            }
+        }
 
 
     }
