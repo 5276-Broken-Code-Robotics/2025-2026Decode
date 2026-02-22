@@ -172,12 +172,12 @@ public class HoodedShooter {
         }
 
 
-        Orienting();
+        //Orienting();
 
 
         pan.setTargetPosition(0);
-        flywheel1.setPower(0.75);
-        flywheel2.setPower(0.75);
+        flywheel1.setPower(0.6);
+        flywheel2.setPower(0.6);
         tilt.setPosition(0.075);
 
         //telemetry.update();
@@ -266,6 +266,8 @@ public class HoodedShooter {
     public void fireThree(){
         firingAllThree = true;
     }
+
+
     public void FiringAllThree(){
         if(firingAllThree){
             //implement

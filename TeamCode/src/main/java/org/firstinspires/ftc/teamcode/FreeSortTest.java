@@ -15,7 +15,7 @@ public class FreeSortTest extends OpMode {
 
     public void init(){
         freesort.init(hardwareMap);
-        drive.init(hardwareMap);
+        //drive.init(hardwareMap);
     }
 
     public void loop(){

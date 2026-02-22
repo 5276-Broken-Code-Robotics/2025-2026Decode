@@ -98,7 +98,6 @@ public class TeleOpRedSlave1 extends OpMode {
 
         fieldDrive = new FieldRelativeDrive();
 
-        fieldDrive.init(hardwareMap);
 
 
 
@@ -154,6 +153,9 @@ public class TeleOpRedSlave1 extends OpMode {
 
         state=  0;
         intake.setPower(0);
+
+        fieldDrive.init(hardwareMap, gamepad1, pinpoint);
+
 
     }
 

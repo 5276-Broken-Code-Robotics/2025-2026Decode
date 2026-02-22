@@ -99,7 +99,7 @@ public class orientAndLocalTest extends OpMode {
 
         fieldDrive = new FieldRelativeDrive();
 
-        fieldDrive.init(hardwareMap);
+        //fieldDrive.init(hardwareMap);
 
         follower = Constants.createFollower(hardwareMap);
 

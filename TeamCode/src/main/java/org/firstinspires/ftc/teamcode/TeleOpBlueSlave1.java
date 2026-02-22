@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-
-
-
-
-/*
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -20,6 +17,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.mechanisms.AprilTagWebcam;
 import org.firstinspires.ftc.teamcode.mechanisms.FieldRelativeDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
@@ -30,19 +30,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 public class TeleOpBlueSlave1 extends OpMode {
-    private Servo pan;
-    private Servo tilt;
-
-    float power = 0.75f;
-    double tiltangle = 0.3f;
-
-
-
-
-
-    float turretangle = 0f;
-
-    float initposforseeingpreorient = 0f;
+    private DcMotor pan;
     boolean beganshot = false;
 
     double initpos = 0f;
@@ -59,12 +47,10 @@ public class TeleOpBlueSlave1 extends OpMode {
 
     FieldRelativeDrive fieldDrive;
     ElapsedTime elapsedTime;
-    private DcMotor flywheel;
 
     private DcMotor intake;
 
 
-    Follower follower;
 
 
 
@@ -73,22 +59,12 @@ public class TeleOpBlueSlave1 extends OpMode {
     //0 : looking for
     //1 : orienting correctly
 
-    boolean waiting = false;
 
-
-    //0.75 for close sec 2
-
-    boolean seen = false;
-
-    CRServo transfer;
     ElapsedTime timer;
 
 
 
-    //Follower follower;
     double positionnecessary = 0f;
-
-    boolean rewinding = false;
 
 
 
@@ -100,49 +76,68 @@ public class TeleOpBlueSlave1 extends OpMode {
 
     ElapsedTime rewindTimer;
 
+    GoBildaPinpointDriver pinpoint;
+
+
+    Servo arm1;
+
+    Limelight3A limelight;
+    boolean rewinding = false;
     int num = 0;
     public void init() {
 
-        num = 0;
-
         rewindTimer = new ElapsedTime();
         rewindTimer.reset();
+
+        num = 0;
 
 //        follower = Constants.createFollower(hardwareMap);
 //
 //        follower.setPose(new Pose(0,144));
 
+
         fieldDrive = new FieldRelativeDrive();
 
-        fieldDrive.init(hardwareMap);
 
 
-        follower = Constants.createFollower(hardwareMap);
 
 
-         // Lowest (Third Set) of Artifacts from the Spike Mark.
 
 
-        follower.setStartingPose(new Pose(144-96, 24, Math.toRadians(180)));
 
-
-        follower.setPose(new Pose(144-96, 24, Math.toRadians(180)));
-
-        follower.update();
         timer = new ElapsedTime();
         fr = hardwareMap.get(DcMotor.class, "fr");
         fl = hardwareMap.get(DcMotor.class, "fl");
         bl = hardwareMap.get(DcMotor.class, "bl");
         br = hardwareMap.get(DcMotor.class, "br");
-        tilt = hardwareMap.get(Servo.class, "tilt");
-        pan = hardwareMap.get(Servo.class, "pan");
+        pan = hardwareMap.get(DcMotor.class, "rot");
+
+
+        arm1 = hardwareMap.get(Servo.class, "arm1");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+
+
+        limelight = hardwareMap.get(Limelight3A.class,"limelight");
+        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
+
+
+        pan = hardwareMap.get(DcMotor.class,"rot");
+        pan.setTargetPosition(0);
+        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        pinpoint.resetPosAndIMU();
+
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,144-96, 24, AngleUnit.RADIANS,Math.toRadians(180)));
+
 
 
 
         intake = hardwareMap.get(DcMotor.class, "intake");
-        transfer = hardwareMap.get(CRServo.class, "transfer");
-        flywheel = hardwareMap.get(DcMotor.class, "flywheel");
-        intake.setDirection(DcMotor.Direction.REVERSE);
+
+        //intake.setDirection(DcMotor.Direction.REVERSE);
+
 
         timer.reset();
         beganshot = false;
@@ -154,44 +149,42 @@ public class TeleOpBlueSlave1 extends OpMode {
 
 
 
-        pan.setPosition(0);
 
-        hShooter.init(hardwareMap,telemetry);
+        hShooter.init(hardwareMap,telemetry, pinpoint);
 
         state=  0;
-
         intake.setPower(0);
 
+        fieldDrive.init(hardwareMap, gamepad1, pinpoint);
+
     }
 
+    @Override
     public void start(){
         intake.setPower(1);
+
+
     }
+    double val = 0.6;
 
     public void loop(){
 
 
-        if(gamepad2.bWasPressed()){
-            rewindTimer.reset();
-            intake.setPower(-1);
+        if(gamepad2.b){
+            //rewindTimer.reset();
+            if(intake.getPower() == 1 )intake.setPower(-1);
 
-            rewinding = true;
+
+            //rewinding = true;
+        }else{
+
+            if(intake.getPower() == -1)intake.setPower(1);
         }
 
-        if(rewindTimer.seconds() > 3 && rewinding){
-            intake.setPower(1);
 
-            rewinding = false;
-        }
+
 
         fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-
-
-
-
-
-
-
         if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
 
 
@@ -199,88 +192,37 @@ public class TeleOpBlueSlave1 extends OpMode {
             intake.setPower(0.25);
         }
 
+
+
+
+
         if(gamepad2.rightBumperWasPressed()){
             intake.setPower(1);
         }
 
-        if(gamepad1.left_bumper && num == 0){
-            follower.update();
-            hShooter.AutoBeginShot(true,true);
+        if(gamepad1.square){
 
-            pan.setPosition(0.29);
-            num = 1;
-            elapsedTime.reset();
+            telemetry.addData("We are on square", "hooray");
+            hShooter.Fire(1);
+        }
+        if(gamepad1.circleWasPressed()){
+
+            telemetry.addData("We are on circle", "Wow");
+            hShooter.Fire(2);
         }
 
+        if(gamepad1.triangleWasPressed()){
 
-        telemetry.addData("ms", elapsedTime.milliseconds());
-
-
-
-
-        telemetry.addData("Num : " , num);
-
-
-        if(gamepad1.right_bumper && num == 0){
-
-            follower.update();
-            hShooter.BeginShot(20);
-
-
-            num = 1;
-            elapsedTime.reset();
-
-
+            telemetry.addData("We are on triangle", "Wow");
+            hShooter.Fire(3);
         }
-
-        if(gamepad1.left_bumper && num == 0){
-            follower.update();
-            hShooter.AutoBeginShot(false,true);
-
-            pan.setPosition(0.11);
-            num = 1;
-            elapsedTime.reset();
-        }
-
-
-        if(elapsedTime.seconds() > 2){
-            num = 0;
-        }
-
-
-        if(!hShooter.shotbegan)transfer.setPower(-1);
 
 
         hShooter.loop();
 
-        if(num == 1){
-            telemetry.addData("We", "Are being run2");
-        }
 
-        follower.update();
-    }
-
-
-    public void drive(double forward, double strafe, double rotate) {
-        double flPower = forward + strafe + rotate;
-        double frPower = forward - strafe - rotate;
-        double blPower = forward - strafe + rotate;
-        double brPower = forward + strafe - rotate;
-
-        double maxPower = 1.0;
-        double maxSpeed = 1.0;
-
-        maxPower = Math.max(maxPower, Math.abs(flPower));
-        maxPower = Math.max(maxPower, Math.abs(frPower));
-        maxPower = Math.max(maxPower, Math.abs(blPower));
-        maxPower = Math.max(maxPower, Math.abs(brPower));
-
-        fl.setPower((maxSpeed * (flPower / maxPower)));
-        fr.setPower((maxSpeed * (frPower / maxPower)));
-        bl.setPower((maxSpeed * (blPower / maxPower)));
-        br.setPower((maxSpeed * (brPower / maxPower)));
+        //telemetry.update();
     }
 
 
 }
-*/
