@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import static java.lang.Math.PI;
 
-import com.pedropathing.follower.Follower;
 
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -11,6 +10,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -26,7 +26,7 @@ import java.util.*;
 
 public class HoodedShooter {
 
-    FreeSortHSV freeSort;
+    UseFreeSortHSV freeSort;
 
 
     private DcMotor pan;
@@ -47,8 +47,6 @@ public class HoodedShooter {
 
     private DcMotor flywheel2;
 
-    private DcMotor intake;
-
 
 
     //0.75 for close sec 2
@@ -60,7 +58,6 @@ public class HoodedShooter {
 
     public boolean shotbegan = false;
 
-    Follower follower;
     boolean resetting = false;
 
     ElapsedTime waitrotate;
@@ -71,15 +68,13 @@ public class HoodedShooter {
     boolean rotated = false;
     Pose currentAprilTagPos = new Pose(0,0,0);
 
+
+    int lastOrientedPos;
     boolean isAutoShot;
 
     Pose initPose;
     int currentID;
     Limelight3A limelight;
-
-    int numshots = 0;
-    int numchanges = 0;
-
     GoBildaPinpointDriver pinpoint;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
@@ -87,14 +82,15 @@ public class HoodedShooter {
 
         shootTimer = new ElapsedTime();
 
-        freeSort = new FreeSortHSV();
+        freeSort = new UseFreeSortHSV();
 
-        freeSort.init(hardwareMap);
+        freeSort.init(hardwareMap, telemetry);
 
         shootTimer.reset();
 
+
+
         tilt = hardwareMap.get(Servo.class, "tilt");
-        intake = hardwareMap.get(DcMotor.class, "intake");
         flywheel1 = hardwareMap.get(DcMotor.class, "flywheel1");
         flywheel2 = hardwareMap.get(DcMotor.class, "flywheel1");
         limelight = hardwareMap.get(Limelight3A.class,"limelight");
@@ -105,13 +101,16 @@ public class HoodedShooter {
         pan.setPower(1);
         pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        pinpoint.resetPosAndIMU();
-        intake.setDirection(DcMotor.Direction.REVERSE);
+
+        this.pinpoint = pinpoint;
+
+
         flywheel1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
+        flywheel2.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
         waitrotate = new ElapsedTime();
         resetting = false;
 
@@ -121,20 +120,21 @@ public class HoodedShooter {
         this.telemetry = telemetry;
 
 
+
+
         elapsedTime = new ElapsedTime();
     }
 
     public void loop()
     {
-
-
+        freeSort.loop();
+        /*
         telemetry.addData("Flywheel power", flywheel1.getPower() + " " + flywheel2.getPower());
         telemetry.addData("Pan position : ", pan.getCurrentPosition());
 
 
 
         telemetry.addData("Rotated : ", rotated);
-        telemetry.addData("Heading", follower.getHeading());
         telemetry.addData("State : ", state);
 
 
@@ -144,6 +144,8 @@ public class HoodedShooter {
 
         telemetry.addData("Num shots : ", numshots);
 
+         */
+
 
         pinpoint.update();
         double robotHeading = pinpoint.getHeading(AngleUnit.RADIANS);
@@ -151,25 +153,35 @@ public class HoodedShooter {
 
 
 
-        telemetry.update();
         LLResult Llresult = limelight.getLatestResult();
 
         if(Llresult!= null && Llresult.isValid()){
 
             Pose3D botpose = Llresult.getBotpose_MT2();
 
+
+            /*
             telemetry.addData("PX : ",botpose.getPosition().x);
 
             telemetry.addData("PY :", botpose.getPosition().y);
 
             telemetry.addData("Orient : ", botpose.getOrientation());
 
-            telemetry.update();
+             */
+
         }
 
 
-        Orienting();
-        Firing();
+        //Orienting();
+
+
+        pan.setTargetPosition(0);
+        flywheel1.setPower(0.6);
+        flywheel2.setPower(0.6);
+        tilt.setPosition(0.075);
+
+        //telemetry.update();
+
 
     }
 
@@ -185,34 +197,41 @@ public class HoodedShooter {
         waitrotate.reset();
 
         if(isRed &&!isFar){
-            positionnecessary = 0.29/0.45;
+            positionnecessary = 0.29/0.45 * 286/(0.45);
             flywheelPower = 0.63; // Needs testing for accurate value
             tilt.setPosition(0); // Needs testing for accurate value
         }
 
         if(!isRed && !isFar){
-            positionnecessary = 0.11/0.45;
+            positionnecessary = 0.11/0.45* 286/(0.45);
             flywheelPower = 0.63; // Needs testing for accurate value
             tilt.setPosition(0); // Needs testing for accurate value
         }
 
         if(isRed && isFar){
-            positionnecessary = 0.38;
+            positionnecessary = 0.38* 286/(0.45);
             flywheelPower = 0.8; // Needs testing for accurate value
             tilt.setPosition(0.275); // Needs testing for accurate value
         }
 
         if(!isRed && isFar){
-            positionnecessary = 0.45-0.38;
+            positionnecessary = (0.45-0.38)* 286/(0.45);
             flywheelPower = 0.8; // Needs testing for accurate value
             tilt.setPosition(0.275); // Needs testing for accurate value
         }
 
         pan.setTargetPosition((int)positionnecessary);
         shotbegan = true;
+
+
+
+        shotbegan = false;
     }
 
+
+
     public void BeginShot(int id){
+
 
         isAutoShot = false;
         elapsedTime.reset();
@@ -228,50 +247,49 @@ public class HoodedShooter {
 
         rotated = false;
 
-        if(!shotbegan)Orienting();
-
         shotbegan = true;
 
 
+
+
+
+
+
+
+        shotbegan = false;
+
     }
 
+
+
+    boolean firingAllThree = false;
+    public void fireThree(){
+        firingAllThree = true;
+    }
+
+
+    public void FiringAllThree(){
+        if(firingAllThree){
+            //implement
+        }
+    }
 
     public void Orienting(){
-        angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - pinpoint.getPosY(DistanceUnit.INCH)),(currentAprilTagPos.getX() - pinpoint.getPosX(DistanceUnit.INCH)));
-        initpos = turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (0.45)/(Math.PI);
-        pan.setTargetPosition((int)initpos);
+
+        if(Math.abs(angleToAprilTag) <= PI/2 + 0.1 && Math.abs(lastOrientedPos - initpos) > 10){
+            angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - pinpoint.getPosY(DistanceUnit.INCH)),(currentAprilTagPos.getX() - pinpoint.getPosX(DistanceUnit.INCH)));
+            initpos = turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (537/2)/(Math.PI);
+            pan.setTargetPosition((int)initpos);
+            lastOrientedPos = (int)initpos;
+        }
+
 
     }
 
 
 
-    public void Firing(){
-        if(!isAutoShot){
-            if(shotbegan){
-                pan.setTargetPosition(0);
-                flywheel1.setPower(0.75);
-                flywheel2.setPower(0.75);
-                tilt.setPosition(0.075);
-
-                if(shootTimer.seconds() > 2){
-                    shootTimer.reset();
-                }
-            }
-        }
-
-
-        if(isAutoShot){
-            pan.setTargetPosition((int) positionnecessary);
-            flywheel2.setPower(flywheelPower);
-            flywheel1.setPower(flywheelPower);
-            tilt.setPosition(0.075);
-
-            if(shootTimer.seconds() > 2){
-                shootTimer.reset();
-            }
-        }
-
-
+    public void Fire(int num){
+        if(!freeSort.shooting)freeSort.shoot(num);
     }
 
     public static double turnAngle(double currentHeading, double targetAngle) {
