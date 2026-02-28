@@ -50,7 +50,7 @@ public class FreeSortHSV {
     float greenHMaxV2 = 160;
     float greenHMinV2 = 120;
 
-
+//TODO ADJUST THESE VALUES ^^^^^^^^^^^^^^^^^ ----- VENUE SPECIFIC
 
 
     boolean arm1Shooting = false;
@@ -136,6 +136,32 @@ public class FreeSortHSV {
         }
         else if (pos3 == 'p' && !arm3Shooting) {
             shoot(arm3); pos3 = 'e';
+        }
+    }
+
+    public void shoot1() {
+
+        if (pos1 != 'e' && !arm1Shooting) {
+            shoot(arm1);
+            pos1 = 'e';
+        }
+
+    }
+
+    public void shoot2() {
+
+        if (pos2 != 'e' && !arm2Shooting) {
+            shoot(arm2);
+            pos2 = 'e';
+        }
+
+    }
+
+    public void shoot3 () {
+
+        if (pos3 != 'e' && !arm3Shooting) {
+            shoot(arm3);
+            pos3 = 'e';
         }
     }
 

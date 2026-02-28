@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.FieldRelativeDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.FreeSortHSV;
-import org.firstinspires.ftc.teamcode.mechanisms.FreeSortRGB;
 
 @TeleOp(group = "Tests")
 public class FreeSortTest extends OpMode {

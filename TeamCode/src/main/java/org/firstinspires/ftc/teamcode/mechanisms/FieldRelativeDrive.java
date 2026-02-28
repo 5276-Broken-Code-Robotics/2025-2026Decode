@@ -176,4 +176,8 @@ public class FieldRelativeDrive {
         bl.setPower(maxSpeed * (backLeftPower / maxPower));
         br.setPower(maxSpeed * (backRightPower / maxPower));
     }
+
+    public void setYaw () {
+        imu.resetYaw();
+    }
 }

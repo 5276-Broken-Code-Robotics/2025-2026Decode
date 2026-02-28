@@ -41,9 +41,9 @@ public class EliTurretTracking {
 
      */
 
-
-    private double minRot = -0.5 * 24 / 102 * 537.7; // max rot to the left
     private double maxRot = 0.5 * 24 / 102 * 537.7; // max rot to the right
+    private double minRot = -0.5 * 24 / 102 * 537.7; // max rot to the left
+
 
 
     Servo tilt;
@@ -69,7 +69,7 @@ public class EliTurretTracking {
         flywheel1 = hardwaremap.get(DcMotorEx.class, "flywheel1");
         flywheel2 = hardwaremap.get(DcMotorEx.class, "flywheel2");
 
-        pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         pan.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pan.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -122,10 +122,10 @@ public class EliTurretTracking {
         telemetry.addData("pTerm", pTerm);
 
         double dTerm = 0;
-        telemetry.addData("dTerm", dTerm);
 
         if (deltaTime > 0) {
             dTerm = ((error - lastError) / deltaTime) * kD;
+            telemetry.addData("dTerm", dTerm);
         }
         if (Math.abs(error) < angleTolerance) {
             power = 0;
@@ -144,6 +144,10 @@ public class EliTurretTracking {
 
         //else {pan.setPower(0);}
         lastError = error;
+
+        telemetry.addData("Turret pos", pan.getCurrentPosition());
+        telemetry.update();
+
 
     }
 
