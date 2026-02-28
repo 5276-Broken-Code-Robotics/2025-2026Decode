@@ -150,6 +150,10 @@ public class TeleOpBlueSlave1 extends OpMode {
 
 
 
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         hShooter.init(hardwareMap,telemetry, pinpoint);
 
         state=  0;
@@ -169,16 +173,7 @@ public class TeleOpBlueSlave1 extends OpMode {
 
     public void loop(){
 
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        if(gamepad2.y){
-            fl.setPower(0.0);
-            fr.setPower(0.0);
-            br.setPower(0.0);
-            bl.setPower(0.0);
-        }
+
         if(gamepad2.b){
             //rewindTimer.reset();
             if(intake.getPower() == 1 )intake.setPower(-1);
@@ -192,10 +187,16 @@ public class TeleOpBlueSlave1 extends OpMode {
 
 
 
+        if(gamepad2.y){
+            fl.setPower(0.0);
+            fr.setPower(0.0);
+            br.setPower(0.0);
+            bl.setPower(0.0);
+        }else{
+            fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
 
-        fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
-
+        }
 
         if(gamepad2.leftBumperWasPressed()){
             intake.setPower(0.25);
