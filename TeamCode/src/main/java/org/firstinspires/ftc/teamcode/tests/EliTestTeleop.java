@@ -4,8 +4,6 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.mechanisms.FieldRelativeDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.FreeSortHSV;
@@ -47,5 +45,8 @@ public class EliTestTeleop extends OpMode {
 
         intake.setPower(1);
 
+    }
+
+    public static class PIDFTuning {
     }
 }
