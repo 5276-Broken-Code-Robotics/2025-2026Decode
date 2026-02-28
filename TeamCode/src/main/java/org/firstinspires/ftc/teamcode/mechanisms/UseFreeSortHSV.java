@@ -164,7 +164,8 @@ public class UseFreeSortHSV {
         if(armnum == 2)
         {
             arm2Shooting = true;
-            //arm2.setPosition(kickRot);
+            arm2.setPosition(kickRot);
+
 
         }
         if(armnum == 3)
@@ -235,6 +236,8 @@ public class UseFreeSortHSV {
 
         telem.update();
 
+
+        /*
         double[] posArr = {kickRot/3, 0, kickRot*2/3,0,kickRot};
 
         if(arm2Shooting && incrementCD.seconds() > 0.2){
@@ -258,6 +261,8 @@ public class UseFreeSortHSV {
             dex++;
             incrementCD.reset();
         }
+
+         */
 
 
 
@@ -297,11 +302,11 @@ public class UseFreeSortHSV {
 
 
 
-        /*
         if(!arm2Shooting){
             arm2CD.reset();
         }else{
-            if(arm2CD.seconds() > 4){
+            TMa2 = true;
+            if(arm2CD.seconds() > 0.3){
                 arm2.setPosition(0);
                 arm2Shooting = false;
                 shooting = false;
@@ -309,11 +314,11 @@ public class UseFreeSortHSV {
                 arm1Stuck = false;
                 arm2Stuck = false;
                 arm3Stuck = false;
+            }else{
+                arm2.setPosition(kickRot);
             }
 
         }
-
-         */
 
 
 

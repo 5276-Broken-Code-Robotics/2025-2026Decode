@@ -221,26 +221,26 @@ public class FreeSortHSV {
         }
 
         if(arm2.getPosition() == emptyRot){
-        if(shootCD.seconds() >= 0.05f){
-            arm2.setPosition(0);
-            shootCD.reset();
-            arm2Shooting = false;
-        }else{
-            arm2Shooting = true;
+            if(shootCD.seconds() >= 0.05f){
+                arm2.setPosition(0);
+                shootCD.reset();
+                arm2Shooting = false;
+            }else{
+                arm2Shooting = true;
 
+            }
+        }
+
+        if(arm3.getPosition() == emptyRot){
+            if(shootCD.seconds() >= 0.05f){
+                arm3.setPosition(0);
+                shootCD.reset();
+                arm3Shooting = false;
+            }else{
+                arm3Shooting = true;
+            }
         }
     }
-
-    if(arm3.getPosition() == emptyRot){
-        if(shootCD.seconds() >= 0.05f){
-            arm3.setPosition(0);
-            shootCD.reset();
-            arm3Shooting = false;
-        }else{
-            arm3Shooting = true;
-        }
-    }
-}
 
 
 
