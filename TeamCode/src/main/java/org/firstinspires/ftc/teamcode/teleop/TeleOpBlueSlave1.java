@@ -169,7 +169,16 @@ public class TeleOpBlueSlave1 extends OpMode {
 
     public void loop(){
 
-
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        if(gamepad2.y){
+            fl.setPower(0.0);
+            fr.setPower(0.0);
+            br.setPower(0.0);
+            bl.setPower(0.0);
+        }
         if(gamepad2.b){
             //rewindTimer.reset();
             if(intake.getPower() == 1 )intake.setPower(-1);
