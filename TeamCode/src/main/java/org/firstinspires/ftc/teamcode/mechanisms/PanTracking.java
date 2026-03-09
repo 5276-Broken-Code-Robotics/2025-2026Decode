@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 import static java.lang.Math.PI;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -34,16 +35,20 @@ public class PanTracking{
 
 
 
+
+    Limelight3A limelight3A;
+
     Gamepad gamepad1;
 
     Telemetry telemetry;
-    public void init(HardwareMap hardwareMap, Gamepad gamepad1, GoBildaPinpointDriver pinpoint, Telemetry telemetry){
+    public void init(HardwareMap hardwareMap, Gamepad gamepad1, GoBildaPinpointDriver pinpoint, Telemetry telemetry, Limelight3A limelight3A){
         pan = hardwareMap.get(DcMotorEx.class, "rot");
         pan.setPower(1);
         pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.pinpoint = pinpoint;
         this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
+
     }
 
 

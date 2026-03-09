@@ -142,10 +142,6 @@ public class HoodedShooter {
 
 
 
-        telemetry.addData("Rotated : ", rotated);
-        telemetry.addData("State : ", state);
-
-
         telemetry.addData("numchanges", numchanges);
         telemetry.addData("IsAutoShot : ", isAutoShot);
         telemetry.addData("Shot status : ", shotbegan);
@@ -156,10 +152,6 @@ public class HoodedShooter {
 
 
         pinpoint.update();
-        double robotHeading = pinpoint.getHeading(AngleUnit.RADIANS);
-        limelight.updateRobotOrientation(robotHeading + pan.getCurrentPosition() / 537.7/2 * PI);
-
-
 
         LLResult Llresult = limelight.getLatestResult();
 
@@ -183,7 +175,6 @@ public class HoodedShooter {
         //Orienting();
 
 
-        pan.setTargetPosition(0);
         flywheel1.setPower(0.6);
         flywheel2.setPower(0.6);
         tilt.setPosition(0.075);

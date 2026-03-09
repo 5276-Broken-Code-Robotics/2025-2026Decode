@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.tests;
 import static java.lang.Math.PI;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -44,6 +45,10 @@ public class trackMecTester extends OpMode {
     GoBildaPinpointDriver pinpoint;
 
 
+
+    Limelight3A limelight;
+
+
     public void init(){
 
 
@@ -51,6 +56,7 @@ public class trackMecTester extends OpMode {
 
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        limelight = hardwareMap.get(Limelight3A.class,"limelight");
 
 
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
@@ -73,7 +79,10 @@ public class trackMecTester extends OpMode {
 
         panTracking = new PanTracking();
 
-        panTracking.init(hardwareMap,gamepad1,pinpoint,telemetry);
+
+        limelight.start();
+
+        panTracking.init(hardwareMap,gamepad1,pinpoint,telemetry, limelight);
 
 
     }
@@ -92,7 +101,6 @@ public class trackMecTester extends OpMode {
 
         panTracking.loop();
 
-
         drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
 
@@ -101,7 +109,6 @@ public class trackMecTester extends OpMode {
 
 
     public void start() {
-
         panTracking.start();
     }
 
