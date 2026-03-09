@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -25,6 +27,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.FieldRelativeDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+
 @TeleOp(group = "TeleOp")
 
 
@@ -147,6 +150,10 @@ public class TeleOpRedSlave1 extends OpMode {
         hShooter = new HoodedShooter();
 
 
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         hShooter.init(hardwareMap,telemetry, pinpoint);
@@ -167,8 +174,11 @@ public class TeleOpRedSlave1 extends OpMode {
     }
     double val = 0.6;
 
-    public void loop(){
+    public void breaks(){
 
+
+    }
+    public void loop(){
 
         if(gamepad2.b){
             //rewindTimer.reset();
@@ -185,9 +195,16 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
 
+        if(gamepad2.y){
+            fl.setPower(0.0);
+            fr.setPower(0.0);
+            br.setPower(0.0);
+            bl.setPower(0.0);
+        }else{
+            fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+            if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
 
-        fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
+        }
 
 
         if(gamepad2.leftBumperWasPressed()){

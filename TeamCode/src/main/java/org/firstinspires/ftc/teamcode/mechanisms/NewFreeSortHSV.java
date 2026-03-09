@@ -128,13 +128,13 @@ public class NewFreeSortHSV {
 
     public void shootPattern (char pattern) {
         if (pattern == 'p') {
-            if(pos1 == 'p') {shoot(1);}
-            if(pos2 == 'p') {shoot(2);}
+            if(pos1 == 'p') {shoot(1); return;}
+            if(pos2 == 'p') {shoot(2); return;}
             if(pos3 == 'p') {shoot(3);}
         }
         if (pattern == 'g') {
-            if(pos1 == 'g') {shoot(1);}
-            if(pos2 == 'g') {shoot(2);}
+            if(pos1 == 'g') {shoot(1); return;}
+            if(pos2 == 'g') {shoot(2); return;}
             if(pos3 == 'g') {shoot(3);}
         }
         if (pattern == 'a') {

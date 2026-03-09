@@ -17,6 +17,7 @@ public class FreeSortHSV {
     char pos2;
     char pos3;
 
+    public boolean allShootDone = false;
 
     /*
     g = green
@@ -52,22 +53,16 @@ public class FreeSortHSV {
 //TODO ADJUST THESE VALUES ^^^^^^^^^^^^^^^^^ ----- VENUE SPECIFIC
 
 
-    boolean arm1Busy = false;
-    boolean arm2Busy = false;
-    boolean arm3Busy = false;
+    boolean arm1Shooting = false;
+    boolean arm2Shooting = false;
+    boolean arm3Shooting = false;
 
 
 
-    ElapsedTime shootCD1;
-    ElapsedTime shootCD2;
-    ElapsedTime shootCD3;
-
-
-
-    Float shotCDTime = 1f;
+    ElapsedTime shootCD;
 
     double kickRot = .4;
-    double emptyRot = .15;
+    double emptyRot = kickRot/2;
     /*
 
     kickRot = degrees needed to kick ball into turret/270
@@ -78,26 +73,15 @@ public class FreeSortHSV {
 
 
 
-
-
     public void init(HardwareMap hardwareMap) {
 
 
-        shootCD1 = new ElapsedTime();
-        shootCD2 = new ElapsedTime();
-        shootCD3 = new ElapsedTime();
+        shootCD = new ElapsedTime();
 
-        shootCD1.reset();
-        shootCD2.reset();
-        shootCD3.reset();
-
+        shootCD.reset();
         arm1 = hardwareMap.get(Servo.class, "arm1");
         arm2 = hardwareMap.get(Servo.class, "arm2");
         arm3 = hardwareMap.get(Servo.class, "arm3");
-
-        arm1.scaleRange(0.03, 1);
-        //arm2.scaleRange(0.03, 1);
-        arm3.scaleRange(0.03, 1);
 
         sensor1 = hardwareMap.get(RevColorSensorV3.class, "sensor1");
         sensor2 = hardwareMap.get(RevColorSensorV3.class, "sensor2");
@@ -106,13 +90,83 @@ public class FreeSortHSV {
         sensor1.setGain(sensorGain);
         sensor2.setGain(sensorGain);
         sensor3.setGain(sensorGain);
+    }
 
-        arm1.setPosition(0);
-        arm2.setPosition(0);
-        arm3.setPosition(0);
+
+
+    public void shootAll(){
+        if (pos1 != 'e' && !arm1Shooting) {
+            shoot(arm1); pos1 = 'e';
+        }
+        if (pos2 != 'e' && !arm2Shooting) {
+            shoot(arm2); pos2 = 'e';
+        }
+        if (pos3 != 'e' && !arm3Shooting) {
+            shoot(arm3); pos3 = 'e';
+        }
+
+        if(pos1 == 'e' && pos2 == 'e' && pos3 == 'e'){
+            allShootDone = true;
+        }else{
+            allShootDone = false;
+        }
+
+
+    }
+    public void shootGreen(){
+
+        if (pos1 == 'g' && !arm1Shooting) {
+            shoot(arm1); pos1 = 'e';
+        }
+        else if (pos2 == 'g' && !arm2Shooting) {
+            shoot(arm2); pos2 = 'e';
+        }
+        else if (pos3 == 'g' && !arm3Shooting) {
+            shoot(arm3); pos3 = 'e';
+        }
+    }
+    public void shootPurple(){
+
+        if (pos1 == 'p' && !arm1Shooting) {
+            shoot(arm1); pos1 = 'e';
+
+        }
+        else if (pos2 == 'p' && !arm2Shooting) {
+            shoot(arm2); pos2 = 'e';
+        }
+        else if (pos3 == 'p' && !arm3Shooting) {
+            shoot(arm3); pos3 = 'e';
+        }
+    }
+
+    public void shoot1() {
+
+        if (pos1 != 'e' && !arm1Shooting) {
+            shoot(arm1);
+            pos1 = 'e';
+        }
+
+    }
+
+    public void shoot2() {
+
+        if (pos2 != 'e' && !arm2Shooting) {
+            shoot(arm2);
+            pos2 = 'e';
+        }
+
+    }
+
+    public void shoot3 () {
+
+        if (pos3 != 'e' && !arm3Shooting) {
+            shoot(arm3);
+            pos3 = 'e';
+        }
     }
 
     public void shoot(Servo arm){
+        shootCD.reset();
 
         if (arm!=arm1 && pos1 == 'e'){arm1.setPosition(emptyRot);}
         if (arm!=arm2 && pos2 == 'e'){arm2.setPosition(emptyRot);}
@@ -122,174 +176,120 @@ public class FreeSortHSV {
 
     }
 
-    public void shootAll(){
-        if (pos1 != 'e' && !arm1Busy) {
-            shoot(arm1);
-        }
-        if (pos2 != 'e' && !arm2Busy) {
-            shoot(arm2);
-        }
-        if (pos3 != 'e' && !arm3Busy) {
-            shoot(arm3);
-        }
-
-
-    }
-    public void shootGreen(){
-
-        if (pos1 == 'g' && !arm1Busy) {
-            shoot(arm1);
-        }
-        else if (pos2 == 'g' && !arm2Busy) {
-            shoot(arm2);
-        }
-        else if (pos3 == 'g' && !arm3Busy) {
-            shoot(arm3);
-        }
-    }
-    public void shootPurple(){
-
-        if (pos1 == 'p' && !arm1Busy) {
-            shoot(arm1);
-
-        }
-        else if (pos2 == 'p' && !arm2Busy) {
-            shoot(arm2);
-        }
-        else if (pos3 == 'p' && !arm3Busy) {
-            shoot(arm3);
-        }
-    }
-
-    public void shoot1() {
-
-        if (pos1 != 'e' && !arm1Busy) {
-            shoot(arm1);
-        }
-
-    }
-
-    public void shoot2() {
-
-        if (pos2 != 'e' && !arm2Busy) {
-            shoot(arm2);
-        }
-
-    }
-
-    public void shoot3 () {
-
-        if (pos3 != 'e' && !arm3Busy) {
-            shoot(arm3);
-        }
-    }
-
-
-
 
     public void loop(){
 
-        if(Math.abs(arm1.getPosition() - kickRot) < 0.001){
-            if(shootCD1.seconds() >= shotCDTime){
+        if(arm1.getPosition() == kickRot){
+            if(shootCD.seconds() >= 0.05f){
                 arm1.setPosition(0);
-                shootCD1.reset();
-                arm1Busy = false;
+                shootCD.reset();
+                arm1Shooting = false;
             }else{
-                arm1Busy = true;
+                arm1Shooting = true;
             }
         }
 
-        if(Math.abs(arm2.getPosition() - kickRot) < 0.001){
-            if(shootCD2.seconds() >= shotCDTime){
+        if(arm2.getPosition() == kickRot){
+            if(shootCD.seconds() >= 0.05f){
                 arm2.setPosition(0);
-                shootCD2.reset();
-                arm2Busy = false;
+                shootCD.reset();
+                arm2Shooting = false;
             }else{
-                arm2Busy = true;
+                arm2Shooting = true;
 
             }
         }
 
-        if(Math.abs(arm3.getPosition() - kickRot) < 0.001){
-            if(shootCD3.seconds() >= shotCDTime){
+        if(arm3.getPosition() == kickRot){
+            if(shootCD.seconds() >= 0.05f){
                 arm3.setPosition(0);
-                shootCD3.reset();
-                arm3Busy = false;
+                shootCD.reset();
+                arm3Shooting = false;
             }else{
-                arm3Busy = true;
+                arm3Shooting = true;
             }
         }
 
-        if(Math.abs(arm1.getPosition() - emptyRot) < 0.001){
-            if(shootCD1.seconds() >= shotCDTime){
+        if(arm1.getPosition() == emptyRot){
+            if(shootCD.seconds() >= 0.05f){
                 arm1.setPosition(0);
-                shootCD1.reset();
-                arm1Busy = false;
+                shootCD.reset();
+                arm1Shooting = false;
             }else{
-                arm1Busy = true;
+                arm1Shooting = true;
             }
         }
 
-        if(Math.abs(arm2.getPosition() - emptyRot) < 0.001){
-        if(shootCD2.seconds() >= shotCDTime){
-            arm2.setPosition(0);
-            shootCD2.reset();
-            arm2Busy = false;
-        }else{
-            arm2Busy = true;
+        if(arm2.getPosition() == emptyRot){
+            if(shootCD.seconds() >= 0.05f){
+                arm2.setPosition(0);
+                shootCD.reset();
+                arm2Shooting = false;
+            }else{
+                arm2Shooting = true;
 
+            }
+        }
+
+        if(arm3.getPosition() == emptyRot){
+            if(shootCD.seconds() >= 0.05f){
+                arm3.setPosition(0);
+                shootCD.reset();
+                arm3Shooting = false;
+            }else{
+                arm3Shooting = true;
+            }
         }
     }
 
-    if(Math.abs(arm3.getPosition() - emptyRot) < 0.001){
-        if(shootCD3.seconds() >= shotCDTime){
-            arm3.setPosition(0);
-            shootCD3.reset();
-            arm3Busy = false;
-        }else{
-            arm3Busy = true;
-        }
-    }
-}
 
 
-
-    public void updateColors (Telemetry telemetry) {
+    public void updateColors(Telemetry telemetry) {
         NormalizedRGBA sensor1Colors = sensor1.getNormalizedColors();
         NormalizedRGBA sensor2Colors = sensor2.getNormalizedColors();
         NormalizedRGBA sensor3Colors = sensor3.getNormalizedColors();
 
 
-        float sensor1hue;
-        float sensor2hue;
-        float sensor3hue;
+        float sensor1hue, sensor1sat, sensor1val;
+        float sensor2hue, sensor2sat, sensor2val;
+        float sensor3hue, sensor3sat, sensor3val;
 
         sensor1hue = JavaUtil.colorToHue(sensor1Colors.toColor());
+        sensor1sat = JavaUtil.colorToSaturation(sensor1Colors.toColor());
+        sensor1val = JavaUtil.colorToValue(sensor1Colors.toColor());
+
         sensor2hue = JavaUtil.colorToHue(sensor2Colors.toColor());
+        sensor2sat = JavaUtil.colorToSaturation(sensor2Colors.toColor());
+        sensor2val = JavaUtil.colorToValue(sensor2Colors.toColor());
+
         sensor3hue = JavaUtil.colorToHue(sensor3Colors.toColor());
+        sensor3sat = JavaUtil.colorToSaturation(sensor3Colors.toColor());
+        sensor3val = JavaUtil.colorToValue(sensor3Colors.toColor());
 
 
 
         telemetry.addLine("Sensor 1");
         telemetry.addData("hue", sensor1hue);
+        //telemetry.addData("sat", sensor1sat);
+        //telemetry.addData("value", sensor1val);
         telemetry.addData("Pos1", pos1);
-        telemetry.addData("Arm1", arm1.getPosition());
 
 
         telemetry.addLine("Sensor 2");
         telemetry.addData("hue", sensor2hue);
+        //telemetry.addData("sat", sensor2sat);
+        //telemetry.addData("value", sensor2val);
         telemetry.addData("Pos2", pos2);
-        telemetry.addData("Arm2", arm2.getPosition());
-
 
         telemetry.addLine("Sensor 3");
         telemetry.addData("hue", sensor3hue);
+        //telemetry.addData("sat", sensor3sat);
+        //telemetry.addData("value", sensor3val);
         telemetry.addData("Pos3", pos3);
-        telemetry.addData("Arm3", arm3.getPosition());
 
 
 
-        if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
+          if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
             pos1 = 'p';
         }
         else if (greenHMaxV3 > sensor1hue && sensor1hue > greenHMinV3){
@@ -316,7 +316,7 @@ public class FreeSortHSV {
         else if (greenHMaxV2 > sensor3hue && sensor3hue > greenHMinV2){
             pos3 = 'g';
         }
-        else {
+        else{
             pos3 = 'e';
         }
 
