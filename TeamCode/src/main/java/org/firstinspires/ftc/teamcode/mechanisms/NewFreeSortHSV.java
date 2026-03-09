@@ -23,7 +23,7 @@ public class NewFreeSortHSV {
 
     RevColorSensorV3 sensor1;
     RevColorSensorV3 sensor2;
-    ColorRangeSensor sensor3;
+    RevColorSensorV3 sensor3;
 
     float sensorGain = 15f;
 
@@ -32,10 +32,7 @@ public class NewFreeSortHSV {
     float greenHMaxV3 = 175;
     float greenHMinV3 = 155;
 
-    float purpleHMaxV2 = 290;
-    float purpleHMinV2 = 180;
-    float greenHMaxV2 = 160;
-    float greenHMinV2 = 140;
+
 
 //TODO ADJUST THESE VALUES ^^^^^^^^^^^^^^^^^ ----- VENUE SPECIFIC
 
@@ -75,7 +72,7 @@ public class NewFreeSortHSV {
 
         sensor1 = hardwareMap.get(RevColorSensorV3.class, "sensor1");
         sensor2 = hardwareMap.get(RevColorSensorV3.class, "sensor2");
-        sensor3 = hardwareMap.get(ColorRangeSensor.class, "sensor3");
+        sensor3 = hardwareMap.get(RevColorSensorV3.class, "sensor3");
 
         sensor1.setGain(sensorGain);
         sensor2.setGain(sensorGain);
@@ -203,9 +200,9 @@ public class NewFreeSortHSV {
         if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
             pos1 = 'p';
         }
-        //else if (greenHMaxV3 > sensor1hue && sensor1hue > greenHMinV3){
-            //pos1 = 'g';
-        //}
+        else if (greenHMaxV3 > sensor1hue && sensor1hue > greenHMinV3){
+            pos1 = 'g';
+        }
         else{
             pos1 = 'e';
         }
@@ -214,19 +211,19 @@ public class NewFreeSortHSV {
         if (purpleHMaxV3 > sensor2hue && sensor2hue > purpleHMinV3){
             pos2 = 'p';
         }
-        //else if (greenHMaxV3 > sensor2hue && sensor2hue > greenHMinV3){
-            //pos2 = 'g';
-        //}
+        else if (greenHMaxV3 > sensor2hue && sensor2hue > greenHMinV3){
+            pos2 = 'g';
+        }
         else{
             pos2 = 'e';
         }
 
-        if (purpleHMaxV2 > sensor3hue && sensor3hue > purpleHMinV2){
+        if (purpleHMaxV3 > sensor3hue && sensor3hue > purpleHMinV3){
             pos3 = 'p';
         }
-        //else if (greenHMaxV2 > sensor3hue && sensor3hue > greenHMinV2){
-            //pos3 = 'g';
-        //}
+        else if (greenHMaxV3 > sensor3hue && sensor3hue > greenHMinV3){
+            pos3 = 'g';
+        }
         else {
             pos3 = 'e';
         }
