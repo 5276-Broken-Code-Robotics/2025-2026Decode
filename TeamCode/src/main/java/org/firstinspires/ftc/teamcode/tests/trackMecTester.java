@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.tests;
 import static java.lang.Math.PI;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,10 +13,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.mechanisms.PanTracking;
 
 
 @TeleOp(group = "Tests")
-public class onlyPan extends OpMode {
+public class trackMecTester extends OpMode {
     DcMotor pan;
 
 
@@ -23,6 +25,8 @@ public class onlyPan extends OpMode {
     double tAngle;
     float lastOrientedPos;
 
+
+    PanTracking panTracking;
 
 
     float panZero = -410;
@@ -32,6 +36,7 @@ public class onlyPan extends OpMode {
     float panMax = 410;
 
     DcMotor fl;
+
     DcMotor fr;
 
     boolean resetting = false;
@@ -40,16 +45,18 @@ public class onlyPan extends OpMode {
     GoBildaPinpointDriver pinpoint;
 
 
+
+    Limelight3A limelight;
+
+
     public void init(){
-        pan = hardwareMap.get(DcMotorEx.class, "rot");
-        pan.setPower(1);
 
 
 
-        pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        limelight = hardwareMap.get(Limelight3A.class,"limelight");
 
 
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
@@ -70,6 +77,13 @@ public class onlyPan extends OpMode {
         bl.setDirection(DcMotor.Direction.REVERSE);
         fl.setDirection(DcMotor.Direction.REVERSE);
 
+        panTracking = new PanTracking();
+
+
+        limelight.start();
+
+        panTracking.init(hardwareMap,gamepad1,pinpoint,telemetry, limelight);
+
 
     }
 
@@ -83,106 +97,19 @@ public class onlyPan extends OpMode {
 
         pinpoint.update();
 
-
-
-        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-        if(gamepad1.rightBumperWasPressed()){
-            pos+=15;
-            count++;
-        }
-
-        if(gamepad1.leftBumperWasPressed()){
-            pos-=15;
-            count++;
-        }
-
-        if(gamepad1.aWasPressed()){
-            pan.setTargetPosition(0);
-
-            resetting = true;
-        }
-
-        telemetry.addData("Heading :", pinpoint.getHeading(AngleUnit.DEGREES));
-
-
-
-
-        double angleToAprilTag = Math.atan2((144 - pinpoint.getPosY(DistanceUnit.INCH)),(144 - pinpoint.getPosX(DistanceUnit.INCH)));
-
-
-        double currAngle  = pinpoint.getHeading(AngleUnit.RADIANS);
-
-        tAngle = turnAngle(currAngle,angleToAprilTag);
-
-        double targetTicks = -  tAngle * (panMax-panZero)/(Math.PI);
-
-
-        if(Math.abs(angleToAprilTag) <= PI + 0.1){
-            telemetry.addData("Moving :", "True");
-        }else{
-            telemetry.addData("Moving :", "False");
-        }
-
-
-        if(Math.abs(angleToAprilTag) <= PI + 0.1 && Math.abs(lastOrientedPos - targetTicks) > 10){
-            if(!resetting)pan.setTargetPosition((int)targetTicks);
-
-
-            lastOrientedPos = (int)targetTicks;
-        }
-
-
-
-
-
-        telemetry.addData("Current position on pan", pan.getCurrentPosition());
-        telemetry.addData("Target position on pan", pan.getTargetPosition());
-
-
-
-
-        telemetry.addData("Angle : ", angleToAprilTag * 180 / PI);
-        telemetry.addData("Turn Angle : ", tAngle * 180/ PI );
-
-
-
-        telemetry.addData("Pos X :", pinpoint.getPosX(DistanceUnit.INCH));
-        telemetry.addData("Pos Y :", pinpoint.getPosY(DistanceUnit.INCH));
-
         telemetry.update();
 
+        panTracking.loop();
+
+        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
 
 
     }
 
 
-    public void start(){
-
-
-        pan.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        pan.setTargetPosition((int)panForward);
-
-        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        resetting = false;
-
-
-        pan.setPower(1);
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
-
-
-    }
-
-    public static double turnAngle(double currentHeading, double targetAngle) {
-        double error = targetAngle - currentHeading;
-
-        // Normalize to (-PI, PI]
-        while (error > Math.PI)  error -= 2 * Math.PI;
-        while (error <= -Math.PI) error += 2 * Math.PI;
-
-        return error;
+    public void start() {
+        panTracking.start();
     }
 
 
@@ -205,4 +132,5 @@ public class onlyPan extends OpMode {
         bl.setPower((maxSpeed * (blPower / maxPower)));
         br.setPower((maxSpeed * (brPower / maxPower)));
     }
+
 }

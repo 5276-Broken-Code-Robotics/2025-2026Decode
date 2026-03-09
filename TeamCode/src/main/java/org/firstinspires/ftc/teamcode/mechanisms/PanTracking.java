@@ -1,25 +1,24 @@
-package org.firstinspires.ftc.teamcode.tests;
+
+package org.firstinspires.ftc.teamcode.mechanisms;
 
 import static java.lang.Math.PI;
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 
-@TeleOp(group = "Tests")
-public class onlyPan extends OpMode {
+public class PanTracking{
     DcMotor pan;
-
-
-
     double tAngle;
     float lastOrientedPos;
 
@@ -31,45 +30,24 @@ public class onlyPan extends OpMode {
 
     float panMax = 410;
 
-    DcMotor fl;
-    DcMotor fr;
-
     boolean resetting = false;
-    DcMotor bl;
-    DcMotor br;
     GoBildaPinpointDriver pinpoint;
 
 
-    public void init(){
+
+
+    Limelight3A limelight3A;
+
+    Gamepad gamepad1;
+
+    Telemetry telemetry;
+    public void init(HardwareMap hardwareMap, Gamepad gamepad1, GoBildaPinpointDriver pinpoint, Telemetry telemetry, Limelight3A limelight3A){
         pan = hardwareMap.get(DcMotorEx.class, "rot");
         pan.setPower(1);
-
-
-
         pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
-
-
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        pinpoint.resetPosAndIMU();
-
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,0, 0, AngleUnit.RADIANS,0));
-
-
-        fl = hardwareMap.get(DcMotor.class, "fl");
-        fr = hardwareMap.get(DcMotor.class, "fr");
-        bl = hardwareMap.get(DcMotor.class, "bl");
-        br = hardwareMap.get(DcMotor.class, "br");
-
-        // We set the left motors in reverse which is needed for drive trains where the left
-        // motors are opposite to the right ones.
-
-        bl.setDirection(DcMotor.Direction.REVERSE);
-        fl.setDirection(DcMotor.Direction.REVERSE);
-
+        this.pinpoint = pinpoint;
+        this.gamepad1 = gamepad1;
+        this.telemetry = telemetry;
 
     }
 
@@ -83,9 +61,6 @@ public class onlyPan extends OpMode {
 
         pinpoint.update();
 
-
-
-        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         if(gamepad1.rightBumperWasPressed()){
             pos+=15;
             count++;
@@ -126,8 +101,6 @@ public class onlyPan extends OpMode {
 
         if(Math.abs(angleToAprilTag) <= PI + 0.1 && Math.abs(lastOrientedPos - targetTicks) > 10){
             if(!resetting)pan.setTargetPosition((int)targetTicks);
-
-
             lastOrientedPos = (int)targetTicks;
         }
 
@@ -158,21 +131,11 @@ public class onlyPan extends OpMode {
 
 
     public void start(){
-
-
         pan.setDirection(DcMotorSimple.Direction.FORWARD);
-
         pan.setTargetPosition((int)panForward);
-
         pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         resetting = false;
-
-
         pan.setPower(1);
-        pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
-
-
     }
 
     public static double turnAngle(double currentHeading, double targetAngle) {
@@ -186,23 +149,4 @@ public class onlyPan extends OpMode {
     }
 
 
-    public void drive(double forward, double strafe, double rotate) {
-        double flPower = forward + strafe + rotate;
-        double frPower = forward - strafe - rotate;
-        double blPower = forward - strafe + rotate;
-        double brPower = forward + strafe - rotate;
-
-        double maxPower = 1.0;
-        double maxSpeed = 1.0;
-
-        maxPower = Math.max(maxPower, Math.abs(flPower));
-        maxPower = Math.max(maxPower, Math.abs(frPower));
-        maxPower = Math.max(maxPower, Math.abs(blPower));
-        maxPower = Math.max(maxPower, Math.abs(brPower));
-
-        fl.setPower((maxSpeed * (flPower / maxPower)));
-        fr.setPower((maxSpeed * (frPower / maxPower)));
-        bl.setPower((maxSpeed * (blPower / maxPower)));
-        br.setPower((maxSpeed * (brPower / maxPower)));
-    }
 }
