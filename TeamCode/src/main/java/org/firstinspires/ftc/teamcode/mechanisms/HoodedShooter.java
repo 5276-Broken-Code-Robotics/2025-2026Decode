@@ -75,6 +75,10 @@ public class HoodedShooter {
     Pose initPose;
     int currentID;
     Limelight3A limelight;
+
+    float faceForwardPos = 105;
+
+    float maxTurn = 525;
     GoBildaPinpointDriver pinpoint;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
@@ -97,7 +101,7 @@ public class HoodedShooter {
 
 
         pan = hardwareMap.get(DcMotor.class,"rot");
-        pan.setTargetPosition(0);
+        pan.setTargetPosition((int)faceForwardPos);
         pan.setPower(1);
         pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -128,7 +132,11 @@ public class HoodedShooter {
     public void loop()
     {
         freeSort.loop();
+
+        Orienting();
         /*
+
+
         telemetry.addData("Flywheel power", flywheel1.getPower() + " " + flywheel2.getPower());
         telemetry.addData("Pan position : ", pan.getCurrentPosition());
 
@@ -276,9 +284,10 @@ public class HoodedShooter {
 
     public void Orienting(){
 
+        angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - pinpoint.getPosY(DistanceUnit.INCH)),(currentAprilTagPos.getX() - pinpoint.getPosX(DistanceUnit.INCH)));
+
         if(Math.abs(angleToAprilTag) <= PI/2 + 0.1 && Math.abs(lastOrientedPos - initpos) > 10){
-            angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - pinpoint.getPosY(DistanceUnit.INCH)),(currentAprilTagPos.getX() - pinpoint.getPosX(DistanceUnit.INCH)));
-            initpos = turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (537/2)/(Math.PI);
+            initpos = turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (maxTurn-faceForwardPos)/(Math.PI/2);
             pan.setTargetPosition((int)initpos);
             lastOrientedPos = (int)initpos;
         }

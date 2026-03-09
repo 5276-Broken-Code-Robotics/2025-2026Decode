@@ -85,34 +85,6 @@ public class panTester extends OpMode {
     }
     @Override
     public void loop(){
-        drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-
-
-
-        follower.update();
-
-        telemetry.addData("Runnning?" , limelight3A.isRunning());
-        pinpoint.update();
-        double robotHeading = pinpoint.getHeading(AngleUnit.RADIANS);
-        limelight3A.updateRobotOrientation(robotHeading + pan.getCurrentPosition() / (537.7/2) * PI);
-
-
-        double angleToAprilTag = Math.atan2((144 - pinpoint.getPosY(DistanceUnit.INCH)),(144 - pinpoint.getPosX(DistanceUnit.INCH)));
-
-        float initpos = (float) (turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (537.7/2)/(Math.PI));
-
-
-
-
-
-        telemetry.addData("Init pos variable : ", initpos);
-
-
-        telemetry.addData("Turn angle : ", turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * 180/PI);
-
-        telemetry.addData("Angle to tag : ", angleToAprilTag * 180/PI);
-
-        if(gamepad1.aWasPressed())pan.setTargetPosition((int)initpos);
 
         if(gamepad1.rightBumperWasPressed()){
             pan.setTargetPosition(pan.getTargetPosition()-15);
