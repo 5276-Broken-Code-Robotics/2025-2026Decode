@@ -98,7 +98,6 @@ public class PanTracking{
 
         telemetry.addData("Heading :", pinpoint.getHeading(AngleUnit.DEGREES));
 
-
         if(limelight3A.getLatestResult() != null){
             results = limelight3A.getLatestResult().getFiducialResults();
         }else{
@@ -181,7 +180,13 @@ public class PanTracking{
          */
 
 
-        List<LLResultTypes.FiducialResult> Atagresults = limelight3A.getLatestResult().getFiducialResults();
+        List<LLResultTypes.FiducialResult> Atagresults;
+
+        if(limelight3A.getLatestResult() != null){
+            Atagresults = limelight3A.getLatestResult().getFiducialResults();
+        }else{
+            Atagresults = new ArrayList<>();
+        }
 
 
         telemetry.addData("ATAG Results size :", Atagresults.size());
