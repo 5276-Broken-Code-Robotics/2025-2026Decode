@@ -20,7 +20,7 @@ public class PIDFTUNING {
 
     double[] stepSizes={10.0,1.0,0.1,0.01,0.001};
 
-    @Override
+
     public void init(){
         flywheel1=hardwareMap.get(DcMotorEx.class, "flywheel1");
         flywheel1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -28,7 +28,6 @@ public class PIDFTUNING {
         PIDFCoefficients goonCoefficients= new PIDFCoefficients(P,0,0,F);
         flywheel1.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, goonCoefficients);
     }
-    @Override
     public void loop(){
 
     }

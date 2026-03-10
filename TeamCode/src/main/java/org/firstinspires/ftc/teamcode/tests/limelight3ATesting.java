@@ -61,6 +61,10 @@ public class limelight3ATesting extends OpMode {
 
 
 
+        pinpoint.setHeading( Math.PI/4,AngleUnit.RADIANS);
+
+
+
 
         follower = Constants.createFollower(hardwareMap);
 
@@ -77,6 +81,7 @@ public class limelight3ATesting extends OpMode {
         bl.setDirection(DcMotor.Direction.REVERSE);
 
 
+
     }
     @Override
     public void start(){
@@ -86,6 +91,8 @@ public class limelight3ATesting extends OpMode {
     @Override
     public void loop(){
         drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+
+
 
 
 
@@ -132,7 +139,6 @@ public class limelight3ATesting extends OpMode {
 
                 telemetry.addData("Orient : ", botpose.getOrientation());
 
-                telemetry.update();
             }
 
         }
@@ -143,6 +149,8 @@ public class limelight3ATesting extends OpMode {
 
         List<LLResultTypes.FiducialResult> Atagresults = limelight3A.getLatestResult().getFiducialResults();
 
+
+        telemetry.addData("ATAG Results size :", Atagresults.size());
         for(int i =0; i < Atagresults.size();i++){
             if(Atagresults.get(i).getFiducialId() == 24){
                 LLResultTypes.FiducialResult tag = Atagresults.get(i);
@@ -157,7 +165,11 @@ public class limelight3ATesting extends OpMode {
                 telemetry.addData("FidEstim Ypos", y );
                 telemetry.addData("FidEstim Zpos", z);
             }
+
+
         }
+
+
 
 
 
@@ -175,6 +187,8 @@ public class limelight3ATesting extends OpMode {
         telemetry.addData("Heading : ", follower.getPose().getHeading());
 
 
+
+        telemetry.update();
     }
 
     public static double turnAngle(double currentHeading, double targetAngle) {

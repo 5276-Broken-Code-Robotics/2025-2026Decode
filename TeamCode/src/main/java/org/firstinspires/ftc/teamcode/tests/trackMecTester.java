@@ -18,9 +18,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.PanTracking;
 
 @TeleOp(group = "Tests")
 public class trackMecTester extends OpMode {
-    DcMotor pan;
-
-
 
     double tAngle;
     float lastOrientedPos;
@@ -81,8 +78,12 @@ public class trackMecTester extends OpMode {
 
 
         limelight.start();
+        limelight.pipelineSwitch(0);
 
-        panTracking.init(hardwareMap,gamepad1,pinpoint,telemetry, limelight);
+        Pose2D pos = new Pose2D(DistanceUnit.INCH,144,144, AngleUnit.RADIANS,0);
+        limelight.updateRobotOrientation(0);
+
+        panTracking.init(hardwareMap,gamepad1,pinpoint,telemetry, limelight, 24,pos );
 
 
     }
@@ -97,9 +98,9 @@ public class trackMecTester extends OpMode {
 
         pinpoint.update();
 
-        telemetry.update();
-
         panTracking.loop();
+
+
 
         drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
 
