@@ -1,32 +1,26 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import static java.lang.Math.PI;
-
 
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-
-import java.util.*;
 
 public class HoodedShooter {
 
-    UseFreeSortHSV freeSort;
+    FinalFreeSortHSV freeSort;
 
 
     private DcMotor pan;
@@ -38,6 +32,8 @@ public class HoodedShooter {
 
     double positionnecessary;
 
+
+    int id = 0;
     String state;
 
     ElapsedTime elapsedTime;
@@ -63,10 +59,10 @@ public class HoodedShooter {
     ElapsedTime waitrotate;
 
     double angleToAprilTag = 0;
-    Pose aprilTagRed = new Pose(144,144);
-    Pose aprilTagBlue = new Pose(0,144);
+    Pose2D aprilTagRed = new Pose2D(DistanceUnit.INCH,144,144, AngleUnit.RADIANS,0);
+    Pose2D aprilTagBlue = new Pose2D(DistanceUnit.INCH,0,144, AngleUnit.RADIANS,0);
     boolean rotated = false;
-    Pose currentAprilTagPos = new Pose(0,0,0);
+    Pose2D currentAprilTagPos;
 
 
     int lastOrientedPos;
@@ -80,23 +76,25 @@ public class HoodedShooter {
 
     float maxTurn = 525;
     GoBildaPinpointDriver pinpoint;
+
+    public ElapsedTime pinpointUpdatePause;
     // (160 (vbig gear) / 18 (small gear)  * 20 (degrees of rotation))/300
     double maxTilt = 0.59;
-    public void init(HardwareMap hardwareMap, Telemetry telemetry, GoBildaPinpointDriver pinpoint) {
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, GoBildaPinpointDriver pinpoint, int id) {
 
         shootTimer = new ElapsedTime();
 
-        freeSort = new UseFreeSortHSV();
+        freeSort = new FinalFreeSortHSV();
 
         freeSort.init(hardwareMap, telemetry);
 
         shootTimer.reset();
 
 
-
+        pinpointUpdatePause = new ElapsedTime();
         tilt = hardwareMap.get(Servo.class, "tilt");
         flywheel1 = hardwareMap.get(DcMotor.class, "flywheel1");
-        flywheel2 = hardwareMap.get(DcMotor.class, "flywheel1");
+        flywheel2 = hardwareMap.get(DcMotor.class, "flywheel2");
         limelight = hardwareMap.get(Limelight3A.class,"limelight");
 
 
@@ -104,6 +102,8 @@ public class HoodedShooter {
         pan.setTargetPosition((int)faceForwardPos);
         pan.setPower(1);
         pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        this.id = id;
 
 
         this.pinpoint = pinpoint;
@@ -119,6 +119,21 @@ public class HoodedShooter {
         resetting = false;
 
 
+
+        panTracking = new PanTracking();
+
+
+        if(id == 24){
+            currentAprilTagPos = aprilTagRed;
+        }else{
+            currentAprilTagPos = aprilTagBlue;
+        }
+
+
+        currentID = id;
+
+
+        panTracking.init(hardwareMap,pinpoint,telemetry,limelight,id,currentAprilTagPos);
         limelight.start();
 
         this.telemetry = telemetry;
@@ -129,9 +144,16 @@ public class HoodedShooter {
         elapsedTime = new ElapsedTime();
     }
 
+    public void start(){
+        pinpointUpdatePause.reset();
+        panTracking.start();
+    }
+
     public void loop()
     {
         freeSort.loop();
+
+        panTracking.loop();
 
         Orienting();
         /*
@@ -150,8 +172,7 @@ public class HoodedShooter {
 
          */
 
-
-        pinpoint.update();
+        if(pinpointUpdatePause.seconds() > 1)pinpoint.update();
 
         LLResult Llresult = limelight.getLatestResult();
 
@@ -180,8 +201,6 @@ public class HoodedShooter {
         tilt.setPosition(0.075);
 
         //telemetry.update();
-
-
     }
 
     public void AutoBeginShot(boolean isRed, boolean isFar){
@@ -229,7 +248,7 @@ public class HoodedShooter {
 
 
 
-    public void BeginShot(int id){
+    public void BeginShot(){
 
 
         isAutoShot = false;
@@ -247,12 +266,6 @@ public class HoodedShooter {
         rotated = false;
 
         shotbegan = true;
-
-
-
-
-
-
 
 
         shotbegan = false;
@@ -273,16 +286,9 @@ public class HoodedShooter {
         }
     }
 
+
+    PanTracking panTracking;
     public void Orienting(){
-
-        angleToAprilTag = Math.atan2((currentAprilTagPos.getY() - pinpoint.getPosY(DistanceUnit.INCH)),(currentAprilTagPos.getX() - pinpoint.getPosX(DistanceUnit.INCH)));
-
-        if(Math.abs(angleToAprilTag) <= PI/2 + 0.1 && Math.abs(lastOrientedPos - initpos) > 10){
-            initpos = turnAngle(pinpoint.getHeading(AngleUnit.RADIANS),angleToAprilTag) * (maxTurn-faceForwardPos)/(Math.PI/2);
-            pan.setTargetPosition((int)initpos);
-            lastOrientedPos = (int)initpos;
-        }
-
 
     }
 

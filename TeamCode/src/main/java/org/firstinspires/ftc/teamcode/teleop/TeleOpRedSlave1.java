@@ -132,8 +132,6 @@ public class TeleOpRedSlave1 extends OpMode {
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
         pinpoint.resetPosAndIMU();
 
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 24, AngleUnit.RADIANS,0));
-
 
 
         intake = hardwareMap.get(DcMotor.class, "intake");
@@ -156,7 +154,7 @@ public class TeleOpRedSlave1 extends OpMode {
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        hShooter.init(hardwareMap,telemetry, pinpoint);
+        hShooter.init(hardwareMap,telemetry, pinpoint, 24);
 
         state=  0;
         intake.setPower(0);
@@ -168,6 +166,9 @@ public class TeleOpRedSlave1 extends OpMode {
 
     @Override
     public void start(){
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 24, AngleUnit.RADIANS,0));
+
+        hShooter.start();
         intake.setPower(1);
 
 
@@ -236,11 +237,21 @@ public class TeleOpRedSlave1 extends OpMode {
             hShooter.Fire(3);
         }
 
+        if(gamepad1.x){
+            hShooter.pinpointUpdatePause.reset();
+            pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 24, AngleUnit.RADIANS,0));
+        }
+
 
         hShooter.loop();
 
 
+
+        telemetry.addData("According to redslave 1 we are at : ", pinpoint.getPosX(DistanceUnit.INCH) + " " + pinpoint.getPosY(DistanceUnit.INCH) + " At an angle of " +pinpoint.getHeading(AngleUnit.RADIANS));
         //telemetry.update();
+
+
+        telemetry.update();
     }
 
 

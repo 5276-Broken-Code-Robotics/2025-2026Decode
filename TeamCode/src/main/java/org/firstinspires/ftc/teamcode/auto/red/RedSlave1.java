@@ -95,7 +95,7 @@ public class RedSlave1 extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
 
-        shooter.init(hardwareMap, telemetry, pinpoint);
+        shooter.init(hardwareMap, telemetry, pinpoint, 24);
     }
 
     @Override

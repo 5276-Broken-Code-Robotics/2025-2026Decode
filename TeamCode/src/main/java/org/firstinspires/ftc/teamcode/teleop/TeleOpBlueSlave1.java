@@ -153,7 +153,7 @@ public class TeleOpBlueSlave1 extends OpMode {
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hShooter.init(hardwareMap,telemetry, pinpoint);
+        hShooter.init(hardwareMap,telemetry, pinpoint, -1);
 
         state=  0;
         intake.setPower(0);

@@ -139,7 +139,7 @@ public class AbeBlueSlave extends OpMode {
 
 
 
-        hShooter.init(hardwareMap,telemetry, pinpoint);
+        hShooter.init(hardwareMap,telemetry, pinpoint, -1);
 
         state=  0;
         intake.setPower(0);

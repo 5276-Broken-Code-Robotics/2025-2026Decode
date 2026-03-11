@@ -47,7 +47,6 @@ public class PanTracking{
 
     Limelight3A limelight3A;
 
-    Gamepad gamepad1;
 
 
 
@@ -58,12 +57,11 @@ public class PanTracking{
 
     int id;
     Telemetry telemetry;
-    public void init(HardwareMap hardwareMap, Gamepad gamepad1, GoBildaPinpointDriver pinpoint, Telemetry telemetry, Limelight3A limelight3A, int id, Pose2D goalPos){
+    public void init(HardwareMap hardwareMap, GoBildaPinpointDriver pinpoint, Telemetry telemetry, Limelight3A limelight3A, int id, Pose2D goalPos){
         pan = hardwareMap.get(DcMotorEx.class, "rot");
         pan.setPower(1);
         pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.pinpoint = pinpoint;
-        this.gamepad1 = gamepad1;
         this.telemetry = telemetry;
         this.limelight3A = limelight3A;
 
@@ -102,7 +100,7 @@ public class PanTracking{
             results = limelight3A.getLatestResult().getFiducialResults();
         }else{
             results = new ArrayList<>();
-            telemetry.addData("LL is null unfortunately", " womp womp");
+            //telemetry.addData("LL is null unfortunately", " womp womp");
         }
 
 
@@ -125,13 +123,11 @@ public class PanTracking{
         double targetTicks = -  tAngle * (panMax-panZero)/(Math.PI);
 
 
-        if(!results.isEmpty())telemetry.addData("Yaw Value : ", results.get(0).getTargetPoseCameraSpace().getOrientation().getYaw());
 
 
 
-        if(pinpoint.getPosY(DistanceUnit.INCH) < 48 && spinCD.seconds() > 0.2){
+        if(pinpoint.getPosY(DistanceUnit.INCH) < 48){
 
-            spinCD.reset();
             telemetry.addData("Using Limelight Data : ",  "Now");
 
             boolean foundOne = false;
@@ -143,11 +139,22 @@ public class PanTracking{
                 }
             }
 
-            telemetry.addData("Found One : ", foundOne);
+            //telemetry.addData("Found One : ", foundOne);
+
+
+            /*
+            if(foundOne){
+                telemetry.addData("Robot XPos According to LL :", fidRes.getRobotPoseFieldSpace().getPosition().x);
+                telemetry.addData("Robot YPos According to LL :", fidRes.getRobotPoseFieldSpace().getPosition().y);
+
+            }
+
+             */
 
 
             if(foundOne){
-                double valCalced = pan.getCurrentPosition() - fidRes.getTargetPoseCameraSpace().getOrientation().getYaw(AngleUnit.RADIANS) * (panMax-panZero) / PI;
+
+                double valCalced = pan.getCurrentPosition() + fidRes.getTargetXDegrees()* (panMax-panZero) / 180;
                 if(Math.abs(Math.abs(valCalced) - Math.abs(targetTicks)) > 10){
                     targetTicks = valCalced;
                 }
@@ -157,29 +164,23 @@ public class PanTracking{
 
 
 
-        if(Math.abs(Math.abs(lastOrientedPos) - Math.abs(targetTicks)) > 10 && Math.abs(angleToAprilTag) <= PI ){
+        if(Math.abs(Math.abs(lastOrientedPos) - Math.abs(targetTicks)) > 10 && Math.abs(angleToAprilTag) <= PI && spinCD.seconds() > 0.2){
+
+            spinCD.reset();
+            if(targetTicks > panMax){
+                targetTicks = panMax;
+            }
+            if(targetTicks < panZero){
+                targetTicks = panZero;
+            }
+
             pan.setTargetPosition((int) targetTicks);
             lastOrientedPos = (int)targetTicks;
         }
 
 
+
         /*
-
-        LLResult reOrientRes = limelight3A.getLatestResult();
-        if(pinpoint.getPosY(DistanceUnit.INCH) > 72){
-            if(reOrientRes != null){
-                if(reOrientRes.isValid()){
-                    Pose3D pose = reOrientRes.getBotpose_MT2();
-                    telemetry.addData("Calced Pos X:", pose.getPosition().x);
-                    telemetry.addData("Calced Pos Y : ", pose.getPosition().y);
-
-                }
-            }
-        }
-
-         */
-
-
         List<LLResultTypes.FiducialResult> Atagresults;
 
         if(limelight3A.getLatestResult() != null){
@@ -230,7 +231,9 @@ public class PanTracking{
 
 
 
-        /*
+
+
+
         List<LLResultTypes.FiducialResult> Atagresults = limelight3A.getLatestResult().getFiducialResults();
 
         for(int i =0; i < Atagresults.size();i++){
@@ -251,7 +254,9 @@ public class PanTracking{
 
          */
 
-        telemetry.update();
+
+        telemetry.addData("According to pantracking we are at : ", pinpoint.getPosX(DistanceUnit.INCH) + " " + pinpoint.getPosY(DistanceUnit.INCH) + " At an angle of " +pinpoint.getHeading(AngleUnit.RADIANS));
+
 
 
 

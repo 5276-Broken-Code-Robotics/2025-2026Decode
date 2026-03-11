@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.JavaUtil;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class UseFreeSortHSV {
+public class FinalFreeSortHSV {
 
     public char pos1;
     public char pos2;
@@ -21,6 +21,8 @@ public class UseFreeSortHSV {
     g = green
     p = purple
     e = empty
+
+
 
 
          (pos1)
@@ -36,7 +38,9 @@ public class UseFreeSortHSV {
     RevColorSensorV3 sensor2;
     ColorRangeSensor sensor3;
 
-    float sensorGain = 30f;
+    double stuckStartDur = 0f;
+
+    float sensorGain = 15f;
 
     float purpleHMaxV3 = 245;
 
@@ -68,7 +72,7 @@ public class UseFreeSortHSV {
     public boolean armsMoving = false;
 
     double kickRot = .4;
-    double emptyRot = kickRot/2;
+    double emptyRot = 0.25;
 
     public int shootnum;
     /*
@@ -141,15 +145,20 @@ public class UseFreeSortHSV {
         shooting = true;
         if (armnum!=1 && pos1 == 'e'){
             arm1Stuck = true;
+
+
+            arm1.setPosition(emptyRot);
             stuckStartCD.reset();
         }
         if (armnum!=2 && pos2 == 'e'){
             arm2Stuck = true;
+            arm2.setPosition(emptyRot);
             stuckStartCD.reset();
 
         }
         if (armnum!=3 && pos3 == 'e'){
             arm3Stuck = true;
+            arm3.setPosition(emptyRot);
             stuckStartCD.reset();
 
         }
@@ -158,20 +167,17 @@ public class UseFreeSortHSV {
         if(armnum == 1)
         {
             arm1Shooting = true;
-            arm1.setPosition(kickRot);
         }
 
         if(armnum == 2)
         {
             arm2Shooting = true;
-            arm2.setPosition(kickRot);
 
 
         }
         if(armnum == 3)
         {
             arm3Shooting = true;
-            arm3.setPosition(kickRot);
         }
     }
 
@@ -206,6 +212,8 @@ public class UseFreeSortHSV {
             arm3.setPosition(0);
         }
 
+
+        /*
         telem.addData("A1Shooting:", arm1Shooting);
         telem.addData("A1Stuck:", arm1Stuck);
 
@@ -232,39 +240,15 @@ public class UseFreeSortHSV {
         telem.addData("Shooting : ", shooting);
         telem.addData("NUM : ", num);
 
-        num++;
-
-        telem.update();
-
-
-        /*
-        double[] posArr = {kickRot/3, 0, kickRot*2/3,0,kickRot};
-
-        if(arm2Shooting && incrementCD.seconds() > 0.2){
-
-
-            TMa2 = true;
-            if(dex > 4){
-
-                dex = 0;
-                arm2.setPosition(0);
-                incrementCD.reset();
-                arm2Shooting = false;
-                shooting = false;
-                arm1Stuck = false;
-                arm2Stuck = false;
-                arm3Stuck = false;
-            }else{
-                arm2.setPosition(posArr[dex]);
-            }
-
-            dex++;
-            incrementCD.reset();
-        }
+        telem.addData("P1 : ", pos1);
+        telem.addData("P2 : ", pos2);
+        telem.addData("P3 : ", pos3);
 
          */
 
+        num++;
 
+        telem.update();
 
 
         if(!arm1Shooting && !arm2Shooting && !arm3Shooting){
@@ -285,17 +269,18 @@ public class UseFreeSortHSV {
             arm1CD.reset();
         }else{
             TMa1 = true;
-            if(arm1CD.seconds() > 0.3){
+            if(arm1CD.seconds() > 0.3 + stuckStartDur){
                 arm1.setPosition(0);
 
                 arm1Shooting = false;
                 shooting = false;
-
                 arm1Stuck = false;
                 arm2Stuck = false;
                 arm3Stuck = false;
+                stuckStartCD.reset();
+
             }else{
-                arm1.setPosition(kickRot);
+                if(stuckStartCD.seconds() > stuckStartDur)arm1.setPosition(kickRot);
             }
         }
 
@@ -306,7 +291,7 @@ public class UseFreeSortHSV {
             arm2CD.reset();
         }else{
             TMa2 = true;
-            if(arm2CD.seconds() > 0.3){
+            if(arm2CD.seconds() > 0.3 + stuckStartDur){
                 arm2.setPosition(0);
                 arm2Shooting = false;
                 shooting = false;
@@ -314,8 +299,10 @@ public class UseFreeSortHSV {
                 arm1Stuck = false;
                 arm2Stuck = false;
                 arm3Stuck = false;
+                stuckStartCD.reset();
+
             }else{
-                arm2.setPosition(kickRot);
+                if(stuckStartCD.seconds() > stuckStartDur)arm2.setPosition(kickRot);
             }
 
         }
@@ -326,7 +313,7 @@ public class UseFreeSortHSV {
             arm3CD.reset();
         }else{
             TMa3 = true;
-            if(arm3CD.seconds() > 0.3){
+            if(arm3CD.seconds() > 0.3 + stuckStartDur){
                 arm3.setPosition(0);
                 arm3Shooting = false;
                 shooting = false;
@@ -334,8 +321,10 @@ public class UseFreeSortHSV {
                 arm1Stuck = false;
                 arm2Stuck = false;
                 arm3Stuck = false;
+                stuckStartCD.reset();
+
             }else{
-                arm3.setPosition(kickRot);
+                if(stuckStartCD.seconds() > stuckStartDur)arm3.setPosition(kickRot);
             }
 
         }

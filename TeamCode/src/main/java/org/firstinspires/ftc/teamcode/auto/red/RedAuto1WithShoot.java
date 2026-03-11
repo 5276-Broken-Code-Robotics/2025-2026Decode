@@ -253,7 +253,7 @@ public class RedAuto1WithShoot extends OpMode {
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
 
-        shooter.init(hardwareMap, telemetry, pinpoint);
+        shooter.init(hardwareMap, telemetry, pinpoint, 24);
         intake.setPower(0);
 
     }
