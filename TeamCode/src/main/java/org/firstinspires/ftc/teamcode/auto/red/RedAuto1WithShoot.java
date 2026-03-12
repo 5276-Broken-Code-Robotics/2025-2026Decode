@@ -268,7 +268,6 @@ public class RedAuto1WithShoot extends OpMode {
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
                 obeliskId = fiducial.getFiducialId();
             }
-            int obeliskId = 0;
             fiducials = limelight.getLatestResult().getFiducialResults();
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
                 obeliskId = fiducial.getFiducialId();
