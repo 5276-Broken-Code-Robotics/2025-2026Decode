@@ -44,4 +44,8 @@ public class ObolistkDetechtionTest {
                 char[] pattern = {'p', 'p', 'g'};
             }
         }
-    }}
+        }
+    public void start(){
+
+    }
+    }
