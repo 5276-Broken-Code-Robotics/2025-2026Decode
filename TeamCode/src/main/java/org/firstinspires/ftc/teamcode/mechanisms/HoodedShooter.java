@@ -123,6 +123,8 @@ public class HoodedShooter {
 
 
 
+
+        flywheelPower = 0.6;
         panTracking = new PanTracking();
 
 
