@@ -39,6 +39,9 @@ public class HoodedShooter {
     ElapsedTime elapsedTime;
 
 
+
+
+
     private DcMotor flywheel1;
 
     private DcMotor flywheel2;
@@ -47,9 +50,9 @@ public class HoodedShooter {
 
     //0.75 for close sec 2
 
-    double flywheelPower;
+    public double flywheelPower;
 
-
+    public double headingTiltPos;
     Telemetry telemetry;
 
     public boolean shotbegan = false;
@@ -134,7 +137,12 @@ public class HoodedShooter {
 
 
         panTracking.init(hardwareMap,pinpoint,telemetry,limelight,id,currentAprilTagPos);
-        limelight.start();
+
+
+
+        //limelight.start();
+        //DISABLED FOR POWER PURPOSES, DO NOT FORGET TO REENABLE
+
 
         this.telemetry = telemetry;
 
@@ -156,6 +164,9 @@ public class HoodedShooter {
         panTracking.loop();
 
         Orienting();
+
+        if(firingPat)FiringAPattern();
+
         /*
 
 
@@ -172,38 +183,30 @@ public class HoodedShooter {
 
          */
 
-        if(pinpointUpdatePause.seconds() > 1)pinpoint.update();
+        if(pinpointUpdatePause.seconds() > 0.3)pinpoint.update();
 
-        LLResult Llresult = limelight.getLatestResult();
-
-        if(Llresult!= null && Llresult.isValid()){
-
-            Pose3D botpose = Llresult.getBotpose_MT2();
-
-
-            /*
-            telemetry.addData("PX : ",botpose.getPosition().x);
-
-            telemetry.addData("PY :", botpose.getPosition().y);
-
-            telemetry.addData("Orient : ", botpose.getOrientation());
-
-             */
-
-        }
 
 
         //Orienting();
 
 
-        flywheel1.setPower(0.6);
-        flywheel2.setPower(0.6);
-        tilt.setPosition(0.075);
+
+
+        flywheel1.setPower(flywheelPower);
+        flywheel2.setPower(flywheelPower);
+        tilt.setPosition(headingTiltPos);
 
         //telemetry.update();
     }
 
     public void AutoBeginShot(boolean isRed, boolean isFar){
+
+
+        //ALL LEGACY VALUES GANG
+
+
+        //ADJUST ON YOUR OWN
+
 
         isAutoShot = true;
         flywheelPower = 0.63; // Needs testing for accurate value
@@ -239,11 +242,6 @@ public class HoodedShooter {
         }
 
         pan.setTargetPosition((int)positionnecessary);
-        shotbegan = true;
-
-
-
-        shotbegan = false;
     }
 
 
@@ -269,21 +267,33 @@ public class HoodedShooter {
 
 
         shotbegan = false;
-
     }
 
 
 
-    boolean firingAllThree = false;
-    public void fireThree(){
-        firingAllThree = true;
-    }
-
-
-    public void FiringAllThree(){
-        if(firingAllThree){
-            //implement
+    boolean firingPat = false;
+    public void firePattern(char[] pat){
+        firingPat = true;
+        dex = 0;
+        for(int i =0; i < pat.length;i++){
+            curpat[i] = pat[i];
         }
+    }
+
+    char[] curpat = {3};
+
+    int dex = 0;
+    public void FiringAPattern(){
+            if(dex < 3){
+                if(!freeSort.shooting){
+                    FireColor(curpat[dex]);
+                    dex++;
+                }
+            }else{
+                firingPat = false;
+                dex = 0;
+            }
+
     }
 
 
@@ -296,6 +306,34 @@ public class HoodedShooter {
 
     public void Fire(int num){
         if(!freeSort.shooting)freeSort.shoot(num);
+    }
+
+    public void FireColor(char c){
+
+        if(c == 'p'){
+            if(freeSort.pos1 == 'p'){
+                freeSort.shoot(1);
+            }else
+            if(freeSort.pos2 == 'p'){
+                freeSort.shoot(2);
+            }else
+            if(freeSort.pos3 == 'p'){
+                freeSort.shoot(3);
+            }
+        }else{
+            if(freeSort.pos1 == 'g'){
+                freeSort.shoot(1);
+            }else
+            if(freeSort.pos2 == 'g'){
+                freeSort.shoot(2);
+            }else
+            if(freeSort.pos3 == 'g'){
+                freeSort.shoot(3);
+            }
+        }
+
+
+
     }
 
     public static double turnAngle(double currentHeading, double targetAngle) {

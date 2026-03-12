@@ -109,12 +109,7 @@ public class FieldRelativeDrive {
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
 
-
-
-        pinpoint.initialize();
-        pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        pinpoint.resetPosAndIMU();
+        this.pinpoint = pinpoint;
 
 
     }
