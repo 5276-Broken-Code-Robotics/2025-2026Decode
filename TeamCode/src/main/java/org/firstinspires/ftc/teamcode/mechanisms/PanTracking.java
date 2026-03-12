@@ -59,7 +59,6 @@ public class PanTracking{
     Telemetry telemetry;
     public void init(HardwareMap hardwareMap, GoBildaPinpointDriver pinpoint, Telemetry telemetry, Limelight3A limelight3A, int id, Pose2D goalPos){
         pan = hardwareMap.get(DcMotorEx.class, "rot");
-        pan.setPower(1);
         pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.pinpoint = pinpoint;
         this.telemetry = telemetry;
@@ -75,6 +74,7 @@ public class PanTracking{
 
 
     }
+
 
 
 
@@ -126,7 +126,7 @@ public class PanTracking{
 
 
 
-        if(pinpoint.getPosY(DistanceUnit.INCH) < 48){
+        if(pinpoint.getPosY(DistanceUnit.INCH) < 40){
 
             telemetry.addData("Using Limelight Data : ",  "Now");
 
@@ -164,7 +164,7 @@ public class PanTracking{
 
 
 
-        if(Math.abs(Math.abs(lastOrientedPos) - Math.abs(targetTicks)) > 10 && Math.abs(angleToAprilTag) <= PI && spinCD.seconds() > 0.2){
+        if(Math.abs(Math.abs(lastOrientedPos) - Math.abs(targetTicks)) > 1 && Math.abs(angleToAprilTag) <= PI && spinCD.seconds() > 0.2){
 
             spinCD.reset();
             if(targetTicks > panMax){
@@ -268,8 +268,8 @@ public class PanTracking{
         pan.setDirection(DcMotorSimple.Direction.FORWARD);
         pan.setTargetPosition((int)panForward);
         pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        resetting = false;
         pan.setPower(1);
+        resetting = false;
     }
 
     public static double turnAngle(double currentHeading, double targetAngle) {

@@ -23,10 +23,14 @@ public class HoodedShooter {
     FinalFreeSortHSV freeSort;
 
 
-    private DcMotor pan;
     private Servo tilt;
 
     ElapsedTime shootTimer;
+
+
+    public char p1;
+    public char p2;
+    public char p3;
 
     double initpos = 0f;
 
@@ -101,11 +105,6 @@ public class HoodedShooter {
         limelight = hardwareMap.get(Limelight3A.class,"limelight");
 
 
-        pan = hardwareMap.get(DcMotor.class,"rot");
-        pan.setTargetPosition((int)faceForwardPos);
-        pan.setPower(1);
-        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         this.id = id;
 
 
@@ -116,7 +115,7 @@ public class HoodedShooter {
         flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        flywheel2.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel2.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
         waitrotate = new ElapsedTime();
         resetting = false;
@@ -125,6 +124,7 @@ public class HoodedShooter {
 
 
         flywheelPower = 0.6;
+        headingTiltPos = 0.12;
         panTracking = new PanTracking();
 
 
@@ -161,6 +161,13 @@ public class HoodedShooter {
 
     public void loop()
     {
+
+        //Alter, this is just for red goal
+        if((144-pinpoint.getPosY(DistanceUnit.INCH)) * (144-pinpoint.getPosY(DistanceUnit.INCH)) + (144-pinpoint.getPosX(DistanceUnit.INCH))*(144-pinpoint.getPosX(DistanceUnit.INCH)) < 3200 ){
+            headingTiltPos = 0.047;
+        }else{
+            headingTiltPos = 0.1;
+        }
         freeSort.loop();
 
         panTracking.loop();
@@ -168,6 +175,10 @@ public class HoodedShooter {
         Orienting();
 
         if(firingPat)FiringAPattern();
+
+        p1 = freeSort.pos1;
+        p2 = freeSort.pos2;
+        p3 = freeSort.pos3;
 
         /*
 
@@ -211,7 +222,6 @@ public class HoodedShooter {
 
 
         isAutoShot = true;
-        flywheelPower = 0.63; // Needs testing for accurate value
         tilt.setPosition(0); // Needs testing for accurate value
         elapsedTime.reset();
 
@@ -221,29 +231,24 @@ public class HoodedShooter {
 
         if(isRed &&!isFar){
             positionnecessary = 0.29/0.45 * 286/(0.45);
-            flywheelPower = 0.63; // Needs testing for accurate value
             tilt.setPosition(0); // Needs testing for accurate value
         }
 
         if(!isRed && !isFar){
             positionnecessary = 0.11/0.45* 286/(0.45);
-            flywheelPower = 0.63; // Needs testing for accurate value
             tilt.setPosition(0); // Needs testing for accurate value
         }
 
         if(isRed && isFar){
             positionnecessary = 0.38* 286/(0.45);
-            flywheelPower = 0.8; // Needs testing for accurate value
             tilt.setPosition(0.275); // Needs testing for accurate value
         }
 
         if(!isRed && isFar){
             positionnecessary = (0.45-0.38)* 286/(0.45);
-            flywheelPower = 0.8; // Needs testing for accurate value
             tilt.setPosition(0.275); // Needs testing for accurate value
         }
 
-        pan.setTargetPosition((int)positionnecessary);
     }
 
 
@@ -275,11 +280,15 @@ public class HoodedShooter {
 
     boolean firingPat = false;
     public void firePattern(char[] pat){
-        firingPat = true;
-        dex = 0;
-        for(int i =0; i < pat.length;i++){
-            curpat[i] = pat[i];
+
+        if(pat.length > 0 && curpat.length > 0){
+            firingPat = true;
+            dex = 0;
+            for(int i =0; i < pat.length;i++){
+                curpat[i] = pat[i];
+            }
         }
+
     }
 
     char[] curpat = {3};
@@ -300,6 +309,7 @@ public class HoodedShooter {
 
 
     PanTracking panTracking;
+
     public void Orienting(){
 
     }
