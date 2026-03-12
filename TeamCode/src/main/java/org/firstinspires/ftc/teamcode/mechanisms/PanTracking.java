@@ -92,7 +92,7 @@ public class PanTracking{
     int pos = 0;
     public void loop(){
 
-        //limelight3A.updateRobotOrientation(pinpoint.getHeading(AngleUnit.RADIANS) + pan.getCurrentPosition() / (panMax-panZero) * PI);
+        limelight3A.updateRobotOrientation(pinpoint.getHeading(AngleUnit.RADIANS) + pan.getCurrentPosition() / (panMax-panZero) * PI);
 
         telemetry.addData("Heading :", pinpoint.getHeading(AngleUnit.DEGREES));
 
