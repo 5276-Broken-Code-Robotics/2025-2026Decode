@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
 
 public class AprilTagPowerAndTiltTesting extends OpMode {
-    private DcMotor pan;
     boolean beganshot = false;
 
     double initpos = 0f;
@@ -74,10 +73,6 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
     Limelight3A limelight;
     boolean rewinding = false;
-
-    double flywheelpower = 0.6;
-
-    double pos = 0.4;
     int num = 0;
     public void init() {
 
@@ -105,7 +100,6 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         fl = hardwareMap.get(DcMotor.class, "fl");
         bl = hardwareMap.get(DcMotor.class, "bl");
         br = hardwareMap.get(DcMotor.class, "br");
-        pan = hardwareMap.get(DcMotor.class, "rot");
 
 
         arm1 = hardwareMap.get(Servo.class, "arm1");
@@ -116,9 +110,6 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
 
 
-        pan = hardwareMap.get(DcMotor.class,"rot");
-        pan.setTargetPosition(0);
-        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
@@ -156,11 +147,9 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
     }
 
-
-    double recPPHeading = Math.PI/2;
     @Override
     public void start(){
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,130, 15, AngleUnit.RADIANS,Math.PI/2   ));
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,144-9, 9, AngleUnit.RADIANS,0));
 
         hShooter.start();
         intake.setPower(1);
@@ -169,6 +158,10 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
     }
     double val = 0.6;
 
+    public void breaks(){
+
+
+    }
     public void loop(){
 
         if(gamepad2.b){
@@ -186,8 +179,6 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
 
 
-
-
         if(gamepad2.y){
             fl.setPower(0.0);
             fr.setPower(0.0);
@@ -199,9 +190,6 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
         }
 
-        if(Math.abs(recPPHeading - pinpoint.getHeading(AngleUnit.RADIANS)) > 0.5){
-            pinpoint.setHeading(recPPHeading,AngleUnit.RADIANS);
-        }
 
         if(gamepad2.leftBumperWasPressed()){
             intake.setPower(0.25);
@@ -232,37 +220,42 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
             hShooter.Fire(3);
         }
 
+        if(gamepad1.dpadLeftWasPressed()){
+            hShooter.FireColor('g');
+        }
 
 
-        hShooter.flywheelPower = flywheelpower;
-        hShooter.headingTiltPos = pos;
+        if(gamepad1.dpadRightWasPressed()){
+            hShooter.FireColor('p');
+        }
+
+
+        char[] pat = {'g','p','p'};
+        if(gamepad1.dpadUpWasPressed()){
+
+            hShooter.firePattern(pat);
+        }
+
         hShooter.loop();
 
 
 
-        telemetry.addData("Power :", flywheelpower);
-        telemetry.addData("pos : ", pos);
 
-        if(gamepad1.leftBumperWasPressed()){
-            pos-=0.05;
+        if (gamepad1.leftBumperWasPressed()){
+            hShooter.headingTiltPos-=0.01;
         }
+
         if(gamepad1.rightBumperWasPressed()){
-            pos+=0.05;
+            hShooter.headingTiltPos+=0.01;
         }
-
-        if(gamepad1.left_stick_button){
-            flywheelpower-=0.05;
-        }
-        if(gamepad1.right_stick_button){
-            flywheelpower+=0.05;
-        }
-
-
-        
-
         telemetry.addData("According to redslave 1 we are at : ", pinpoint.getPosX(DistanceUnit.INCH) + " " + pinpoint.getPosY(DistanceUnit.INCH) + " At an angle of " +pinpoint.getHeading(AngleUnit.RADIANS));
         //telemetry.update();
 
+        telemetry.addData("Positions : ", hShooter.p1 + " , " + hShooter.p2 + " , " + hShooter.p3);
+
+        telemetry.addData("Flywwheel power :", hShooter.flywheelPower);
+
+        telemetry.addData("Hood Position :", hShooter.headingTiltPos );
 
         telemetry.update();
     }

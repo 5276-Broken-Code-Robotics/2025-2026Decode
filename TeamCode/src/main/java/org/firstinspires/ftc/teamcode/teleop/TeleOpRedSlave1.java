@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
 
 public class TeleOpRedSlave1 extends OpMode {
-    private DcMotor pan;
     boolean beganshot = false;
 
     double initpos = 0f;
@@ -101,7 +100,6 @@ public class TeleOpRedSlave1 extends OpMode {
         fl = hardwareMap.get(DcMotor.class, "fl");
         bl = hardwareMap.get(DcMotor.class, "bl");
         br = hardwareMap.get(DcMotor.class, "br");
-        pan = hardwareMap.get(DcMotor.class, "rot");
 
 
         arm1 = hardwareMap.get(Servo.class, "arm1");
@@ -112,9 +110,6 @@ public class TeleOpRedSlave1 extends OpMode {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
 
 
-        pan = hardwareMap.get(DcMotor.class,"rot");
-        pan.setTargetPosition(0);
-        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
@@ -154,7 +149,7 @@ public class TeleOpRedSlave1 extends OpMode {
 
     @Override
     public void start(){
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 24, AngleUnit.RADIANS,0));
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,144-9, 9, AngleUnit.RADIANS,0));
 
         hShooter.start();
         intake.setPower(1);

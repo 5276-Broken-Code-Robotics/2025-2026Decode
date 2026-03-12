@@ -23,7 +23,6 @@ public class HoodedShooter {
     FinalFreeSortHSV freeSort;
 
 
-    private DcMotor pan;
     private Servo tilt;
 
     ElapsedTime shootTimer;
@@ -106,11 +105,6 @@ public class HoodedShooter {
         limelight = hardwareMap.get(Limelight3A.class,"limelight");
 
 
-        pan = hardwareMap.get(DcMotor.class,"rot");
-        pan.setTargetPosition((int)faceForwardPos);
-        pan.setPower(1);
-        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         this.id = id;
 
 
@@ -130,6 +124,7 @@ public class HoodedShooter {
 
 
         flywheelPower = 0.6;
+        headingTiltPos = 0.12;
         panTracking = new PanTracking();
 
 
@@ -166,6 +161,13 @@ public class HoodedShooter {
 
     public void loop()
     {
+
+        //Alter, this is just for red goal
+        if((144-pinpoint.getPosY(DistanceUnit.INCH)) * (144-pinpoint.getPosY(DistanceUnit.INCH)) + (144-pinpoint.getPosX(DistanceUnit.INCH))*(144-pinpoint.getPosX(DistanceUnit.INCH)) < 3200 ){
+            headingTiltPos = 0.047;
+        }else{
+            headingTiltPos = 0.1;
+        }
         freeSort.loop();
 
         panTracking.loop();
@@ -203,8 +205,8 @@ public class HoodedShooter {
 
 
 
-        flywheel1.setPower(0.6);
-        flywheel2.setPower(0.6);
+        flywheel1.setPower(flywheelPower);
+        flywheel2.setPower(flywheelPower);
         tilt.setPosition(headingTiltPos);
 
         //telemetry.update();
@@ -247,7 +249,6 @@ public class HoodedShooter {
             tilt.setPosition(0.275); // Needs testing for accurate value
         }
 
-        pan.setTargetPosition((int)positionnecessary);
     }
 
 
@@ -308,6 +309,7 @@ public class HoodedShooter {
 
 
     PanTracking panTracking;
+
     public void Orienting(){
 
     }

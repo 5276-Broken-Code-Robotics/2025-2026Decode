@@ -36,7 +36,7 @@ public class FinalFreeSortHSV {
 
     RevColorSensorV3 sensor1;
     RevColorSensorV3 sensor2;
-    ColorRangeSensor sensor3;
+    RevColorSensorV3 sensor3;
 
     double stuckStartDur = 0f;
 
@@ -112,7 +112,7 @@ public class FinalFreeSortHSV {
 
         sensor1 = hardwareMap.get(RevColorSensorV3.class, "sensor1");
         sensor2 = hardwareMap.get(RevColorSensorV3.class, "sensor2");
-        sensor3 = hardwareMap.get(ColorRangeSensor.class, "sensor3");
+        sensor3 = hardwareMap.get(RevColorSensorV3.class, "sensor3");
 
         sensor1.setGain(sensorGain);
         sensor2.setGain(sensorGain);
@@ -338,46 +338,43 @@ public class FinalFreeSortHSV {
         NormalizedRGBA sensor3Colors = sensor3.getNormalizedColors();
 
 
-        float sensor1hue, sensor1sat, sensor1val;
-        float sensor2hue, sensor2sat, sensor2val;
-        float sensor3hue, sensor3sat, sensor3val;
+        float sensor1hue;
+        float sensor2hue;
+        float sensor3hue;
 
         sensor1hue = JavaUtil.colorToHue(sensor1Colors.toColor());
-        sensor1sat = JavaUtil.colorToSaturation(sensor1Colors.toColor());
-        sensor1val = JavaUtil.colorToValue(sensor1Colors.toColor());
+
 
         sensor2hue = JavaUtil.colorToHue(sensor2Colors.toColor());
-        sensor2sat = JavaUtil.colorToSaturation(sensor2Colors.toColor());
-        sensor2val = JavaUtil.colorToValue(sensor2Colors.toColor());
+
 
         sensor3hue = JavaUtil.colorToHue(sensor3Colors.toColor());
-        sensor3sat = JavaUtil.colorToSaturation(sensor3Colors.toColor());
-        sensor3val = JavaUtil.colorToValue(sensor3Colors.toColor());
 
-/*
 
-        telemetry.addLine("Sensor 1");
-        telemetry.addData("hue", sensor1hue);
+
+
+        telem.addLine("Sensor 1");
+        telem.addData("hue", sensor1hue);
         //telemetry.addData("sat", sensor1sat);
         //telemetry.addData("value", sensor1val);
-        telemetry.addData("Pos1", pos1);
+        telem.addData("Pos1", pos1);
 
 
-        telemetry.addLine("Sensor 2");
-        telemetry.addData("hue", sensor2hue);
+        telem.addLine("Sensor 2");
+        telem.addData("hue", sensor2hue);
         //telemetry.addData("sat", sensor2sat);
         //telemetry.addData("value", sensor2val);
-        telemetry.addData("Pos2", pos2);
+        telem.addData("Pos2", pos2);
 
-        telemetry.addLine("Sensor 3");
-        telemetry.addData("hue", sensor3hue);
+        telem.addLine("Sensor 3");
+        telem.addData("hue", sensor3hue);
         //telemetry.addData("sat", sensor3sat);
         //telemetry.addData("value", sensor3val);
-        telemetry.addData("Pos3", pos3);
+        telem.addData("Pos3", pos3);
 
 
 
- */
+
 
         if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
             pos1 = 'p';
@@ -400,10 +397,10 @@ public class FinalFreeSortHSV {
             pos2 = 'e';
         }
 
-        if (purpleHMaxV2 > sensor3hue && sensor3hue > purpleHMinV2){
+        if (purpleHMaxV3 > sensor3hue && sensor3hue > purpleHMinV3){
             pos3 = 'p';
         }
-        else if (greenHMaxV2 > sensor3hue && sensor3hue > greenHMinV2){
+        else if (greenHMaxV3 > sensor3hue && sensor3hue > greenHMinV3){
             pos3 = 'g';
         }
         else{
