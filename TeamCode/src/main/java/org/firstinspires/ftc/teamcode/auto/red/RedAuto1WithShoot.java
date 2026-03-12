@@ -259,6 +259,7 @@ public class RedAuto1WithShoot extends OpMode {
     }
 
 
+
     @Override
     public void loop() {
 

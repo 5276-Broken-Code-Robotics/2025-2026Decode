@@ -28,6 +28,11 @@ public class HoodedShooter {
 
     ElapsedTime shootTimer;
 
+
+    public char p1;
+    public char p2;
+    public char p3;
+
     double initpos = 0f;
 
     double positionnecessary;
@@ -116,7 +121,7 @@ public class HoodedShooter {
         flywheel2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        flywheel2.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel2.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheel1.setDirection(DcMotorSimple.Direction.REVERSE);
         waitrotate = new ElapsedTime();
         resetting = false;
@@ -169,6 +174,10 @@ public class HoodedShooter {
 
         if(firingPat)FiringAPattern();
 
+        p1 = freeSort.pos1;
+        p2 = freeSort.pos2;
+        p3 = freeSort.pos3;
+
         /*
 
 
@@ -194,8 +203,8 @@ public class HoodedShooter {
 
 
 
-        flywheel1.setPower(flywheelPower);
-        flywheel2.setPower(flywheelPower);
+        flywheel1.setPower(0.6);
+        flywheel2.setPower(0.6);
         tilt.setPosition(headingTiltPos);
 
         //telemetry.update();
@@ -211,7 +220,6 @@ public class HoodedShooter {
 
 
         isAutoShot = true;
-        flywheelPower = 0.63; // Needs testing for accurate value
         tilt.setPosition(0); // Needs testing for accurate value
         elapsedTime.reset();
 
@@ -221,25 +229,21 @@ public class HoodedShooter {
 
         if(isRed &&!isFar){
             positionnecessary = 0.29/0.45 * 286/(0.45);
-            flywheelPower = 0.63; // Needs testing for accurate value
             tilt.setPosition(0); // Needs testing for accurate value
         }
 
         if(!isRed && !isFar){
             positionnecessary = 0.11/0.45* 286/(0.45);
-            flywheelPower = 0.63; // Needs testing for accurate value
             tilt.setPosition(0); // Needs testing for accurate value
         }
 
         if(isRed && isFar){
             positionnecessary = 0.38* 286/(0.45);
-            flywheelPower = 0.8; // Needs testing for accurate value
             tilt.setPosition(0.275); // Needs testing for accurate value
         }
 
         if(!isRed && isFar){
             positionnecessary = (0.45-0.38)* 286/(0.45);
-            flywheelPower = 0.8; // Needs testing for accurate value
             tilt.setPosition(0.275); // Needs testing for accurate value
         }
 
@@ -275,11 +279,15 @@ public class HoodedShooter {
 
     boolean firingPat = false;
     public void firePattern(char[] pat){
-        firingPat = true;
-        dex = 0;
-        for(int i =0; i < pat.length;i++){
-            curpat[i] = pat[i];
+
+        if(pat.length > 0 && curpat.length > 0){
+            firingPat = true;
+            dex = 0;
+            for(int i =0; i < pat.length;i++){
+                curpat[i] = pat[i];
+            }
         }
+
     }
 
     char[] curpat = {3};

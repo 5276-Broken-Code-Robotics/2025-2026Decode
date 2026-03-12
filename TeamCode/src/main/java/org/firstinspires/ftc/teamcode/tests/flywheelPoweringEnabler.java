@@ -13,7 +13,7 @@ public class flywheelPoweringEnabler extends OpMode {
     public void init(){
         f1 = hardwareMap.get(DcMotor.class, "flywheel1");
 
-        f1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        f1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void loop(){
         f1.setPower(0.5);

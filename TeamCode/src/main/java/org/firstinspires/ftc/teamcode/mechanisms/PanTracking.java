@@ -126,7 +126,7 @@ public class PanTracking{
 
 
 
-        if(pinpoint.getPosY(DistanceUnit.INCH) < 48){
+        if(pinpoint.getPosY(DistanceUnit.INCH) < 24){
 
             telemetry.addData("Using Limelight Data : ",  "Now");
 

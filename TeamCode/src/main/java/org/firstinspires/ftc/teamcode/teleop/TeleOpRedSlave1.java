@@ -248,6 +248,8 @@ public class TeleOpRedSlave1 extends OpMode {
         telemetry.addData("According to redslave 1 we are at : ", pinpoint.getPosX(DistanceUnit.INCH) + " " + pinpoint.getPosY(DistanceUnit.INCH) + " At an angle of " +pinpoint.getHeading(AngleUnit.RADIANS));
         //telemetry.update();
 
+        telemetry.addData("Positions : ", hShooter.p1 + " , " + hShooter.p2 + " , " + hShooter.p3);
+
 
         telemetry.update();
     }
