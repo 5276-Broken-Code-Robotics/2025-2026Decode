@@ -133,7 +133,6 @@ public class FieldRelativeDrive {
         double r = Math.hypot(right, forward);
 
         // Second, rotate angle by the angle the robot is pointing
-
         theta = AngleUnit.normalizeRadians(theta -
                 pinpoint.getHeading(AngleUnit.RADIANS));
 
