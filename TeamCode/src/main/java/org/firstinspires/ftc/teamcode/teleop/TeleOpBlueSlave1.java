@@ -129,7 +129,7 @@ public class TeleOpBlueSlave1 extends OpMode {
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
         pinpoint.resetPosAndIMU();
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,144-96, 24, AngleUnit.RADIANS,Math.toRadians(180)));
-
+        pinpoint.initialize();
 
 
 
@@ -153,7 +153,7 @@ public class TeleOpBlueSlave1 extends OpMode {
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        hShooter.init(hardwareMap,telemetry, pinpoint, -1);
+        hShooter.init(hardwareMap,telemetry, pinpoint, 20);
 
         state=  0;
         intake.setPower(0);

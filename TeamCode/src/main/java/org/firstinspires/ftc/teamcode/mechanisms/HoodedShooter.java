@@ -172,7 +172,7 @@ public class HoodedShooter {
 
          */
 
-        if(pinpointUpdatePause.seconds() > 1)pinpoint.update();
+        if(pinpointUpdatePause.seconds() > 0.3)pinpoint.update();
 
         LLResult Llresult = limelight.getLatestResult();
 
