@@ -82,9 +82,11 @@ public class AbeTestAutoLever extends OpMode {
             case 0:
 
                 follower.followPath(scorePreload, true);
-                setPathState(-10);
-                break;
 
+                if(opmodeTimer.time()==1) {
+                    setPathState(-10);
+                }
+                
             case -10:
                 if (!follower.isBusy()) {
                     setPathState(1);
@@ -104,11 +106,11 @@ public class AbeTestAutoLever extends OpMode {
                 break;
             case 2:
 
-                if (!follower.isBusy()) {
+
 
                     follower.followPath(grabPickup1, .8, false);
                     setPathState(12);
-                }
+
                 break;
             case 12:
                 if (!follower.isBusy()) setPathState(3);
