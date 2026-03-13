@@ -165,9 +165,13 @@ public class HoodedShooter {
         //Alter, this is just for red goal
         if((144-pinpoint.getPosY(DistanceUnit.INCH)) * (144-pinpoint.getPosY(DistanceUnit.INCH)) + (144-pinpoint.getPosX(DistanceUnit.INCH))*(144-pinpoint.getPosX(DistanceUnit.INCH)) < 3200 ){
             headingTiltPos = 0.051;
+        }else if(pinpoint.getPosY(DistanceUnit.INCH) <= 36) {
+            headingTiltPos = 0.075;
         }else{
             headingTiltPos = 0.1;
         }
+
+        
         freeSort.loop();
 
         panTracking.loop();
