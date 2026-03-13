@@ -82,45 +82,61 @@ public class AbeTestAutoLever extends OpMode {
             case 0:
 
                 follower.followPath(scorePreload, true);
-                setPathState(1);
+                setPathState(-10);
                 break;
 
+            case -10:
+                if (!follower.isBusy()) {
+                    setPathState(1);
+                }
 
+                break;
             case 1:
 
-                if ( !follower.isBusy()) {
+
 
                     follower.followPath(rotate1, true);
-                    setPathState(2);
-                }
+                    setPathState(11);
+
+                break;
+            case 11:
+                if (!follower.isBusy()) setPathState(2);
                 break;
             case 2:
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1,  true);
-                    setPathState(3);
+                    follower.followPath(grabPickup1, .8, false);
+                    setPathState(12);
                 }
+                break;
+            case 12:
+                if (!follower.isBusy()) setPathState(3);
                 break;
             case 3:
-                if (!follower.isBusy()) {
+
 
                     follower.followPath(shootPickup1, true);
-                    setPathState(4);
-                }
+                    setPathState(21);
+
                 break;
 
 
+            case 21:
+                if (!follower.isBusy()) {
 
+                    setPathState(4);
 
+                }
+                break;
             case 4:
 
 
                 if (!follower.isBusy()) {
-
                     follower.followPath(finalPosition, true);
                     setPathState(-1);
                 }
+
                 break;
         }
     }
@@ -172,7 +188,7 @@ public class AbeTestAutoLever extends OpMode {
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
                 obeliskId = fiducial.getFiducialId();
             }
-            int obeliskId = 0;
+
             fiducials = limelight.getLatestResult().getFiducialResults();
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
                 obeliskId = fiducial.getFiducialId();
@@ -190,6 +206,8 @@ public class AbeTestAutoLever extends OpMode {
             if (obeliskId == 23) {
                 char[] pattern = {'p', 'p', 'g'};
             }
+            int obeliskId = 0;
+        }
 
             follower.update();
 
@@ -203,13 +221,13 @@ public class AbeTestAutoLever extends OpMode {
             telemetry.addData("y", follower.getPose().getY());
             telemetry.addData("heading", follower.getPose().getHeading());
         }
-    }
+
     @Override
     public void start () {
         opmodeTimer.reset();
         setPathState(0);
 
-        intake.setPower(1);
+        intake.setPower(-1);
 
     }
 }
