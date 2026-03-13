@@ -82,19 +82,13 @@ public class AbeTestAutoLever extends OpMode {
             case 0:
 
                 follower.followPath(scorePreload, true);
-                setPathState(-10);
+                setPathState(1);
                 break;
 
-            case -10:
-                if (!follower.isBusy()) {
-                    shooter.AutoBeginShot(true, false);
-                    setPathState(1);
-                }
 
-                break;
             case 1:
 
-                if (!shooter.shotbegan && !follower.isBusy()) {
+                if ( !follower.isBusy()) {
 
                     follower.followPath(rotate1, true);
                     setPathState(2);
@@ -104,7 +98,7 @@ public class AbeTestAutoLever extends OpMode {
 
                 if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1, .8, false);
+                    follower.followPath(grabPickup1,  true);
                     setPathState(3);
                 }
                 break;
@@ -112,23 +106,15 @@ public class AbeTestAutoLever extends OpMode {
                 if (!follower.isBusy()) {
 
                     follower.followPath(shootPickup1, true);
-                    setPathState(21);
+                    setPathState(4);
                 }
                 break;
 
 
-            case 21:
-                if (!follower.isBusy()) {
 
-                    if (!shooter.shotbegan) {
-                        shooter.AutoBeginShot(true, false);
-                        setPathState(10);
-                    }
-                }
-                break;
 
-            case 10:
-                if (shooter.shotbegan) return; // Wait until the shot is done
+            case 4:
+
 
                 if (!follower.isBusy()) {
 
