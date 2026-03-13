@@ -63,7 +63,7 @@ public class AbeTestAutoLever extends OpMode {
                 .build();
         shootPickup1 = follower.pathBuilder()
                 .addPath(new BezierLine(pose4, pose5))
-                .setLinearHeadingInterpolation(pose5.getHeading(), pose5.getHeading())
+                .setLinearHeadingInterpolation(pose4.getHeading(), pose5.getHeading())
                 .build();
         finalPosition= follower.pathBuilder()
                 .addPath(new BezierLine(pose5,finalPose))
