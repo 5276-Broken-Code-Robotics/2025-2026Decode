@@ -86,7 +86,7 @@ public class AbeTestAutoLever extends OpMode {
                 if(opmodeTimer.time()==1) {
                     setPathState(-10);
                 }
-                
+                break;
             case -10:
                 if (!follower.isBusy()) {
                     setPathState(1);
