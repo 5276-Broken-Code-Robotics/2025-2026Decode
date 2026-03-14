@@ -364,6 +364,9 @@ public class AbeTestAutoLever extends OpMode {
     @Override
     public void init() {
         opmodeTimer = new ElapsedTime();
+        leverHoldTime1 = new ElapsedTime();
+        leverHoldTime2 = new ElapsedTime();
+        opmodeTimer = new ElapsedTime();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
