@@ -41,11 +41,19 @@ public class AbeTestAutoLever extends OpMode {
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
     private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pose4 = new Pose(128, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pose4 = new Pose(122, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
     private final Pose pose3 = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose pose5=new Pose(119,71, Math.toRadians(90));
-    private final Pose finalPose = new Pose(127.8, 71, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private PathChain rotate1, grabPickup1, shootPickup1,finalPosition;
+    private final Pose leverPrep=new Pose(119,71, Math.toRadians(90));
+    private final Pose pose5=new Pose(96,60, Math.toRadians(0));
+
+    private final Pose pose6=new Pose(124,60, Math.toRadians(0));
+
+    private final Pose pose7=new Pose(96,36, Math.toRadians(0));
+
+    private final Pose pose8=new Pose(124,36, Math.toRadians(0));
+
+    private final Pose leverHit = new Pose(123, 71, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private PathChain pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
     private Path scorePreload;
 
     GoBildaPinpointDriver pinpoint;
@@ -53,23 +61,62 @@ public class AbeTestAutoLever extends OpMode {
     public void buildPaths() {
         scorePreload = new Path(new BezierLine(startPose, scorePose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
-        rotate1 = follower.pathBuilder()
+        pos1 = follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, pose3))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), pose3.getHeading())
                 .build();
-        grabPickup1 = follower.pathBuilder()
+        pos2 = follower.pathBuilder()
                 .addPath(new BezierLine(pose3, pose4))
                 .setLinearHeadingInterpolation(pose3.getHeading(), pose4.getHeading())
                 .build();
-        shootPickup1 = follower.pathBuilder()
+        pos3 = follower.pathBuilder()
                 .addPath(new BezierLine(pose4, pose5))
-                .setLinearHeadingInterpolation(pose5.getHeading(), pose5.getHeading())
+                .setLinearHeadingInterpolation(pose4.getHeading(), pose5.getHeading())
                 .build();
-        finalPosition= follower.pathBuilder()
-                .addPath(new BezierLine(pose5,finalPose))
-                .setLinearHeadingInterpolation(pose5.getHeading(),finalPose.getHeading())
+        pos4= follower.pathBuilder()
+                .addPath(new BezierLine(pose5,leverPrep))
+                .setLinearHeadingInterpolation(pose5.getHeading(),leverPrep.getHeading())
                 .build();
-
+        pos5= follower.pathBuilder()
+                .addPath(new BezierLine(leverPrep,leverHit))
+                .setLinearHeadingInterpolation(leverPrep.getHeading(),leverHit.getHeading())
+                .build();
+        pos6= follower.pathBuilder()
+                .addPath(new BezierLine(leverHit,scorePose))
+                .setLinearHeadingInterpolation(leverPrep.getHeading(),scorePose.getHeading())
+                .build();
+        pos7= follower.pathBuilder()
+                .addPath(new BezierLine(scorePose,pose5))
+                .setLinearHeadingInterpolation(scorePose.getHeading(),pose5.getHeading())
+                .build();
+        pos8= follower.pathBuilder()
+                .addPath(new BezierLine(pose5,pose6))
+                .setLinearHeadingInterpolation(pose5.getHeading(),pose6.getHeading())
+                .build();
+        pos9= follower.pathBuilder()
+                .addPath(new BezierLine(pose6,scorePose))
+                .setLinearHeadingInterpolation(pose6.getHeading(),scorePose.getHeading())
+                .build();
+        pos10= follower.pathBuilder()
+                .addPath(new BezierLine(scorePose,pose7))
+                .setLinearHeadingInterpolation(scorePose.getHeading(),pose7.getHeading())
+                .build();
+        pos11= follower.pathBuilder()
+                .addPath(new BezierLine(pose7,pose8))
+                .setLinearHeadingInterpolation(pose7.getHeading(),pose8.getHeading())
+                .build();
+        pos12= follower.pathBuilder()
+                .addPath(new BezierLine(pose8,leverPrep))
+                .setLinearHeadingInterpolation(pose8.getHeading(),leverPrep.getHeading())
+                .build();
+        pos13= follower.pathBuilder()
+                .addPath(new BezierLine(leverPrep,leverHit))
+                .setLinearHeadingInterpolation(leverPrep.getHeading(),leverHit.getHeading())
+                .build();
+        pos14= follower.pathBuilder()
+                .addPath(new BezierLine(leverHit,scorePose))
+                .setLinearHeadingInterpolation(leverHit.getHeading(),scorePose.getHeading())
+                .build();
     }
 
     public void setPathState(int pState) {
@@ -82,46 +129,232 @@ public class AbeTestAutoLever extends OpMode {
             case 0:
 
                 follower.followPath(scorePreload, true);
-                setPathState(1);
+
+                if(opmodeTimer.seconds()>=1) {
+                    setPathState(100);
+                }
                 break;
+            case 100:
+                if (!follower.isBusy()) {
+                    setPathState(1);
+                }
 
-
+                break;
             case 1:
 
-                if ( !follower.isBusy()) {
 
-                    follower.followPath(rotate1, true);
-                    setPathState(2);
-                }
+
+                    follower.followPath(pos1, true);
+                    setPathState(101);
+
+                break;
+            case 101:
+                if (!follower.isBusy()) setPathState(2);
                 break;
             case 2:
 
-                if (!follower.isBusy()) {
 
-                    follower.followPath(grabPickup1,  true);
-                    setPathState(3);
-                }
+
+                    follower.followPath(pos2, .8, false);
+                    setPathState(102);
+
+                break;
+            case 102:
+                if (!follower.isBusy()) setPathState(3);
                 break;
             case 3:
-                if (!follower.isBusy()) {
 
-                    follower.followPath(shootPickup1, true);
-                    setPathState(4);
-                }
+
+                    follower.followPath(pos3, true);
+                    setPathState(103);
+
                 break;
 
 
+            case 103:
+                if (!follower.isBusy()) {
 
+                    setPathState(4);
 
+                }
+                break;
             case 4:
 
 
                 if (!follower.isBusy()) {
+                    follower.followPath(pos4, true);
+                    setPathState(104);
+                }
 
-                    follower.followPath(finalPosition, true);
-                    setPathState(-1);
+                break;
+            case 104:
+                if (!follower.isBusy()) {
+
+                    setPathState(5);
+
                 }
                 break;
+            case 5:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos5, true);
+                    setPathState(105);
+                }
+
+                break;
+            case 105:
+                if (!follower.isBusy()) {
+
+                    setPathState(6);
+
+                }
+                break;
+            case 6:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos6, true);
+                    setPathState(106);
+                }
+
+                break;
+            case 106:
+                if (!follower.isBusy()) {
+
+                    setPathState(7);
+
+                }
+                break;
+            case 7:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos7, true);
+                    setPathState(107);
+                }
+
+                break;
+            case 107:
+                if (!follower.isBusy()) {
+
+                    setPathState(8);
+
+                }
+                break;
+            case 8:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos8, true);
+                    setPathState(108);
+                }
+
+                break;
+            case 108:
+                if (!follower.isBusy()) {
+
+                    setPathState(9);
+
+                }
+                break;
+            case 9:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos9, true);
+                    setPathState(109);
+                }
+
+                break;
+            case 109:
+                if (!follower.isBusy()) {
+
+                    setPathState(10);
+
+                }
+                break;
+            case 10:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos10, true);
+                    setPathState(110);
+                }
+
+                break;
+            case 110:
+                if (!follower.isBusy()) {
+
+                    setPathState(11);
+
+                }
+                break;
+            case 11:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos11, true);
+                    setPathState(12);
+                }
+
+                break;
+            case 111:
+                if (!follower.isBusy()) {
+
+                    setPathState(12);
+
+                }
+                break;
+            case 12:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos12, true);
+                    setPathState(112);
+                }
+
+                break;
+            case 112:
+                if (!follower.isBusy()) {
+
+                    setPathState(13);
+
+                }
+                break;
+            case 13:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos13, true);
+                    setPathState(113);
+                }
+
+                break;
+            case 113:
+                if (!follower.isBusy()) {
+
+                    setPathState(14);
+
+                }
+                break;
+            case 14:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos14, true);
+                    setPathState(114);
+                }
+
+                break;
+            case 114:
+                if (!follower.isBusy()) {
+
+                    setPathState(-1);
+
+                }
+                break;
+
         }
     }
 
@@ -141,10 +374,8 @@ public class AbeTestAutoLever extends OpMode {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        pinpoint.resetPosAndIMU();
 
 
-        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(144)));
 
         shooter = new HoodedShooter();
 
@@ -172,7 +403,7 @@ public class AbeTestAutoLever extends OpMode {
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
                 obeliskId = fiducial.getFiducialId();
             }
-            int obeliskId = 0;
+
             fiducials = limelight.getLatestResult().getFiducialResults();
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
                 obeliskId = fiducial.getFiducialId();
@@ -190,6 +421,8 @@ public class AbeTestAutoLever extends OpMode {
             if (obeliskId == 23) {
                 char[] pattern = {'p', 'p', 'g'};
             }
+            int obeliskId = 0;
+        }
 
             follower.update();
 
@@ -203,13 +436,14 @@ public class AbeTestAutoLever extends OpMode {
             telemetry.addData("y", follower.getPose().getY());
             telemetry.addData("heading", follower.getPose().getHeading());
         }
-    }
+
     @Override
     public void start () {
         opmodeTimer.reset();
         setPathState(0);
+        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(36)));
 
-        intake.setPower(1);
+        intake.setPower(-1);
 
     }
 }

@@ -30,7 +30,6 @@ public class ObolistkDetechtionTest extends OpMode {
 
         pan = hardwareMap.get(DcMotor.class, "rot");
         pan.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER5);
     }
 
     public void loop() {
