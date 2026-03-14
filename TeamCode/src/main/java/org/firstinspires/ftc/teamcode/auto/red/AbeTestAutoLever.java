@@ -131,9 +131,9 @@ public class AbeTestAutoLever extends OpMode {
 
                 follower.followPath(scorePreload,1, false);
 
-                if(opmodeTimer.seconds()>=1) {
+
                     setPathState(100);
-                }
+
                 break;
             case 100:
                 if (!follower.isBusy()) {
