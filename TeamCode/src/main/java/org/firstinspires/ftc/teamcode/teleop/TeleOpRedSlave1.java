@@ -231,6 +231,9 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
         char[] pat = {'g','p','p'};
+
+
+
         if(gamepad1.dpadUpWasPressed()){
 
             hShooter.firePattern(pat);

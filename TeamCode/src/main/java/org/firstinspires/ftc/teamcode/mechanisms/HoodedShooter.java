@@ -295,11 +295,11 @@ public class HoodedShooter {
 
     }
 
-    char[] curpat = {3};
+    char[] curpat = {'p', 'p', 'p'};
 
     int dex = 0;
     public void FiringAPattern(){
-            if(dex < 3){
+            if(dex <= 3){
                 if(!freeSort.shooting){
                     FireColor(curpat[dex]);
                     dex++;
