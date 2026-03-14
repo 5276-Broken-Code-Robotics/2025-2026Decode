@@ -63,10 +63,10 @@ import java.util.List;
         private Follower follower;
         Limelight3A limelight;
         private ElapsedTime leverHoldTime1, leverHoldTime2, opmodeTimer, shotTimer;
-        private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
-        private final Pose gripPose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-        private final Pose finalPose = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-        private final Pose shootPose = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+        private final Pose startPose = new Pose(102.22702702702702, 8.821621621621627, Math.toRadians(0)); // Start Pose of our robot.
+        private final Pose gripPose = new Pose(132, 8.821621621621627, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+        private final Pose finalPose = new Pose(96, 24, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+        private final Pose shootPose = new Pose(96, 8.821621621621627, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
 
         private PathChain scorePreload,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
 
@@ -74,64 +74,64 @@ import java.util.List;
 
         public void buildPaths() {
             scorePreload = follower.pathBuilder()
-                    .addPath(new BezierLine(startPose, pose3))
-                    .setLinearHeadingInterpolation(scorePose.getHeading(), pose3.getHeading())
+                    .addPath(new BezierLine(startPose, gripPose))
+                    .setLinearHeadingInterpolation(startPose.getHeading(), gripPose.getHeading())
                     .build();
             pos1 = follower.pathBuilder()
-                    .addPath(new BezierLine(scorePose, pose3))
-                    .setLinearHeadingInterpolation(scorePose.getHeading(), pose3.getHeading())
+                    .addPath(new BezierLine(gripPose, shootPose))
+                    .setLinearHeadingInterpolation(gripPose.getHeading(), shootPose.getHeading())
                     .build();
             pos2 = follower.pathBuilder()
-                    .addPath(new BezierLine(pose3, pose4))
-                    .setLinearHeadingInterpolation(pose3.getHeading(), pose4.getHeading())
+                    .addPath(new BezierLine(shootPose, gripPose))
+                    .setLinearHeadingInterpolation(shootPose.getHeading(), gripPose.getHeading())
                     .build();
             pos3 = follower.pathBuilder()
-                    .addPath(new BezierLine(pose4, pose5))
-                    .setLinearHeadingInterpolation(pose4.getHeading(), pose5.getHeading())
+                    .addPath(new BezierLine(gripPose, shootPose))
+                    .setLinearHeadingInterpolation(gripPose.getHeading(), shootPose.getHeading())
                     .build();
             pos4= follower.pathBuilder()
-                    .addPath(new BezierLine(pose5,leverPrep))
-                    .setLinearHeadingInterpolation(pose5.getHeading(),leverPrep.getHeading())
+                    .addPath(new BezierLine(shootPose,gripPose))
+                    .setLinearHeadingInterpolation(shootPose.getHeading(),gripPose.getHeading())
                     .build();
             pos5= follower.pathBuilder()
-                    .addPath(new BezierLine(leverPrep,leverHit))
-                    .setLinearHeadingInterpolation(leverPrep.getHeading(),leverHit.getHeading())
+                    .addPath(new BezierLine(gripPose,shootPose))
+                    .setLinearHeadingInterpolation(gripPose.getHeading(),shootPose.getHeading())
                     .build();
             pos6= follower.pathBuilder()
-                    .addPath(new BezierLine(leverHit,scorePose))
-                    .setLinearHeadingInterpolation(leverPrep.getHeading(),scorePose.getHeading())
+                    .addPath(new BezierLine(shootPose,gripPose))
+                    .setLinearHeadingInterpolation(shootPose.getHeading(),gripPose.getHeading())
                     .build();
             pos7= follower.pathBuilder()
-                    .addPath(new BezierLine(scorePose,pose5))
-                    .setLinearHeadingInterpolation(scorePose.getHeading(),pose5.getHeading())
+                    .addPath(new BezierLine(gripPose,shootPose))
+                    .setLinearHeadingInterpolation(gripPose.getHeading(),shootPose.getHeading())
                     .build();
             pos8= follower.pathBuilder()
-                    .addPath(new BezierLine(pose5,pose6))
-                    .setLinearHeadingInterpolation(pose5.getHeading(),pose6.getHeading())
+                    .addPath(new BezierLine(shootPose,gripPose))
+                    .setLinearHeadingInterpolation(shootPose.getHeading(),gripPose.getHeading())
                     .build();
             pos9= follower.pathBuilder()
-                    .addPath(new BezierLine(pose6,scorePose))
-                    .setLinearHeadingInterpolation(pose6.getHeading(),scorePose.getHeading())
+                    .addPath(new BezierLine(gripPose,shootPose))
+                    .setLinearHeadingInterpolation(gripPose.getHeading(),shootPose.getHeading())
                     .build();
             pos10= follower.pathBuilder()
-                    .addPath(new BezierLine(scorePose,pose7))
-                    .setLinearHeadingInterpolation(scorePose.getHeading(),pose7.getHeading())
+                    .addPath(new BezierLine(shootPose,gripPose))
+                    .setLinearHeadingInterpolation(shootPose.getHeading(),gripPose.getHeading())
                     .build();
             pos11= follower.pathBuilder()
-                    .addPath(new BezierLine(pose7,pose8))
-                    .setLinearHeadingInterpolation(pose7.getHeading(),pose8.getHeading())
+                    .addPath(new BezierLine(gripPose,shootPose))
+                    .setLinearHeadingInterpolation(gripPose.getHeading(),shootPose.getHeading())
                     .build();
             pos12= follower.pathBuilder()
-                    .addPath(new BezierLine(pose8,leverPrep))
-                    .setLinearHeadingInterpolation(pose8.getHeading(),leverPrep.getHeading())
+                    .addPath(new BezierLine(shootPose,gripPose))
+                    .setLinearHeadingInterpolation(shootPose.getHeading(),gripPose.getHeading())
                     .build();
             pos13= follower.pathBuilder()
-                    .addPath(new BezierLine(leverPrep,leverHit))
-                    .setLinearHeadingInterpolation(leverPrep.getHeading(),leverHit.getHeading())
+                    .addPath(new BezierLine(gripPose,shootPose))
+                    .setLinearHeadingInterpolation(gripPose.getHeading(),shootPose.getHeading())
                     .build();
             pos14= follower.pathBuilder()
-                    .addPath(new BezierLine(leverHit,scorePose))
-                    .setLinearHeadingInterpolation(leverHit.getHeading(),scorePose.getHeading())
+                    .addPath(new BezierLine(shootPose,finalPose))
+                    .setLinearHeadingInterpolation(shootPose.getHeading(),finalPose.getHeading())
                     .build();
         }
 
@@ -457,10 +457,10 @@ import java.util.List;
         public void start () {
             opmodeTimer.reset();
             setPathState(0);
-            pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(36)));
+            pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,102.22702702702702,8.821621621621627 , AngleUnit.RADIANS, Math.toRadians(0)));
             intake.setPower(-1);
 
         }
     }
 
-}
+
