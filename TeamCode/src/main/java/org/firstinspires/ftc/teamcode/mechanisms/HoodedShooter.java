@@ -95,6 +95,10 @@ public class HoodedShooter {
 
         shootTimer.reset();
 
+        telemetry.addData("dex for the firing loop", dex);
+
+        telemetry.addData("Pattern Arr : ", curpat[0]+ " , ", curpat[1], " , ", curpat[2]);
+
 
         pinpointUpdatePause = new ElapsedTime();
         tilt = hardwareMap.get(Servo.class, "tilt");
