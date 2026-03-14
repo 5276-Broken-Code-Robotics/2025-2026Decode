@@ -86,8 +86,8 @@ public class PanTracking{
 
 
     int count = 0;
+    public List<LLResultTypes.FiducialResult> results;
 
-    List<LLResultTypes.FiducialResult> results;
 
 
     int pos = 0;

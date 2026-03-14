@@ -79,9 +79,6 @@ public class HoodedShooter {
     int currentID;
     Limelight3A limelight;
 
-    float faceForwardPos = 105;
-
-    float maxTurn = 525;
     GoBildaPinpointDriver pinpoint;
 
     public ElapsedTime pinpointUpdatePause;
@@ -163,8 +160,16 @@ public class HoodedShooter {
     public void loop()
     {
 
+
+        if(id == 24){
+            currentAprilTagPos = aprilTagRed;
+        }else{
+            currentAprilTagPos = aprilTagBlue;
+        }
+
+
         //Alter, this is just for red goal
-        if((144-pinpoint.getPosY(DistanceUnit.INCH)) * (144-pinpoint.getPosY(DistanceUnit.INCH)) + (144-pinpoint.getPosX(DistanceUnit.INCH))*(144-pinpoint.getPosX(DistanceUnit.INCH)) < 3200 ){
+        if((currentAprilTagPos.getY(DistanceUnit.INCH)-pinpoint.getPosY(DistanceUnit.INCH)) * (currentAprilTagPos.getY(DistanceUnit.INCH)-pinpoint.getPosY(DistanceUnit.INCH)) + (currentAprilTagPos.getX(DistanceUnit.INCH)-pinpoint.getPosX(DistanceUnit.INCH))*(currentAprilTagPos.getX(DistanceUnit.INCH)-pinpoint.getPosX(DistanceUnit.INCH)) < 3200 ){
             headingTiltPos = 0.051;
         }else if(pinpoint.getPosY(DistanceUnit.INCH) <= 36) {
             headingTiltPos = 0.075;
@@ -176,6 +181,23 @@ public class HoodedShooter {
         freeSort.loop();
 
         panTracking.loop();
+
+
+        //Finish the results script
+        for(int i =0; i < panTracking.results.size(); i++){
+            if(panTracking.results.get(i).getFiducialId() == 21){
+                curpat = new char[]{'g','p','p'};
+            }
+            if(panTracking.results.get(i).getFiducialId() == 22){
+                curpat = new char[]{'p','g','p'};
+
+            }
+            if(panTracking.results.get(i).getFiducialId() == 23){
+                curpat = new char[]{'p','p','g'};
+            }
+        }
+
+
 
         if(firingPat)FiringAPattern();
 
@@ -249,20 +271,15 @@ public class HoodedShooter {
 
     boolean firingPat = false;
 
-    public void firePattern(char[] pat){
-
-        if(pat.length > 0 && curpat.length > 0){
-            firingPat = true;
-            dex = 0;
-            for(int i =0; i < pat.length;i++){
-                curpat[i] = pat[i];
-            }
-            shootTimer.reset();
-        }
-
-    }
 
     char[] curpat = {'p', 'p', 'p'};
+
+    public void firePattern(){
+            firingPat = true;
+            dex = 0;
+            shootTimer.reset();
+    }
+
 
 
 

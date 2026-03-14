@@ -230,10 +230,9 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
         }
 
 
-        char[] pat = {'g','p','p'};
         if(gamepad1.dpadUpWasPressed()){
 
-            hShooter.firePattern(pat);
+            hShooter.firePattern();
         }
 
         hShooter.loop();
