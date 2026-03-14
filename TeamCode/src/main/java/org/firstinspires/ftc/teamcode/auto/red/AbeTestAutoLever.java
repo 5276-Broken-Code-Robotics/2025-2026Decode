@@ -43,16 +43,16 @@ public class AbeTestAutoLever extends OpMode {
     private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pose4 = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
     private final Pose pose3 = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose leverPrep=new Pose(118,71, Math.toRadians(90));
+    private final Pose leverPrep=new Pose(116,71, Math.toRadians(90));
     private final Pose pose5=new Pose(96,60, Math.toRadians(0));
 
     private final Pose pose6=new Pose(118,60, Math.toRadians(0));
 
     private final Pose pose7=new Pose(96,36, Math.toRadians(0));
 
-    private final Pose pose8=new Pose(124,36, Math.toRadians(0));
+    private final Pose pose8=new Pose(118,36, Math.toRadians(0));
 
-    private final Pose leverHit = new Pose(123, 71, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose leverHit = new Pose(118, 71, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
     private Path scorePreload;
 
