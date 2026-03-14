@@ -3,26 +3,22 @@ package org.firstinspires.ftc.teamcode.tests;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.mechanisms.FieldRelativeDrive;
-import org.firstinspires.ftc.teamcode.mechanisms.FreeSortHSV;
-import org.firstinspires.ftc.teamcode.mechanisms.NewFreeSortHSV;
+import org.firstinspires.ftc.teamcode.mechanisms.FinalFreeSortHSV;
 
 @TeleOp(group = "Tests")
 public class FreeSortTest extends OpMode {
 
-    NewFreeSortHSV freesort = new NewFreeSortHSV();
+    FinalFreeSortHSV freesort = new FinalFreeSortHSV();
 
 
     public void init(){
 
-        freesort.init(hardwareMap);
+        freesort.init(hardwareMap, telemetry);
 
     }
 
     public void loop(){
-
-        freesort.updateColors(telemetry);
-
+        freesort.loop();
 
         //if (gamepad1.right_trigger > .25) freesort.shootAll();
         //if (gamepad1.right_bumper) freesort.shootPurple();
