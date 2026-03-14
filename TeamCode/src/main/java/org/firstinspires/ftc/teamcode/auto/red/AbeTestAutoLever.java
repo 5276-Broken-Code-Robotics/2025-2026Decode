@@ -41,18 +41,18 @@ public class AbeTestAutoLever extends OpMode {
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
     private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pose4 = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pose4 = new Pose(122, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
     private final Pose pose3 = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose leverPrep=new Pose(116,71, Math.toRadians(90));
+    private final Pose leverPrep=new Pose(119,71, Math.toRadians(90));
     private final Pose pose5=new Pose(96,60, Math.toRadians(0));
 
-    private final Pose pose6=new Pose(118,60, Math.toRadians(0));
+    private final Pose pose6=new Pose(124,60, Math.toRadians(0));
 
     private final Pose pose7=new Pose(96,36, Math.toRadians(0));
 
-    private final Pose pose8=new Pose(118,36, Math.toRadians(0));
+    private final Pose pose8=new Pose(124,36, Math.toRadians(0));
 
-    private final Pose leverHit = new Pose(118, 71, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose leverHit = new Pose(123, 71, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
     private Path scorePreload;
 
@@ -155,7 +155,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
 
-                    follower.followPath(pos2, false);
+                    follower.followPath(pos2, .8, false);
                     setPathState(102);
 
                 break;
@@ -165,7 +165,7 @@ public class AbeTestAutoLever extends OpMode {
             case 3:
 
 
-                    follower.followPath(pos3, false);
+                    follower.followPath(pos3, true);
                     setPathState(103);
 
                 break;
@@ -182,7 +182,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos4, false);
+                    follower.followPath(pos4, true);
                     setPathState(104);
                 }
 
@@ -198,7 +198,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos5, false);
+                    follower.followPath(pos5, true);
                     setPathState(105);
                 }
 
@@ -214,7 +214,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos6, false);
+                    follower.followPath(pos6, true);
                     setPathState(106);
                 }
 
@@ -230,7 +230,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos7, false);
+                    follower.followPath(pos7, true);
                     setPathState(107);
                 }
 
@@ -246,7 +246,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos8, false);
+                    follower.followPath(pos8, true);
                     setPathState(108);
                 }
 
@@ -262,7 +262,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos9, false);
+                    follower.followPath(pos9, true);
                     setPathState(109);
                 }
 
@@ -278,7 +278,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos10, false);
+                    follower.followPath(pos10, true);
                     setPathState(110);
                 }
 
@@ -294,7 +294,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos11, false);
+                    follower.followPath(pos11, true);
                     setPathState(12);
                 }
 
@@ -310,7 +310,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos12, false);
+                    follower.followPath(pos12, true);
                     setPathState(112);
                 }
 
@@ -326,7 +326,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos13, false);
+                    follower.followPath(pos13, true);
                     setPathState(113);
                 }
 
@@ -342,7 +342,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos14, false);
+                    follower.followPath(pos14, true);
                     setPathState(114);
                 }
 
@@ -421,7 +421,7 @@ public class AbeTestAutoLever extends OpMode {
             if (obeliskId == 23) {
                 char[] pattern = {'p', 'p', 'g'};
             }
-            obeliskId = 0;
+            int obeliskId = 0;
         }
 
             follower.update();
