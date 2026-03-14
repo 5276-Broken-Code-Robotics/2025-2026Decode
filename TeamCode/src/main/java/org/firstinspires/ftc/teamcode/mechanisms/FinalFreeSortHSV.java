@@ -40,25 +40,18 @@ public class FinalFreeSortHSV {
 
     double stuckStartDur = 0f;
 
-    float sensorGain = 15f;
+    float sensorGain = 5f;
 
     float purpleHMaxV3 = 245;
-
-
-    float purpleHMinV3 = 185;
-    float greenHMaxV3 = 175;
-    float greenHMinV3 = 145;
+    float purpleHMinV3 = 195;
+    float greenHMaxV3 = 180;
+    float greenHMinV3 = 160;
 
     ElapsedTime shootcd;
 
-    float purpleHMaxV2 = 290;
-    float purpleHMinV2 = 180;
-    float greenHMaxV2 = 160;
+
 
     ElapsedTime shootWaitTimer;
-    float greenHMinV2 = 120;
-
-
 
 
     boolean arm1Shooting = false;
