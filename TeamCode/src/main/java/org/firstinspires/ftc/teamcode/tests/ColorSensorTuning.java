@@ -88,7 +88,7 @@ public class ColorSensorTuning extends OpMode {
         }
 
         if (sensor3hue > purpleHMinV3){
-            pos1 = 'p';
+            pos3 = 'p';
         }
         else if (JavaUtil.colorToSaturation(sensor3Colors.toColor()) > greenSMinV3){
             pos3 = 'g';
