@@ -171,7 +171,7 @@ public class HoodedShooter {
             headingTiltPos = 0.1;
         }
 
-        
+
         freeSort.loop();
 
         panTracking.loop();
