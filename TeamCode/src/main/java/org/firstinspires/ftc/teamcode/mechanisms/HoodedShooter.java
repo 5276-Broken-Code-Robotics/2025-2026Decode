@@ -175,9 +175,7 @@ public class HoodedShooter {
         freeSort.loop();
 
         panTracking.loop();
-
-        Orienting();
-
+        
         if(firingPat)FiringAPattern();
 
         p1 = freeSort.pos1;
@@ -298,6 +296,7 @@ public class HoodedShooter {
     char[] curpat = {'p', 'p', 'p'};
 
     int dex = 0;
+
     public void FiringAPattern(){
             if(dex <= 3){
                 if(!freeSort.shooting){
@@ -313,10 +312,6 @@ public class HoodedShooter {
 
 
     PanTracking panTracking;
-
-    public void Orienting(){
-
-    }
 
 
 
