@@ -206,7 +206,7 @@ public class AbeTestAutoLever extends OpMode {
 
                 break;
             case 105:
-                if (!follower.isBusy()&&leverHoldTime1.seconds()==2) {
+                if (!follower.isBusy()&&leverHoldTime1.seconds()>1) {
 
                     setPathState(6);
 
@@ -335,7 +335,7 @@ public class AbeTestAutoLever extends OpMode {
 
                 break;
             case 113:
-                if (!follower.isBusy()&&leverHoldTime2.seconds()==2) {
+                if (!follower.isBusy()&&leverHoldTime2.seconds()>1) {
 
                     setPathState(14);
 
