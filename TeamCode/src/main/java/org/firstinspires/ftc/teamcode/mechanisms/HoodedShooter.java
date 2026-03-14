@@ -89,6 +89,7 @@ public class HoodedShooter {
     double maxTilt = 0.59;
     public void init(HardwareMap hardwareMap, Telemetry telemetry, GoBildaPinpointDriver pinpoint, int id) {
 
+
         shootTimer = new ElapsedTime();
 
         freeSort = new FinalFreeSortHSV();
@@ -214,45 +215,11 @@ public class HoodedShooter {
         //telemetry.update();
     }
 
-    public void AutoBeginShot(boolean isRed, boolean isFar){
 
 
-        //ALL LEGACY VALUES GANG
-
-
-        //ADJUST ON YOUR OWN
-
-
-        isAutoShot = true;
-        tilt.setPosition(0); // Needs testing for accurate value
-        elapsedTime.reset();
-
-
-
-        waitrotate.reset();
-
-        if(isRed &&!isFar){
-            positionnecessary = 0.29/0.45 * 286/(0.45);
-            tilt.setPosition(0); // Needs testing for accurate value
-        }
-
-        if(!isRed && !isFar){
-            positionnecessary = 0.11/0.45* 286/(0.45);
-            tilt.setPosition(0); // Needs testing for accurate value
-        }
-
-        if(isRed && isFar){
-            positionnecessary = 0.38* 286/(0.45);
-            tilt.setPosition(0.275); // Needs testing for accurate value
-        }
-
-        if(!isRed && isFar){
-            positionnecessary = (0.45-0.38)* 286/(0.45);
-            tilt.setPosition(0.275); // Needs testing for accurate value
-        }
+    public void AutoBeginShot(boolean b, boolean a){
 
     }
-
 
 
     public void BeginShot(){
@@ -281,6 +248,7 @@ public class HoodedShooter {
 
 
     boolean firingPat = false;
+
     public void firePattern(char[] pat){
 
         if(pat.length > 0 && curpat.length > 0){
@@ -289,6 +257,7 @@ public class HoodedShooter {
             for(int i =0; i < pat.length;i++){
                 curpat[i] = pat[i];
             }
+            shootTimer.reset();
         }
 
     }
@@ -298,10 +267,11 @@ public class HoodedShooter {
     int dex = 0;
 
     public void FiringAPattern(){
-            if(dex <= 3){
-                if(!freeSort.shooting){
+            if(dex < 3){
+                if(shootTimer.seconds() > freeSort.shootDur){
                     FireColor(curpat[dex]);
                     dex++;
+                    shootTimer.reset();
                 }
             }else{
                 firingPat = false;

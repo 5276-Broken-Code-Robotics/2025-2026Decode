@@ -40,12 +40,7 @@ public class FinalFreeSortHSV {
 
     double stuckStartDur = 0f;
 
-    float sensorGain = 5f;
 
-    float purpleHMaxV3 = 245;
-    float purpleHMinV3 = 195;
-    float greenHMaxV3 = 180;
-    float greenHMinV3 = 160;
 
     ElapsedTime shootcd;
 
@@ -191,6 +186,8 @@ public class FinalFreeSortHSV {
 
     int dex = 0;
 
+    public double shootDur = 0.3;
+
     int num = 0;
     public void loop(){
         updateColors();
@@ -241,7 +238,6 @@ public class FinalFreeSortHSV {
 
         num++;
 
-        telem.update();
 
 
         if(!arm1Shooting && !arm2Shooting && !arm3Shooting){
@@ -262,7 +258,7 @@ public class FinalFreeSortHSV {
             arm1CD.reset();
         }else{
             TMa1 = true;
-            if(arm1CD.seconds() > 0.3 + stuckStartDur){
+            if(arm1CD.seconds() > shootDur + stuckStartDur){
                 arm1.setPosition(0);
 
                 arm1Shooting = false;
@@ -284,7 +280,7 @@ public class FinalFreeSortHSV {
             arm2CD.reset();
         }else{
             TMa2 = true;
-            if(arm2CD.seconds() > 0.3 + stuckStartDur){
+            if(arm2CD.seconds() > shootDur + stuckStartDur){
                 arm2.setPosition(0);
                 arm2Shooting = false;
                 shooting = false;
@@ -306,7 +302,7 @@ public class FinalFreeSortHSV {
             arm3CD.reset();
         }else{
             TMa3 = true;
-            if(arm3CD.seconds() > 0.3 + stuckStartDur){
+            if(arm3CD.seconds() > shootDur + stuckStartDur){
                 arm3.setPosition(0);
                 arm3Shooting = false;
                 shooting = false;
@@ -325,80 +321,85 @@ public class FinalFreeSortHSV {
 
 
 
+    float sensor1hue;
+    float sensor2hue;
+    float sensor3hue;
+
+    float sensorGain = 55f;
+
+    float purpleHMinV3 = 170;
+
+
+    float greenSMinV3 = 0.55f;
     public void updateColors() {
         NormalizedRGBA sensor1Colors = sensor1.getNormalizedColors();
         NormalizedRGBA sensor2Colors = sensor2.getNormalizedColors();
         NormalizedRGBA sensor3Colors = sensor3.getNormalizedColors();
 
-
-        float sensor1hue;
-        float sensor2hue;
-        float sensor3hue;
-
         sensor1hue = JavaUtil.colorToHue(sensor1Colors.toColor());
-
-
         sensor2hue = JavaUtil.colorToHue(sensor2Colors.toColor());
-
-
         sensor3hue = JavaUtil.colorToHue(sensor3Colors.toColor());
 
 
 
 
-        telem.addLine("Sensor 1");
-        telem.addData("hue", sensor1hue);
-        //telemetry.addData("sat", sensor1sat);
-        //telemetry.addData("value", sensor1val);
-        telem.addData("Pos1", pos1);
-
-
-        telem.addLine("Sensor 2");
-        telem.addData("hue", sensor2hue);
-        //telemetry.addData("sat", sensor2sat);
-        //telemetry.addData("value", sensor2val);
-        telem.addData("Pos2", pos2);
-
-        telem.addLine("Sensor 3");
-        telem.addData("hue", sensor3hue);
-        //telemetry.addData("sat", sensor3sat);
-        //telemetry.addData("value", sensor3val);
-        telem.addData("Pos3", pos3);
-
-
-
-
-
-        if (purpleHMaxV3 > sensor1hue && sensor1hue > purpleHMinV3){
+        if (sensor1hue > purpleHMinV3){
             pos1 = 'p';
         }
-        else if (greenHMaxV3 > sensor1hue && sensor1hue > greenHMinV3){
+        else if (JavaUtil.colorToSaturation(sensor1Colors.toColor()) > greenSMinV3){
             pos1 = 'g';
         }
-        else{
+        else {
             pos1 = 'e';
         }
 
-
-        if (purpleHMaxV3 > sensor2hue && sensor2hue > purpleHMinV3){
+        if (sensor2hue > purpleHMinV3){
             pos2 = 'p';
         }
-        else if (greenHMaxV3 > sensor2hue && sensor2hue > greenHMinV3){
+        else if (JavaUtil.colorToSaturation(sensor2Colors.toColor()) > greenSMinV3){
             pos2 = 'g';
         }
-        else{
+        else {
             pos2 = 'e';
         }
 
-        if (purpleHMaxV3 > sensor3hue && sensor3hue > purpleHMinV3){
+        if (sensor3hue > purpleHMinV3){
             pos3 = 'p';
         }
-        else if (greenHMaxV3 > sensor3hue && sensor3hue > greenHMinV3){
+        else if (JavaUtil.colorToSaturation(sensor3Colors.toColor()) > greenSMinV3){
             pos3 = 'g';
         }
-        else{
+        else {
             pos3 = 'e';
         }
+
+
+
+
+        telem.addLine("=== Sensor 1 =========");
+        telem.addData("H", sensor1hue);
+        telem.addData("S", JavaUtil.colorToSaturation(sensor1Colors.toColor()));
+        telem.addData("V", JavaUtil.colorToValue(sensor1Colors.toColor()));
+
+        //telemetry.addData("dist", sensor1.getDistance(DistanceUnit.MM));
+        telem.addData("Pos1", pos1);
+
+        telem.addLine("=== Sensor 2 =========");
+        telem.addData("H", sensor2hue);
+        telem.addData("S", JavaUtil.colorToSaturation(sensor2Colors.toColor()));
+        telem.addData("V", JavaUtil.colorToValue(sensor2Colors.toColor()));
+        //telemetry.addData("dist", sensor2.getDistance(DistanceUnit.MM));
+        telem.addData("Pos2", pos2);
+
+
+        telem.addLine("=== Sensor 3 =========");
+        telem.addData("H", sensor3hue);
+        telem.addData("S", JavaUtil.colorToSaturation(sensor3Colors.toColor()));
+        telem.addData("V", JavaUtil.colorToValue(sensor3Colors.toColor()));
+        //telemetry.addData("dist", sensor3.getDistance(DistanceUnit.MM));
+        telem.addData("Pos3", pos3);
+
+
 
     }
 
