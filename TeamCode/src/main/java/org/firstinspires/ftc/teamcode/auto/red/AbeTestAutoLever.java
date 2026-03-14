@@ -38,15 +38,15 @@ public class AbeTestAutoLever extends OpMode {
 
     private Follower follower;
     Limelight3A limelight;
-    private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
+    private ElapsedTime leverHoldTime1, leverHoldTime2, opmodeTimer, shotTimer;
     private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pose4 = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
     private final Pose pose3 = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose leverPrep=new Pose(116,71, Math.toRadians(90));
-    private final Pose pose5=new Pose(96,60, Math.toRadians(0));
+    private final Pose pose5=new Pose(96,57, Math.toRadians(0));
 
-    private final Pose pose6=new Pose(118,60, Math.toRadians(0));
+    private final Pose pose6=new Pose(118,57, Math.toRadians(0));
 
     private final Pose pose7=new Pose(96,36, Math.toRadians(0));
 
@@ -198,13 +198,14 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos5,0.5, true);
+                    leverHoldTime1.startTime();
+                    follower.followPath(pos5, true);
                     setPathState(105);
                 }
 
                 break;
             case 105:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy()&&leverHoldTime1.seconds()==2) {
 
                     setPathState(6);
 
@@ -326,13 +327,14 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    follower.followPath(pos13,0.5, true);
+                    leverHoldTime2.startTime();
+                    follower.followPath(pos13, true);
                     setPathState(113);
                 }
 
                 break;
             case 113:
-                if (!follower.isBusy()) {
+                if (!follower.isBusy()&&leverHoldTime2.seconds()==2) {
 
                     setPathState(14);
 
