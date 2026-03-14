@@ -22,16 +22,11 @@ public class ColorSensorTuning extends OpMode {
 
     float sensorGain = 55f;
 
-    float purpleHMaxV3 = 245;
     float purpleHMinV3 = 170;
-
-    float greenHMaxV3 = 180;
-    float greenHMinV3 = 150;
 
 
     float greenSMinV3 = 0.55f;
 
-    float distanceMin = 30;
 
     char pos1;
     char pos2;
@@ -88,7 +83,7 @@ public class ColorSensorTuning extends OpMode {
         }
 
         if (sensor3hue > purpleHMinV3){
-            pos1 = 'p';
+            pos3 = 'p';
         }
         else if (JavaUtil.colorToSaturation(sensor3Colors.toColor()) > greenSMinV3){
             pos3 = 'g';
