@@ -257,6 +257,7 @@ public class AprilTagPowerAndTiltTesting extends OpMode {
 
         telemetry.addData("Hood Position :", hShooter.headingTiltPos );
 
+
         telemetry.update();
     }
 

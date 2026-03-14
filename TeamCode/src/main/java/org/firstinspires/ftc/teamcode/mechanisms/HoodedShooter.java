@@ -175,7 +175,7 @@ public class HoodedShooter {
         freeSort.loop();
 
         panTracking.loop();
-        
+
         if(firingPat)FiringAPattern();
 
         p1 = freeSort.pos1;

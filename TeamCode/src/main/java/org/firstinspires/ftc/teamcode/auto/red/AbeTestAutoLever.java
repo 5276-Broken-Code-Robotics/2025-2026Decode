@@ -364,7 +364,6 @@ public class AbeTestAutoLever extends OpMode {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
         limelight.start();
-        limelight.pipelineSwitch(2);
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
@@ -397,20 +396,17 @@ public class AbeTestAutoLever extends OpMode {
     @Override
     public void loop() {
 
-        LLResult result = limelight.getLatestResult();
-        if (obeliskId == 2) {
+            LLResult result = limelight.getLatestResult();
+
+
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
+
+
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
-                obeliskId = fiducial.getFiducialId();
+                if(fiducial.getFiducialId() <= 23 && fiducial.getFiducialId() >= 21) obeliskId  = fiducial.getFiducialId();
             }
 
-            fiducials = limelight.getLatestResult().getFiducialResults();
-            for (LLResultTypes.FiducialResult fiducial : fiducials) {
-                obeliskId = fiducial.getFiducialId();
-            }
-            if (obeliskId != 0) {
-                limelight.pipelineSwitch(2);
-            }
+
             telemetry.addData("obeliskId", obeliskId);
             if (obeliskId == 21) {
                 char[] pattern = {'g', 'p', 'p'};
@@ -421,8 +417,7 @@ public class AbeTestAutoLever extends OpMode {
             if (obeliskId == 23) {
                 char[] pattern = {'p', 'p', 'g'};
             }
-            int obeliskId = 0;
-        }
+
 
             follower.update();
 
@@ -435,6 +430,9 @@ public class AbeTestAutoLever extends OpMode {
             telemetry.addData("x", follower.getPose().getX());
             telemetry.addData("y", follower.getPose().getY());
             telemetry.addData("heading", follower.getPose().getHeading());
+            telemetry.addData("Detections empty : ", limelight.getLatestResult().getFiducialResults().isEmpty());
+
+            telemetry.update();
         }
 
     @Override
@@ -442,7 +440,6 @@ public class AbeTestAutoLever extends OpMode {
         opmodeTimer.reset();
         setPathState(0);
         pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(36)));
-
         intake.setPower(-1);
 
     }
