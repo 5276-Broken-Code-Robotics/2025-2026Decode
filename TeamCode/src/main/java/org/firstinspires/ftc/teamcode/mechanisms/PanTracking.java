@@ -92,6 +92,7 @@ public class PanTracking{
 
     int pos = 0;
     public void loop(){
+        telemetry.addData("LL Started ? :", limelight3A.isRunning());
 
         limelight3A.updateRobotOrientation(pinpoint.getHeading(AngleUnit.RADIANS) + pan.getCurrentPosition() / (panMax-panZero) * PI);
 
@@ -101,7 +102,15 @@ public class PanTracking{
             results = limelight3A.getLatestResult().getFiducialResults();
         }else{
             results = new ArrayList<>();
-            //telemetry.addData("LL is null unfortunately", " womp womp");
+            telemetry.addData("LL is null unfortunately", " womp womp");
+        }
+
+        telemetry.addData("Are Detections empty ? :", results.isEmpty());
+
+
+
+        for(int i =0; i < results.size(); i ++ ){
+            telemetry.addLine("ID" + i + results.get(i).getFiducialId());
         }
 
 
@@ -127,7 +136,8 @@ public class PanTracking{
 
 
 
-        if(pinpoint.getPosY(DistanceUnit.INCH) < 40){
+
+        if(Math.abs(angleToAprilTag) * 180 / PI < 10){
 
             telemetry.addData("Using Limelight Data : ",  "Now");
 
@@ -140,18 +150,9 @@ public class PanTracking{
                 }
             }
 
-            //telemetry.addData("Found One : ", foundOne);
 
 
-            /*
-            if(foundOne){
-                telemetry.addData("Robot XPos According to LL :", fidRes.getRobotPoseFieldSpace().getPosition().x);
-                telemetry.addData("Robot YPos According to LL :", fidRes.getRobotPoseFieldSpace().getPosition().y);
-
-            }
-
-             */
-
+            telemetry.addData("Found One :", foundOne);
 
             if(foundOne){
 
@@ -161,6 +162,8 @@ public class PanTracking{
                 }
             }
         }
+
+
 
 
 
@@ -271,6 +274,7 @@ public class PanTracking{
         pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pan.setPower(1);
         resetting = false;
+        limelight3A.start();
     }
 
     public static double turnAngle(double currentHeading, double targetAngle) {
