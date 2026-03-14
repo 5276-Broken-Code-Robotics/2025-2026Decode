@@ -159,9 +159,9 @@ public class TeleOpRedSlave1 extends OpMode {
     double val = 0.6;
 
     public void breaks(){
-
-
     }
+
+
     public void loop(){
 
         if(gamepad2.b){
@@ -188,19 +188,6 @@ public class TeleOpRedSlave1 extends OpMode {
             fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
             if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
 
-        }
-
-
-        if(gamepad2.leftBumperWasPressed()){
-            intake.setPower(0.25);
-        }
-
-
-
-
-
-        if(gamepad2.rightBumperWasPressed()){
-            intake.setPower(1);
         }
 
         if(gamepad1.square){

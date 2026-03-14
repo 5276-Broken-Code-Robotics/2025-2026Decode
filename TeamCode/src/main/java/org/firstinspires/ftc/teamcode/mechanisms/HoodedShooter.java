@@ -264,6 +264,8 @@ public class HoodedShooter {
 
     char[] curpat = {'p', 'p', 'p'};
 
+
+
     int dex = 0;
 
     public void FiringAPattern(){
