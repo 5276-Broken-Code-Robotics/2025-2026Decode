@@ -53,14 +53,15 @@ public class AbeTestAutoLever extends OpMode {
     private final Pose pose8=new Pose(118,36, Math.toRadians(0));
 
     private final Pose leverHit = new Pose(118, 71, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private PathChain pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
-    private Path scorePreload;
+    private PathChain scorePreload,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
 
     GoBildaPinpointDriver pinpoint;
 
     public void buildPaths() {
-        scorePreload = new Path(new BezierLine(startPose, scorePose));
-        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading());
+        scorePreload = follower.pathBuilder()
+                .addPath(new BezierLine(startPose, pose3))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), pose3.getHeading())
+                .build();
         pos1 = follower.pathBuilder()
                 .addPath(new BezierLine(scorePose, pose3))
                 .setLinearHeadingInterpolation(scorePose.getHeading(), pose3.getHeading())
@@ -128,7 +129,7 @@ public class AbeTestAutoLever extends OpMode {
 
             case 0:
 
-                follower.followPath(scorePreload, false);
+                follower.followPath(scorePreload,1, false);
 
                 if(opmodeTimer.seconds()>=1) {
                     setPathState(100);
