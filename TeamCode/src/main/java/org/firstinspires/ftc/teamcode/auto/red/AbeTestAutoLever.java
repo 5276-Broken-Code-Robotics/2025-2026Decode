@@ -197,7 +197,7 @@ public class AbeTestAutoLever extends OpMode {
 
                 break;
             case 6767:
-                if (!follower.isBusy() && leverHoldTime1.seconds() > 3) {
+                if (!follower.isBusy()) {
 
                     setPathState(4);
 
@@ -213,7 +213,7 @@ public class AbeTestAutoLever extends OpMode {
 
                 break;
             case 104:
-                if (!follower.isBusy() && leverHoldTime1.seconds() > 3) {
+                if (!follower.isBusy()) {
 
                     setPathState(5);
 
@@ -223,7 +223,7 @@ public class AbeTestAutoLever extends OpMode {
 
 
                 if (!follower.isBusy()) {
-                    leverHoldTime1.startTime();
+
                     follower.followPath(pos6, true);
                     setPathState(105);
                 }
@@ -240,7 +240,7 @@ public class AbeTestAutoLever extends OpMode {
             case 6:
 
 
-                if (!follower.isBusy() && fireCD.seconds() > 3) {
+                if (!follower.isBusy()){
                     follower.followPath(pos7, false);
                     setPathState(106);
                 }
@@ -250,13 +250,13 @@ public class AbeTestAutoLever extends OpMode {
                 if (!follower.isBusy()) {
 
                     setPathState(7);
-
+                    leverHoldTime1.startTime();
                 }
                 break;
             case 7:
 
 
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && fireCD.seconds() > 3) {
                     follower.followPath(pos8, false);
                     setPathState(107);
                 }
@@ -285,12 +285,13 @@ public class AbeTestAutoLever extends OpMode {
                     fireCD.reset();
                     shooter.firePattern();
 
+
                 }
                 break;
             case 9:
 
 
-                if (!follower.isBusy() && fireCD.seconds() > 3) {
+                if (!follower.isBusy()){
                     follower.followPath(pos10, false);
                     setPathState(109);
                 }
