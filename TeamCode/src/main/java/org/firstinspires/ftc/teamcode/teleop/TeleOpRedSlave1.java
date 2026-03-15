@@ -165,6 +165,8 @@ public class TeleOpRedSlave1 extends OpMode {
 
     public void loop(){
 
+
+
         if(gamepad2.b){
             //rewindTimer.reset();
             if(intake.getPower() == 1 )intake.setPower(-1);

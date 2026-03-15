@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
 public class HoodedShooter {
 
-    FinalFreeSortHSV freeSort;
+    public FinalFreeSortHSV freeSort;
 
 
     private Servo tilt;
@@ -240,7 +240,7 @@ public class HoodedShooter {
         flywheel2.setPower(flywheelPower);
 
         if(panTracking.autoPausing){
-            tilt.setPosition(0.051);
+            tilt.setPosition(0.08);
 
         }else{
             tilt.setPosition(headingTiltPos);
@@ -333,7 +333,18 @@ public class HoodedShooter {
             }else
             if(freeSort.pos3 == 'p'){
                 freeSort.shoot(3);
+            }else{
+                if(freeSort.pos1 == 'g'){
+                    freeSort.shoot(1);
+                }else
+                if(freeSort.pos2 == 'g'){
+                    freeSort.shoot(2);
+                }else
+                if(freeSort.pos3 == 'g'){
+                    freeSort.shoot(3);
+                }
             }
+
         }else{
             if(freeSort.pos1 == 'g'){
                 freeSort.shoot(1);
@@ -343,6 +354,16 @@ public class HoodedShooter {
             }else
             if(freeSort.pos3 == 'g'){
                 freeSort.shoot(3);
+            }else{
+                if(freeSort.pos1 == 'p'){
+                    freeSort.shoot(1);
+                }else
+                if(freeSort.pos2 == 'p'){
+                    freeSort.shoot(2);
+                }else
+                if(freeSort.pos3 == 'p'){
+                    freeSort.shoot(3);
+                }
             }
         }
 
