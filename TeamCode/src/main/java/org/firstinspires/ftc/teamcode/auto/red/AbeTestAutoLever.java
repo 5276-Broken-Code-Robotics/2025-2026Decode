@@ -56,7 +56,7 @@ public class AbeTestAutoLever extends OpMode {
 
     private final Pose leverHit = new Pose(123, 71, Math.toRadians(90));
     private final Pose finalPose = new Pose(110, 70, Math.toRadians(90));// Lowest (Third Set) of Artifacts from the Spike Mark.
-    private PathChain scorePreload,pos1,pos2,pos3,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
+    private PathChain scorePreload,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
 
     GoBildaPinpointDriver pinpoint;
 
@@ -77,28 +77,32 @@ public class AbeTestAutoLever extends OpMode {
                 .setLinearHeadingInterpolation(pose3.getHeading(), pose4.getHeading())
                 .build();
         pos3 = follower.pathBuilder()
-                .addPath(new BezierLine(pose4, leverPrep))
-                .setLinearHeadingInterpolation(pose4.getHeading(), leverPrep.getHeading())
+                .addPath(new BezierLine(pose4, pose3))
+                .setLinearHeadingInterpolation(pose4.getHeading(), pose3.getHeading())
                 .build();
-        pos5= follower.pathBuilder()
+        pos4 = follower.pathBuilder()
+                .addPath(new BezierLine(pose3, scorePose))
+                .setLinearHeadingInterpolation(pose3.getHeading(), scorePose.getHeading())
+                .build();
+        pos7= follower.pathBuilder()
+                .addPath(new BezierLine(pose6,leverPrep))
+                .setLinearHeadingInterpolation(pose6.getHeading(),leverPrep.getHeading())
+                .build();
+        pos8= follower.pathBuilder()
                 .addPath(new BezierLine(leverPrep,leverHit))
                 .setLinearHeadingInterpolation(leverPrep.getHeading(),leverHit.getHeading())
                 .build();
-        pos6= follower.pathBuilder()
-                .addPath(new BezierLine(leverHit,scorePose))
-                .setLinearHeadingInterpolation(leverPrep.getHeading(),scorePose.getHeading())
-                .build();
-        pos7= follower.pathBuilder()
+        pos5= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose,pose5))
                 .setLinearHeadingInterpolation(scorePose.getHeading(),pose5.getHeading())
                 .build();
-        pos8= follower.pathBuilder()
+        pos6= follower.pathBuilder()
                 .addPath(new BezierLine(pose5,pose6))
                 .setLinearHeadingInterpolation(pose5.getHeading(),pose6.getHeading())
                 .build();
         pos9= follower.pathBuilder()
-                .addPath(new BezierLine(pose6,scorePose))
-                .setLinearHeadingInterpolation(pose6.getHeading(),scorePose.getHeading())
+                .addPath(new BezierLine(leverHit,scorePose))
+                .setLinearHeadingInterpolation(leverHit.getHeading(),scorePose.getHeading())
                 .build();
         pos10= follower.pathBuilder()
                 .addPath(new BezierLine(scorePose,pose7))
