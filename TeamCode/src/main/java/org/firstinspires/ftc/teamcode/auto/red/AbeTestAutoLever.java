@@ -54,7 +54,7 @@ public class AbeTestAutoLever extends OpMode {
 
     private final Pose pose8=new Pose(118,36, Math.toRadians(0));
 
-    private final Pose leverHit = new Pose(123, 71, Math.toRadians(90));
+    private final Pose leverHit = new Pose(120, 71, Math.toRadians(90));
     private final Pose finalPose = new Pose(110, 70, Math.toRadians(90));// Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain scorePreload,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
 
