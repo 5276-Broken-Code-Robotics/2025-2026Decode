@@ -172,7 +172,6 @@ public class TeleOpRedSlave1 extends OpMode {
 
             //rewinding = true;
         }else{
-
             if(intake.getPower() == -1)intake.setPower(1);
         }
 
