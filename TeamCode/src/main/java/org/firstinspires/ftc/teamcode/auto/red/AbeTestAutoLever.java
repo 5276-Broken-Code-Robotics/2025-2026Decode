@@ -10,6 +10,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -58,6 +59,9 @@ public class AbeTestAutoLever extends OpMode {
     private PathChain scorePreload,pos1,pos2,pos3,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
 
     GoBildaPinpointDriver pinpoint;
+
+
+
 
     public void buildPaths() {
         scorePreload = follower.pathBuilder()
@@ -314,18 +318,25 @@ public class AbeTestAutoLever extends OpMode {
         }
     }
 
+
     @Override
     public void init() {
         opmodeTimer = new ElapsedTime();
         leverHoldTime1 = new ElapsedTime();
         opmodeTimer = new ElapsedTime();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.setPollRateHz(100);
         limelight.start();
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
+
+
+        freesort = new FinalFreeSortHSV();
+
+        freesort.init(hardwareMap, telemetry);
+
+
 
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
@@ -353,6 +364,8 @@ public class AbeTestAutoLever extends OpMode {
 
     @Override
     public void loop() {
+
+            freesort.loop();
 
             LLResult result = limelight.getLatestResult();
 
