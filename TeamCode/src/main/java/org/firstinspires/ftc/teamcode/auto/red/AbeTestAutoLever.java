@@ -38,7 +38,7 @@ public class AbeTestAutoLever extends OpMode {
 
     private Follower follower;
     Limelight3A limelight;
-    private ElapsedTime leverHoldTime1, leverHoldTime2, opmodeTimer, shotTimer;
+    private ElapsedTime leverHoldTime1, opmodeTimer;
     private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     private final Pose pose4 = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
@@ -53,8 +53,9 @@ public class AbeTestAutoLever extends OpMode {
 
     private final Pose pose8=new Pose(118,36, Math.toRadians(0));
 
-    private final Pose leverHit = new Pose(120, 71, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private PathChain scorePreload,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
+    private final Pose leverHit = new Pose(123, 71, Math.toRadians(90));
+    private final Pose finalPose = new Pose(110, 70, Math.toRadians(90));// Lowest (Third Set) of Artifacts from the Spike Mark.
+    private PathChain scorePreload,pos1,pos2,pos3,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
 
     GoBildaPinpointDriver pinpoint;
 
@@ -106,6 +107,10 @@ public class AbeTestAutoLever extends OpMode {
         pos12= follower.pathBuilder()
                 .addPath(new BezierLine(pose8,scorePose))
                 .setLinearHeadingInterpolation(pose8.getHeading(),scorePose.getHeading())
+                .build();
+        pos13= follower.pathBuilder()
+                .addPath(new BezierLine(scorePose,finalPose))
+                .setLinearHeadingInterpolation(scorePose.getHeading(),finalPose.getHeading())
                 .build();
 
     }
@@ -285,7 +290,7 @@ public class AbeTestAutoLever extends OpMode {
 
                 if (!follower.isBusy()) {
                     follower.followPath(pos12, false);
-                    setPathState(12);
+                    setPathState(111);
                 }
 
                 break;
@@ -313,7 +318,6 @@ public class AbeTestAutoLever extends OpMode {
     public void init() {
         opmodeTimer = new ElapsedTime();
         leverHoldTime1 = new ElapsedTime();
-        leverHoldTime2 = new ElapsedTime();
         opmodeTimer = new ElapsedTime();
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.setPollRateHz(100);
