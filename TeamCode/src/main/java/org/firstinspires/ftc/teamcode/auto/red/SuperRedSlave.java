@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.auto.red;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.LLResult;
@@ -18,42 +17,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.mechanisms.FinalFreeSortHSV;
-import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
+
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.List;
 
-
-
-import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
-import com.pedropathing.paths.PathChain;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.LLStatus;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import org.firstinspires.ftc.teamcode.mechanisms.FinalFreeSortHSV;
-
-import java.util.List;
 
     @Autonomous(group = "Red Auto")
     public  class SuperRedSlave extends OpMode {
         boolean hasShotThisState;
-        HoodedShooter shooter;
         int obeliskId = 0;
         private int pathState;
         FinalFreeSortHSV freesort = new FinalFreeSortHSV();
@@ -391,12 +363,6 @@ import java.util.List;
             pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
             pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
                     GoBildaPinpointDriver.EncoderDirection.REVERSED);
-
-
-
-            shooter = new HoodedShooter();
-
-
             intake = hardwareMap.get(DcMotor.class, "intake");
             intake.setDirection(DcMotor.Direction.REVERSE);
 
@@ -404,8 +370,6 @@ import java.util.List;
             DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
             DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
             DcMotor br = hardwareMap.get(DcMotor.class, "br");
-
-            shooter.init(hardwareMap, telemetry, pinpoint, 24);
             intake.setPower(0);
 
         }
@@ -435,11 +399,12 @@ import java.util.List;
             if (obeliskId == 23) {
                 char[] pattern = {'p', 'p', 'g'};
             }
-
-
+            if(freesort.emptyCount()<=0){
+                intake.setPower(1);
+            }else{
+                intake.setPower(-1);
+            }
             follower.update();
-
-            shooter.loop();
 
 
             autonomousPathUpdate();
