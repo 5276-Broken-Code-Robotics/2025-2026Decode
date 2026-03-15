@@ -189,7 +189,7 @@ public class RedMasterNoLever extends OpMode {
                 break;
             case 67:
 
-//shoot
+//shoot this one goes to shootPose
                 if (!follower.isBusy()) {
                     follower.followPath(pos4, false);
                     setPathState(6767);
@@ -238,7 +238,7 @@ public class RedMasterNoLever extends OpMode {
                 }
                 break;
             case 6:
-
+//shoot this one goes to shotpose
 
                 if (!follower.isBusy() && fireCD.seconds() > 3) {
                     follower.followPath(pos7, false);
@@ -321,7 +321,7 @@ public class RedMasterNoLever extends OpMode {
                 break;
             case 11:
 
-
+//shoot this one goes to shotpose
                 if (!follower.isBusy()) {
                     follower.followPath(pos12, false);
                     setPathState(111);
