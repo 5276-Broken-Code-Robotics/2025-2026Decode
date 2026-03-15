@@ -126,7 +126,19 @@ public class FinalFreeSortHSV {
 
 
     ElapsedTime stuckStartCD;
-
+    public int emptyCount(){
+        int count=0;
+        if(pos1=='e'){
+            count+=1;
+        }
+        if(pos2=='e'){
+            count+=1;
+        }
+        if(pos3=='e'){
+            count+=1;
+        }
+        return count;
+    }
     public void shoot(int armnum){
 
 
