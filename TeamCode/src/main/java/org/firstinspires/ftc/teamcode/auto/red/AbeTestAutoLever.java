@@ -183,6 +183,22 @@ public class AbeTestAutoLever extends OpMode {
             case 103:
                 if (!follower.isBusy()) {
 
+                    setPathState(67);
+
+                }
+                break;
+            case 67:
+
+
+                if (!follower.isBusy()) {
+                    follower.followPath(pos4, false);
+                    setPathState(6767);
+                }
+
+                break;
+            case 6767:
+                if (!follower.isBusy() && leverHoldTime1.seconds() > 3) {
+
                     setPathState(4);
 
                 }
