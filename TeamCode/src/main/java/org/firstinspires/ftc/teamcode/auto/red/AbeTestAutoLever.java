@@ -60,7 +60,7 @@ public class AbeTestAutoLever extends OpMode {
 
     GoBildaPinpointDriver pinpoint;
 
-
+//poses  after 1, 6,9,12
 
 
     public void buildPaths() {
@@ -129,8 +129,6 @@ public class AbeTestAutoLever extends OpMode {
             case 0:
 
                 follower.followPath(scorePreload, 1, false);
-
-
                 setPathState(100);
 
                 break;
@@ -351,18 +349,17 @@ public class AbeTestAutoLever extends OpMode {
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.REVERSE);
 
-        DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
-        DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
-        DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
-        DcMotor br = hardwareMap.get(DcMotor.class, "br");
-
         shooter.init(hardwareMap, telemetry, pinpoint, 24);
         intake.setPower(0);
 
     }
 
 
+    public char[] pattern = {'p','p','p'};
+
     @Override
+
+
     public void loop() {
 
             freesort.loop();

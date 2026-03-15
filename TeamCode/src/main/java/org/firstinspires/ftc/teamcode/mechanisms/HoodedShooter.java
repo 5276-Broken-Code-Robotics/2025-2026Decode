@@ -292,7 +292,7 @@ public class HoodedShooter {
 
     public void FiringAPattern(){
             if(dex <= 3){
-                if(shootTimer.seconds() > freeSort.shootDur+0.35){
+                if(shootTimer.seconds() > freeSort.shootDur+0.3){
                     if(dex < curpat.length)FireColor(curpat[dex]);
                     dex++;
                     shootTimer.reset();
