@@ -33,12 +33,12 @@ public class AbeTestAutoLever extends OpMode {
     HoodedShooter shooter;
     int obeliskId = 0;
     private int pathState;
-    FinalFreeSortHSV freesort = new FinalFreeSortHSV();
+    //FinalFreeSortHSV freesort = new FinalFreeSortHSV();
 
     private DcMotor intake;
 
     private Follower follower;
-    Limelight3A limelight;
+    //Limelight3A limelight;
     private ElapsedTime leverHoldTime1, opmodeTimer;
     private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
@@ -123,11 +123,14 @@ public class AbeTestAutoLever extends OpMode {
         pathState = pState;
     }
 
+    ElapsedTime fireCD;
+
     public void autonomousPathUpdate() {
         switch (pathState) {
 
             case 0:
-
+                shooter.panTracking.autoPausing = true;
+                shooter.panTracking.autoPausingTimer.reset();
                 follower.followPath(scorePreload, 1, false);
                 setPathState(100);
 
@@ -135,24 +138,30 @@ public class AbeTestAutoLever extends OpMode {
             case 100:
                 if (!follower.isBusy()) {
                     setPathState(1);
+                    shooter.firePattern();
+                    fireCD.reset();
                 }
 
                 break;
             case 1:
-
-
-                follower.followPath(pos1, false);
-                setPathState(101);
-
+                if(fireCD.seconds() > 3) {
+                    follower.followPath(pos1, false);
+                    setPathState(101);
+                }
                 break;
+
             case 101:
-                if (!follower.isBusy()) setPathState(2);
+                if (!follower.isBusy()){
+                    setPathState(2);
+
+                }
                 break;
             case 2:
 
+                    follower.followPath(pos2, false);
+                    setPathState(102);
 
-                follower.followPath(pos2, false);
-                setPathState(102);
+
 
                 break;
             case 102:
@@ -204,13 +213,14 @@ public class AbeTestAutoLever extends OpMode {
                 if (!follower.isBusy()) {
 
                     setPathState(6);
-
+                    fireCD.reset();
+                    shooter.firePattern();
                 }
                 break;
             case 6:
 
 
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && fireCD.seconds() > 3) {
                     follower.followPath(pos7, false);
                     setPathState(106);
                 }
@@ -252,13 +262,15 @@ public class AbeTestAutoLever extends OpMode {
                 if (!follower.isBusy()) {
 
                     setPathState(9);
+                    fireCD.reset();
+                    shooter.firePattern();
 
                 }
                 break;
             case 9:
 
 
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && fireCD.seconds() > 3) {
                     follower.followPath(pos10, false);
                     setPathState(109);
                 }
@@ -298,7 +310,8 @@ public class AbeTestAutoLever extends OpMode {
                 break;
             case 111:
                 if (!follower.isBusy()) {
-
+                    shooter.firePattern();
+                    fireCD.reset();
                     setPathState(12);
 
                 }
@@ -306,7 +319,7 @@ public class AbeTestAutoLever extends OpMode {
             case 12:
 
 
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && fireCD.seconds() > 3) {
                     follower.followPath(pos13, false);
                     setPathState(-1);
                 }
@@ -322,17 +335,19 @@ public class AbeTestAutoLever extends OpMode {
         opmodeTimer = new ElapsedTime();
         leverHoldTime1 = new ElapsedTime();
         opmodeTimer = new ElapsedTime();
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.start();
+        //limelight = hardwareMap.get(Limelight3A.class, "limelight");
+        //limelight.start();
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
         follower.setStartingPose(startPose);
 
 
-        freesort = new FinalFreeSortHSV();
 
-        freesort.init(hardwareMap, telemetry);
+        fireCD = new ElapsedTime();
+        //freesort = new FinalFreeSortHSV();
+
+        //freesort.init(hardwareMap, telemetry);
 
 
 
@@ -362,6 +377,8 @@ public class AbeTestAutoLever extends OpMode {
 
     public void loop() {
 
+
+        /*
             freesort.loop();
 
             LLResult result = limelight.getLatestResult();
@@ -373,6 +390,8 @@ public class AbeTestAutoLever extends OpMode {
             for (LLResultTypes.FiducialResult fiducial : fiducials) {
                 if(fiducial.getFiducialId() <= 23 && fiducial.getFiducialId() >= 21) obeliskId  = fiducial.getFiducialId();
             }
+
+         */
 
 
             telemetry.addData("obeliskId", obeliskId);
@@ -398,7 +417,7 @@ public class AbeTestAutoLever extends OpMode {
             telemetry.addData("x", follower.getPose().getX());
             telemetry.addData("y", follower.getPose().getY());
             telemetry.addData("heading", follower.getPose().getHeading());
-            telemetry.addData("Detections empty : ", limelight.getLatestResult().getFiducialResults().isEmpty());
+            //telemetry.addData("Detections empty : ", limelight.getLatestResult().getFiducialResults().isEmpty());
 
             telemetry.update();
         }
@@ -409,6 +428,8 @@ public class AbeTestAutoLever extends OpMode {
         setPathState(0);
         pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(36)));
         intake.setPower(-1);
+
+        shooter.start();
 
     }
 }

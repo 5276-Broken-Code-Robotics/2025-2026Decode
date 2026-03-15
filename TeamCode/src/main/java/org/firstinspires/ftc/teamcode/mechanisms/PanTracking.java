@@ -26,6 +26,10 @@ import java.util.List;
 
 
 public class PanTracking{
+
+    public ElapsedTime autoPausingTimer;
+
+    public boolean autoPausing = false;
     DcMotor pan;
     double tAngle;
     float lastOrientedPos;
@@ -65,6 +69,10 @@ public class PanTracking{
         this.telemetry = telemetry;
         this.limelight3A = limelight3A;
 
+
+        autoPausing = false;
+
+        autoPausingTimer = new ElapsedTime();
         this.id = id;
 
         spinCD = new ElapsedTime();
@@ -166,7 +174,14 @@ public class PanTracking{
 
 
 
-
+        if(autoPausingTimer.seconds() < 1 && autoPausing){
+            if(id == 24){
+                targetTicks = panZero;
+            }
+            if(id == 20){
+                targetTicks = panMax;
+            }
+        }
 
         if(Math.abs(Math.abs(lastOrientedPos) - Math.abs(targetTicks)) > 1 && Math.abs(angleToAprilTag) <= PI && spinCD.seconds() > 0.2){
 
@@ -183,6 +198,8 @@ public class PanTracking{
         }
 
 
+
+        telemetry.addData("Target Ticks", targetTicks);
 
         /*
         List<LLResultTypes.FiducialResult> Atagresults;

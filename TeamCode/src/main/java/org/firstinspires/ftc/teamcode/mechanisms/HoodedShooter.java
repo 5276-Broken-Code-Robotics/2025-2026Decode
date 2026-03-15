@@ -154,6 +154,7 @@ public class HoodedShooter {
     public void start(){
         pinpointUpdatePause.reset();
         panTracking.start();
+
     }
 
     public void loop()
@@ -237,7 +238,13 @@ public class HoodedShooter {
 
         flywheel1.setPower(flywheelPower);
         flywheel2.setPower(flywheelPower);
-        tilt.setPosition(headingTiltPos);
+
+        if(panTracking.autoPausing){
+            tilt.setPosition(0.051);
+
+        }else{
+            tilt.setPosition(headingTiltPos);
+        }
 
         //telemetry.update();
     }
@@ -259,6 +266,8 @@ public class HoodedShooter {
         if(id == 24){
             currentAprilTagPos = aprilTagRed;
         }
+
+
 
         if(id == 20){
             currentAprilTagPos = aprilTagBlue;
@@ -305,7 +314,7 @@ public class HoodedShooter {
     }
 
 
-    PanTracking panTracking;
+    public PanTracking panTracking;
 
 
 

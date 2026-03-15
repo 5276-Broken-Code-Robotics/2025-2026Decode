@@ -155,6 +155,7 @@ public class TeleOpRedSlave1 extends OpMode {
         intake.setPower(1);
 
 
+
     }
     double val = 0.6;
 
