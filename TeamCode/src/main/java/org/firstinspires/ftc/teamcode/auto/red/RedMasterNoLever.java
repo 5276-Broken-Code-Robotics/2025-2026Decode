@@ -42,12 +42,12 @@ public class RedMasterNoLever extends OpMode {
     private ElapsedTime leverHoldTime1, opmodeTimer;
     private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
     private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pose6 = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    private final Pose pose5 = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose pose4 = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pose3 = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private final Pose leverPrep=new Pose(118,71, Math.toRadians(90));
-    private final Pose pose3=new Pose(96,57, Math.toRadians(0));
+    private final Pose pose5=new Pose(96,57, Math.toRadians(0));
 
-    private final Pose pose4=new Pose(118,57, Math.toRadians(0));
+    private final Pose pose6=new Pose(118,57, Math.toRadians(0));
 
 
     private final Pose pose7=new Pose(96,36, Math.toRadians(0));
@@ -76,13 +76,13 @@ public class RedMasterNoLever extends OpMode {
                 .addPath(new BezierLine(pose3, pose4))
                 .setLinearHeadingInterpolation(pose3.getHeading(), pose4.getHeading())
                 .build();
-        pos3 = follower.pathBuilder()
+        /*pos3 = follower.pathBuilder()
                 .addPath(new BezierLine(pose4, pose3))
                 .setLinearHeadingInterpolation(pose4.getHeading(), pose3.getHeading())
-                .build();
+                .build();*/
         pos4 = follower.pathBuilder()
-                .addPath(new BezierLine(pose3, scorePose))
-                .setLinearHeadingInterpolation(pose3.getHeading(), scorePose.getHeading())
+                .addPath(new BezierLine(pose4, scorePose))
+                .setLinearHeadingInterpolation(pose4.getHeading(), scorePose.getHeading())
                 .build();
         pos7= follower.pathBuilder()
                 .addPath(new BezierLine(pose6,scorePose))
@@ -169,7 +169,7 @@ public class RedMasterNoLever extends OpMode {
 
                 break;
             case 102:
-                if (!follower.isBusy()) setPathState(3);
+                if (!follower.isBusy()) setPathState(67);
                 break;
             case 3:
 
