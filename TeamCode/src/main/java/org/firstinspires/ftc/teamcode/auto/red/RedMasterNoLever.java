@@ -198,7 +198,8 @@ public class RedMasterNoLever extends OpMode {
                 break;
             case 6767:
                 if (!follower.isBusy()) {
-
+                    fireCD.reset();
+                    shooter.firePattern();
                     setPathState(4);
 
                 }
@@ -206,7 +207,7 @@ public class RedMasterNoLever extends OpMode {
             case 4:
 
 
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && fireCD.seconds() > 3) {
                     follower.followPath(pos5, false);
                     setPathState(104);
                 }
@@ -233,14 +234,12 @@ public class RedMasterNoLever extends OpMode {
                 if (!follower.isBusy()) {
 
                     setPathState(6);
-                    fireCD.reset();
-                    shooter.firePattern();
                 }
                 break;
             case 6:
 //shoot this one goes to shotpose
 
-                if (!follower.isBusy() && fireCD.seconds() > 3) {
+                if (!follower.isBusy()) {
                     follower.followPath(pos7, false);
                     setPathState(106);
                 }
@@ -248,7 +247,8 @@ public class RedMasterNoLever extends OpMode {
                 break;
             case 106:
                 if (!follower.isBusy()) {
-
+                    shooter.firePattern();
+                    fireCD.reset();
                     setPathState(9);
 
                 }
@@ -256,7 +256,7 @@ public class RedMasterNoLever extends OpMode {
             case 7:
 
 
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && fireCD.seconds() > 3) {
                     follower.followPath(pos8, false);
                     setPathState(107);
                 }
@@ -282,8 +282,6 @@ public class RedMasterNoLever extends OpMode {
                 if (!follower.isBusy()) {
 
                     setPathState(9);
-                    fireCD.reset();
-                    shooter.firePattern();
 
                 }
                 break;
