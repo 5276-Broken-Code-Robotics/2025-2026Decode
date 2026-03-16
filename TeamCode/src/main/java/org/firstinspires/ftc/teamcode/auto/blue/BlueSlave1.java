@@ -10,6 +10,7 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -22,62 +23,91 @@ import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 @Autonomous(group = "Blue Auto")
 public class BlueSlave1 extends OpMode {
     boolean hasShotThisState;
+
+    GoBildaPinpointDriver pinpoint;
+
     HoodedShooter shooter;
 
-    private int pathState;
+    public int pathState;
 
     private DcMotor intake;
 
     private Follower follower;
-    GoBildaPinpointDriver pinpoint;
     private ElapsedTime pathTimer, actionTimer, opmodeTimer, shotTimer;
-
-
-
-    //Why is y = 24?
-
-    private final Pose startPose = new Pose(144-80, 24, Math.toRadians(180)); // Start Pose of our robot.
-    private final Pose finalPose = new Pose(144-96, 24, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose startPose = new Pose(144-80, 9, Math.toRadians(180)); // Start Pose of our robot.
+    private final Pose finalPose = new Pose(144-(96 + 20), 9, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain finalPosition;
     private Path scorePreload;
+
+
     public void buildPaths(){
         scorePreload = new Path(new BezierLine(startPose, finalPose));
         scorePreload.setLinearHeadingInterpolation(startPose.getHeading(), finalPose.getHeading());
     }
 
+    boolean tweaking = false;
+
+
+    ElapsedTime waiter;
     public void setPathState(int pState) {
         pathState = pState;
     }
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                //shooter.AutoBeginShot(false,true);
-                setPathState(1);
-            case 1:
+                shooter.panTracking.autoPausing = true;
+                shooter.panTracking.autoPausingTimer.reset();
+                opmodeTimer.reset();
 
-                if(!shooter.shotbegan){
+
+                setPathState(100);
+
+                break;
+            case 100:
+                if(shooter.panTracking.autoPausingTimer.seconds() > 2){
+                    shooter.firePattern();
+                    setPathState(1);
+                }
+                break;
+
+            case 1:
+                if(!shooter.firingPat){
                     follower.followPath(scorePreload);
                     setPathState(-1);
-                }
+                    shooter.panTracking.resettingpan = true;
 
+
+                }else{
+                    tweaking = true;
+                }
+                break;
         }
+
+
     }
 
+
+    public void stop(){
+        shooter.panTracking.pan.setTargetPosition(0);
+    }
     @Override
+
     public void init() {
         opmodeTimer = new ElapsedTime();
+
 
 
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        pinpoint.resetPosAndIMU();
+        //pinpoint.resetPosAndIMU();
 
-        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,144- 80, 0, AngleUnit.RADIANS, Math.toRadians(0)));
+        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,144-80, 9,AngleUnit.RADIANS, Math.toRadians(180)));
 
         opmodeTimer.reset();
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
+
         follower.setStartingPose(startPose);
 
         shooter = new HoodedShooter();
@@ -86,36 +116,61 @@ public class BlueSlave1 extends OpMode {
 
 
         intake = hardwareMap.get(DcMotor.class, "intake");
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotor.Direction.FORWARD);
+
         DcMotor fl = hardwareMap.get(DcMotor.class, "fl");
         DcMotor fr = hardwareMap.get(DcMotor.class, "fr");
         DcMotor bl = hardwareMap.get(DcMotor.class, "bl");
         DcMotor br = hardwareMap.get(DcMotor.class, "br");
 
         shooter.init(hardwareMap, telemetry, pinpoint, 20);
+
     }
 
     @Override
     public void loop() {
 
-
         follower.update();
 
         shooter.loop();
 
+        if(shooter.freeSort.pos1 != 'e' && shooter.freeSort.pos2 != 'e' && shooter.freeSort.pos3!='e'){
+            intake.setPower(-1);
+        }else{
+            intake.setPower(1);
+        }
+
+
 
         autonomousPathUpdate();
+
+
+        if(tweaking)telemetry.addData("Hi", "Why are you tweaking lil bro");
+
         // Feedback to Driver Hub for debugging
         telemetry.addData("path state", pathState);
         telemetry.addData("x", follower.getPose().getX());
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
+        telemetry.addData("Timer :", opmodeTimer.seconds());
+        telemetry.update();
+
     }
     @Override
     public void start() {
+        opmodeTimer.reset();
         intake.setPower(1);
 
-        opmodeTimer.reset();
+        follower.setStartingPose(startPose);
+
+        shooter.start();
+
+
+        Pose2D startpos = new Pose2D(DistanceUnit.INCH, 144- 80,9,AngleUnit.DEGREES,180);
+        pinpoint.setPosition(startpos);
+
         setPathState(0);
     }
+
+
 }

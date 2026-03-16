@@ -1,5 +1,3 @@
-
-/*
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.pedropathing.geometry.Pose;
@@ -23,7 +21,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
 
 public class TeleOpBlueSlave1 extends OpMode {
-    private DcMotor pan;
     boolean beganshot = false;
 
     double initpos = 0f;
@@ -62,8 +59,8 @@ public class TeleOpBlueSlave1 extends OpMode {
 
 
 
-    Pose aprilTagRed = new Pose(144,144);
-    Pose aprilTagBlue = new Pose(0,144);
+    Pose aprilTagRed = new Pose(144,144+15);
+    Pose aprilTagBlue = new Pose(0,144+15);
 
     HoodedShooter hShooter;
 
@@ -103,7 +100,6 @@ public class TeleOpBlueSlave1 extends OpMode {
         fl = hardwareMap.get(DcMotor.class, "fl");
         bl = hardwareMap.get(DcMotor.class, "bl");
         br = hardwareMap.get(DcMotor.class, "br");
-        pan = hardwareMap.get(DcMotor.class, "rot");
 
 
         arm1 = hardwareMap.get(Servo.class, "arm1");
@@ -114,15 +110,11 @@ public class TeleOpBlueSlave1 extends OpMode {
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
 
 
-        pan = hardwareMap.get(DcMotor.class,"rot");
-        pan.setTargetPosition(0);
-        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED);
-        pinpoint.resetPosAndIMU();
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,144-96, 24, AngleUnit.RADIANS,Math.toRadians(180)));
-        pinpoint.initialize();
+        //pinpoint.resetPosAndIMU();
+
 
 
 
@@ -140,12 +132,12 @@ public class TeleOpBlueSlave1 extends OpMode {
         hShooter = new HoodedShooter();
 
 
-
-
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         hShooter.init(hardwareMap,telemetry, pinpoint, 20);
 
         state=  0;
@@ -153,28 +145,69 @@ public class TeleOpBlueSlave1 extends OpMode {
 
         fieldDrive.init(hardwareMap, gamepad1, pinpoint);
 
+
     }
 
     @Override
     public void start(){
+
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,144-96, 8.5, AngleUnit.RADIANS,Math.PI));
+
+        hShooter.start();
         intake.setPower(1);
+
 
 
     }
     double val = 0.6;
 
+    public void breaks(){
+    }
+
+
     public void loop(){
 
 
-        if(gamepad2.b){
+
+        if(gamepad2.a){
             //rewindTimer.reset();
             if(intake.getPower() == 1 )intake.setPower(-1);
 
 
             //rewinding = true;
         }else{
-
             if(intake.getPower() == -1)intake.setPower(1);
+        }
+
+
+
+        if(gamepad2.leftBumperWasPressed()){
+            hShooter.FireColor('p');
+        }
+        if(gamepad2.rightBumperWasPressed()){
+            hShooter.FireColor('g');
+        }
+
+        if(gamepad2.dpadDownWasPressed()){
+
+            telemetry.addData("We are on square", "hooray");
+            hShooter.Fire(1);
+        }
+        if(gamepad2.dpadRightWasPressed()){
+
+            telemetry.addData("We are on circle", "Wow");
+            hShooter.Fire(2);
+        }
+
+        if(gamepad2.dpadLeftWasPressed()){
+
+            telemetry.addData("We are on triangle", "Wow");
+            hShooter.Fire(3);
+        }
+
+
+        if(gamepad2.right_trigger > 0  && !hShooter.firingPat){
+            hShooter.firePattern();
         }
 
 
@@ -185,49 +218,40 @@ public class TeleOpBlueSlave1 extends OpMode {
             br.setPower(0.0);
             bl.setPower(0.0);
         }else{
-            fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-            if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
+            fieldDrive.driveFieldRelative(-1*-gamepad1.left_stick_y, -1 * gamepad1.left_stick_x, gamepad1.right_stick_x);
+            if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-1 * -gamepad2.left_stick_y/4, -1 * gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
 
         }
 
-        if(gamepad2.leftBumperWasPressed()){
-            intake.setPower(0.25);
+
+
+
+
+
+
+        if(gamepad2.dpadUpWasPressed()){
+
+            hShooter.firePattern();
         }
-
-
-
-
-
-        if(gamepad2.rightBumperWasPressed()){
-            intake.setPower(1);
+        if(gamepad1.dpadUpWasPressed()){
+            pinpoint.setHeading(0,AngleUnit.RADIANS);
         }
-
-        if(gamepad1.square){
-
-            telemetry.addData("We are on square", "hooray");
-            hShooter.Fire(1);
-        }
-        if(gamepad1.circleWasPressed()){
-
-            telemetry.addData("We are on circle", "Wow");
-            hShooter.Fire(2);
-        }
-
-        if(gamepad1.triangleWasPressed()){
-
-            telemetry.addData("We are on triangle", "Wow");
-            hShooter.Fire(3);
-        }
-
 
         hShooter.loop();
 
 
+
+        telemetry.addData("Angle : ", pinpoint.getHeading(AngleUnit.DEGREES));
+
+
+        telemetry.addData("According to redslave 1 we are at : ", pinpoint.getPosX(DistanceUnit.INCH) + " " + pinpoint.getPosY(DistanceUnit.INCH) + " At an angle of " +pinpoint.getHeading(AngleUnit.RADIANS));
         //telemetry.update();
+
+        telemetry.addData("Positions : ", hShooter.p1 + " , " + hShooter.p2 + " , " + hShooter.p3);
+
+        telemetry.addData("Angle of Field driver :" , fieldDrive.AngleFacing);
+        telemetry.update();
     }
 
 
 }
-
-
- */

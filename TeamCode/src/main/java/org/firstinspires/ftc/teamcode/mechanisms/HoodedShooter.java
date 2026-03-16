@@ -32,20 +32,16 @@ public class HoodedShooter {
     public char p2;
     public char p3;
 
-    double initpos = 0f;
-
-    double positionnecessary;
-
 
     int id = 0;
-    String state;
-
     ElapsedTime elapsedTime;
 
 
 
 
 
+
+    public boolean shotbegan;
     private DcMotor flywheel1;
 
     private DcMotor flywheel2;
@@ -59,7 +55,6 @@ public class HoodedShooter {
     public double headingTiltPos;
     Telemetry telemetry;
 
-    public boolean shotbegan = false;
 
     boolean resetting = false;
 
@@ -175,7 +170,7 @@ public class HoodedShooter {
 
 
         //Alter, this is just for red goal
-        if((currentAprilTagPos.getY(DistanceUnit.INCH)-pinpoint.getPosY(DistanceUnit.INCH)) * (currentAprilTagPos.getY(DistanceUnit.INCH)-pinpoint.getPosY(DistanceUnit.INCH)) + (currentAprilTagPos.getX(DistanceUnit.INCH)-pinpoint.getPosX(DistanceUnit.INCH))*(currentAprilTagPos.getX(DistanceUnit.INCH)-pinpoint.getPosX(DistanceUnit.INCH)) < 3200 ){
+        if((currentAprilTagPos.getY(DistanceUnit.INCH)-pinpoint.getPosY(DistanceUnit.INCH)) * (currentAprilTagPos.getY(DistanceUnit.INCH)-pinpoint.getPosY(DistanceUnit.INCH)) + (currentAprilTagPos.getX(DistanceUnit.INCH)-pinpoint.getPosX(DistanceUnit.INCH))*(currentAprilTagPos.getX(DistanceUnit.INCH)-pinpoint.getPosX(DistanceUnit.INCH)) < 3800 ){
             headingTiltPos = 0.051;
         }else if(pinpoint.getPosY(DistanceUnit.INCH) <= 36) {
             headingTiltPos = 0.075;
@@ -219,12 +214,6 @@ public class HoodedShooter {
 
 
 
-        telemetry.addData("numchanges", numchanges);
-        telemetry.addData("IsAutoShot : ", isAutoShot);
-        telemetry.addData("Shot status : ", shotbegan);
-
-        telemetry.addData("Num shots : ", numshots);
-
          */
 
         if(pinpointUpdatePause.seconds() > 0.3)pinpoint.update();
@@ -240,7 +229,7 @@ public class HoodedShooter {
         flywheel2.setPower(flywheelPower);
 
         if(panTracking.autoPausing){
-            tilt.setPosition(0.08);
+            tilt.setPosition(0.0815);
 
         }else{
             tilt.setPosition(headingTiltPos);
@@ -256,34 +245,8 @@ public class HoodedShooter {
     }
 
 
-    public void BeginShot(){
 
-
-        isAutoShot = false;
-        elapsedTime.reset();
-        state = "chassis_orient_to_tag";
-        currentID = id;
-        if(id == 24){
-            currentAprilTagPos = aprilTagRed;
-        }
-
-
-
-        if(id == 20){
-            currentAprilTagPos = aprilTagBlue;
-        }
-
-        rotated = false;
-
-        shotbegan = true;
-
-
-        shotbegan = false;
-    }
-
-
-
-    boolean firingPat = false;
+    public boolean firingPat = false;
 
 
     char[] curpat = {'p', 'p', 'p'};
@@ -300,15 +263,20 @@ public class HoodedShooter {
     int dex = 0;
 
     public void FiringAPattern(){
-            if(dex <= 3){
-                if(shootTimer.seconds() > freeSort.shootDur+0.3){
+            if(dex < 3){
+                if(shootTimer.seconds() > freeSort.shootDur+0.2){
                     if(dex < curpat.length)FireColor(curpat[dex]);
                     dex++;
                     shootTimer.reset();
                 }
             }else{
-                firingPat = false;
-                dex = 0;
+                if(freeSort.pos1 == 'e' && freeSort.pos2 == 'e' && freeSort.pos3 == 'e') {
+                    firingPat = false;
+                    dex = 0;
+                }else{
+                    firingPat = true;
+                    dex = 0;
+                }
             }
 
     }

@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
 
 
 
-public class TeleOpRedMain1 extends OpMode {
+public class TeleOpBlueMain1Row extends OpMode {
     boolean beganshot = false;
 
     double initpos = 0f;
@@ -29,8 +29,6 @@ public class TeleOpRedMain1 extends OpMode {
 
     private DcMotor fl;
 
-
-    Pose2D startPose = new Pose2D(DistanceUnit.INCH, 110, 70, AngleUnit.RADIANS,Math.toRadians(90));
     private DcMotor br;
     private DcMotor bl;
 
@@ -61,8 +59,8 @@ public class TeleOpRedMain1 extends OpMode {
 
 
 
-    Pose aprilTagRed = new Pose(144,144+15);
-    Pose aprilTagBlue = new Pose(0,144+15);
+    Pose aprilTagRed = new Pose(144,144 + 15);
+    Pose aprilTagBlue = new Pose(0,144 + 15);
 
     HoodedShooter hShooter;
 
@@ -75,6 +73,9 @@ public class TeleOpRedMain1 extends OpMode {
 
     Limelight3A limelight;
     boolean rewinding = false;
+
+    Pose2D startPose = new Pose2D(DistanceUnit.INCH,144 - 110, 70, AngleUnit.RADIANS,Math.toRadians(90)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+
     int num = 0;
     public void init() {
 
@@ -119,6 +120,7 @@ public class TeleOpRedMain1 extends OpMode {
 
 
 
+
         intake = hardwareMap.get(DcMotor.class, "intake");
 
         //intake.setDirection(DcMotor.Direction.REVERSE);
@@ -139,7 +141,7 @@ public class TeleOpRedMain1 extends OpMode {
         bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        hShooter.init(hardwareMap,telemetry, pinpoint, 24);
+        hShooter.init(hardwareMap,telemetry, pinpoint, 20);
 
         state=  0;
         intake.setPower(0);
@@ -151,9 +153,12 @@ public class TeleOpRedMain1 extends OpMode {
 
     @Override
     public void start(){
-        pinpoint.setPosition(startPose);
+
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,144-96, 8.5, AngleUnit.RADIANS,Math.PI));
+
         hShooter.start();
         intake.setPower(1);
+
 
 
     }
@@ -167,10 +172,6 @@ public class TeleOpRedMain1 extends OpMode {
 
 
 
-
-        if(gamepad1.dpadUpWasPressed()){
-            pinpoint.setHeading(0,AngleUnit.RADIANS);
-        }
         if(gamepad2.a){
             //rewindTimer.reset();
             if(intake.getPower() == 1 )intake.setPower(-1);
@@ -220,8 +221,8 @@ public class TeleOpRedMain1 extends OpMode {
             br.setPower(0.0);
             bl.setPower(0.0);
         }else{
-            fieldDrive.driveFieldRelative(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
-            if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-gamepad2.left_stick_y/4, gamepad2.left_stick_x/4, gamepad2.right_stick_x/4);
+            fieldDrive.driveFieldRelative(-1*-gamepad1.left_stick_y, -1 * gamepad1.left_stick_x, gamepad1.right_stick_x);
+            if(gamepad1.left_stick_y == 0 && gamepad1.left_stick_x == 0 && gamepad1.right_stick_x == 0)fieldDrive.driveFieldRelative(-1 * -gamepad2.left_stick_y/4, -1 * gamepad2.left_stick_x/4,  gamepad2.right_stick_x/4);
 
         }
 
@@ -236,8 +237,16 @@ public class TeleOpRedMain1 extends OpMode {
             hShooter.firePattern();
         }
 
+        if(gamepad1.dpadUpWasPressed()){
+            pinpoint.setHeading(0,AngleUnit.RADIANS);
+        }
+
+
         hShooter.loop();
 
+
+
+        telemetry.addData("Angle : ", pinpoint.getHeading(AngleUnit.DEGREES));
 
 
         telemetry.addData("According to redslave 1 we are at : ", pinpoint.getPosX(DistanceUnit.INCH) + " " + pinpoint.getPosY(DistanceUnit.INCH) + " At an angle of " +pinpoint.getHeading(AngleUnit.RADIANS));
@@ -245,7 +254,7 @@ public class TeleOpRedMain1 extends OpMode {
 
         telemetry.addData("Positions : ", hShooter.p1 + " , " + hShooter.p2 + " , " + hShooter.p3);
 
-
+        telemetry.addData("Angle of Field driver :" , fieldDrive.AngleFacing);
         telemetry.update();
     }
 

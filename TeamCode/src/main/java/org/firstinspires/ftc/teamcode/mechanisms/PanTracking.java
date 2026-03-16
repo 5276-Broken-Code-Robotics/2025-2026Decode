@@ -29,8 +29,16 @@ public class PanTracking{
 
     public ElapsedTime autoPausingTimer;
 
+
+
+
+
+
+    public boolean isFar = false;
+
+    public boolean isClose = false;
     public boolean autoPausing = false;
-    DcMotor pan;
+    public DcMotor pan;
     double tAngle;
     float lastOrientedPos;
 
@@ -48,6 +56,8 @@ public class PanTracking{
     GoBildaPinpointDriver pinpoint;
 
 
+
+    public boolean resettingpan = false;
 
 
     Limelight3A limelight3A;
@@ -145,7 +155,7 @@ public class PanTracking{
 
 
 
-        if(Math.abs(angleToAprilTag) * 180 / PI < 10){
+        if(Math.abs(angleToAprilTag) * 180 / PI < 30 || pinpoint.getPosY(DistanceUnit.INCH) <= 48){
 
             telemetry.addData("Using Limelight Data : ",  "Now");
 
@@ -165,7 +175,7 @@ public class PanTracking{
             if(foundOne){
 
                 double valCalced = pan.getCurrentPosition() + fidRes.getTargetXDegrees()* (panMax-panZero) / 180;
-                if(Math.abs(Math.abs(valCalced) - Math.abs(targetTicks)) > 10){
+                if(Math.abs(valCalced- targetTicks) > 5){
                     targetTicks = valCalced;
                 }
             }
@@ -181,16 +191,52 @@ public class PanTracking{
             if(id == 20){
                 targetTicks = panMax;
             }
+        }else if (autoPausing){
+            boolean foundOne = false;
+            LLResultTypes.FiducialResult fidRes = null;
+            for(int i =0; i < results.size(); i++){
+                if(results.get(i).getFiducialId() == id ){
+                    foundOne = true;
+                    fidRes = results.get(i);
+                }
+            }
+
+
+
+            telemetry.addData("Found One :", foundOne);
+
+            if(foundOne){
+
+                double valCalced = pan.getCurrentPosition() + fidRes.getTargetXDegrees()* (panMax-panZero) / 180;
+                if(Math.abs(valCalced- targetTicks) > 5){
+                    targetTicks = valCalced;
+                }
+            }
         }
 
-        if(Math.abs(Math.abs(lastOrientedPos) - Math.abs(targetTicks)) > 1 && Math.abs(angleToAprilTag) <= PI && spinCD.seconds() > 0.2){
+
+
+        if(resettingpan){
+            targetTicks = panForward;
+        }
+
+
+
+
+
+
+
+
+
+
+        if(Math.abs(lastOrientedPos - targetTicks) > 1 && Math.abs(angleToAprilTag) <= PI + 1 && spinCD.seconds() > 0.2){
 
             spinCD.reset();
-            if(targetTicks > panMax){
-                targetTicks = panMax;
+            if(targetTicks > panMax * 2){
+                targetTicks = panMax * 2;
             }
-            if(targetTicks < panZero){
-                targetTicks = panZero;
+            if(targetTicks < panZero * 2){
+                targetTicks = panZero * 2;
             }
 
             pan.setTargetPosition((int) targetTicks);

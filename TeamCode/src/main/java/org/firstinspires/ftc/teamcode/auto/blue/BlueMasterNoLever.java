@@ -4,14 +4,11 @@ package org.firstinspires.ftc.teamcode.auto.blue;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -19,16 +16,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.mechanisms.HoodedShooter;
-import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
-import com.qualcomm.hardware.limelightvision.LLStatus;
-import com.qualcomm.hardware.limelightvision.Limelight3A;
-import org.firstinspires.ftc.teamcode.mechanisms.FinalFreeSortHSV;
-
-import java.util.List;
 
 @Autonomous(group = "Blue Auto")
-public class BlueNoLever extends OpMode {
+public class BlueMasterNoLever extends OpMode {
     boolean hasShotThisState;
     HoodedShooter shooter;
     int obeliskId = 0;
@@ -40,22 +30,22 @@ public class BlueNoLever extends OpMode {
     private Follower follower;
     //Limelight3A limelight;
     private ElapsedTime leverHoldTime1, opmodeTimer;
-    private final Pose startPose = new Pose(144-125.4, 119.3, Math.toRadians(144)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(144-96, 96, Math.toRadians(180)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pose4 = new Pose(144-118, 84, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
-    private final Pose pose3 = new Pose(144-96, 84, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose leverPrep=new Pose(144-118,71, Math.toRadians(90));
-    private final Pose pose5=new Pose(144-96,57, Math.toRadians(180));
+    private final Pose startPose = new Pose(144- 125.4,  119.3, Math.toRadians(180 -36)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(144- 96,  96, Math.toRadians(180)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose pose4 = new Pose(144 - 118, 84, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pose3 = new Pose(144 -96, 84, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose leverPrep=new Pose(144 - 118,71, Math.toRadians(180 -90));
+    private final Pose pose5=new Pose(144 - 96,57, Math.toRadians(180));
 
-    private final Pose pose6=new Pose(144-118,57, Math.toRadians(180));
+    private final Pose pose6=new Pose(144 -118,57, Math.toRadians(180));
 
 
-    private final Pose pose7=new Pose(144-96,36, Math.toRadians(180));
+    private final Pose pose7=new Pose(144 -96,36, Math.toRadians(180));
 
-    private final Pose pose8=new Pose(144-118,36, Math.toRadians(180));
+    private final Pose pose8=new Pose(144- 118,36, Math.toRadians(180));
 
-    private final Pose leverHit = new Pose(144-120, 71, Math.toRadians(90));
-    private final Pose finalPose = new Pose(144-110, 70, Math.toRadians(90));// Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose leverHit = new Pose(144 - 120, 71, Math.toRadians(90));
+    private final Pose finalPose = new Pose(144 - 110, 70, Math.toRadians(90));// Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain scorePreload,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
 
     GoBildaPinpointDriver pinpoint;
@@ -148,7 +138,7 @@ public class BlueNoLever extends OpMode {
 
                 break;
             case 1:
-                if(fireCD.seconds() > 3) {
+                if(fireCD.seconds() > 3 && !shooter.firingPat) {
                     follower.followPath(pos1, false);
                     setPathState(101);
                 }
@@ -198,6 +188,8 @@ public class BlueNoLever extends OpMode {
                 break;
             case 6767:
                 if (!follower.isBusy()) {
+                    fireCD.reset();
+                    shooter.firePattern();
 
                     setPathState(4);
 
@@ -206,7 +198,7 @@ public class BlueNoLever extends OpMode {
             case 4:
 
 
-                if (!follower.isBusy()) {
+                if (!follower.isBusy() && fireCD.seconds() > 3  && !shooter.firingPat) {
                     follower.followPath(pos5, false);
                     setPathState(104);
                 }
@@ -233,22 +225,22 @@ public class BlueNoLever extends OpMode {
                 if (!follower.isBusy()) {
 
                     setPathState(6);
-                    fireCD.reset();
-                    shooter.firePattern();
                 }
                 break;
             case 6:
 //shoot this one goes to shotpose
 
-                if (!follower.isBusy() && fireCD.seconds() > 3) {
+                if (!follower.isBusy()) {
                     follower.followPath(pos7, false);
                     setPathState(106);
+
                 }
 
                 break;
             case 106:
                 if (!follower.isBusy()) {
-
+                    shooter.firePattern();
+                    fireCD.reset();
                     setPathState(9);
 
                 }
@@ -282,15 +274,13 @@ public class BlueNoLever extends OpMode {
                 if (!follower.isBusy()) {
 
                     setPathState(9);
-                    fireCD.reset();
-                    shooter.firePattern();
 
                 }
                 break;
             case 9:
 
 
-                if (!follower.isBusy() && fireCD.seconds() > 3) {
+                if (!follower.isBusy() && fireCD.seconds() > 3 && !shooter.firingPat) {
                     follower.followPath(pos10, false);
                     setPathState(109);
                 }
@@ -337,9 +327,7 @@ public class BlueNoLever extends OpMode {
                 }
                 break;
             case 12:
-
-
-                if (!follower.isBusy() && fireCD.seconds() > 3) {
+                if (!follower.isBusy() && fireCD.seconds() > 3 && !shooter.firingPat) {
                     follower.followPath(pos13, false);
                     setPathState(-1);
                 }
@@ -382,9 +370,9 @@ public class BlueNoLever extends OpMode {
 
 
         intake = hardwareMap.get(DcMotor.class, "intake");
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        intake.setDirection(DcMotor.Direction.FORWARD);
 
-        shooter.init(hardwareMap, telemetry, pinpoint, 24);
+        shooter.init(hardwareMap, telemetry, pinpoint, 20);
         intake.setPower(0);
 
     }
@@ -395,9 +383,18 @@ public class BlueNoLever extends OpMode {
     @Override
 
 
+
+    public void stop(){
+        shooter.panTracking.pan.setTargetPosition(0);
+    }
     public void loop() {
 
 
+        if(shooter.freeSort.pos1 != 'e' && shooter.freeSort.pos2 != 'e' && shooter.freeSort.pos3!='e'){
+            intake.setPower(-1);
+        }else{
+            intake.setPower(1);
+        }
         /*
             freesort.loop();
 
@@ -412,6 +409,8 @@ public class BlueNoLever extends OpMode {
             }
 
          */
+
+
 
 
         telemetry.addData("obeliskId", obeliskId);
@@ -446,8 +445,8 @@ public class BlueNoLever extends OpMode {
     public void start () {
         opmodeTimer.reset();
         setPathState(0);
-        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,144-125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(144)));
-        intake.setPower(-1);
+        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,144- 125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(180 - 36)));
+        intake.setPower(1);
 
         shooter.start();
 

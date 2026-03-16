@@ -59,8 +59,8 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
 
-    Pose aprilTagRed = new Pose(144,144);
-    Pose aprilTagBlue = new Pose(0,144);
+    Pose aprilTagRed = new Pose(144,144+15);
+    Pose aprilTagBlue = new Pose(0,144+15);
 
     HoodedShooter hShooter;
 
@@ -149,7 +149,7 @@ public class TeleOpRedSlave1 extends OpMode {
 
     @Override
     public void start(){
-        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,144-9, 9, AngleUnit.RADIANS,0));
+        pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 8.5, AngleUnit.RADIANS,0));
 
         hShooter.start();
         intake.setPower(1);
@@ -167,7 +167,9 @@ public class TeleOpRedSlave1 extends OpMode {
 
 
 
-        if(gamepad2.b){
+
+
+        if(gamepad2.a){
             //rewindTimer.reset();
             if(intake.getPower() == 1 )intake.setPower(-1);
 
@@ -178,6 +180,35 @@ public class TeleOpRedSlave1 extends OpMode {
         }
 
 
+
+        if(gamepad2.leftBumperWasPressed()){
+            hShooter.FireColor('p');
+        }
+        if(gamepad2.rightBumperWasPressed()){
+            hShooter.FireColor('g');
+        }
+
+        if(gamepad2.dpadDownWasPressed()){
+
+            telemetry.addData("We are on square", "hooray");
+            hShooter.Fire(1);
+        }
+        if(gamepad2.dpadRightWasPressed()){
+
+            telemetry.addData("We are on circle", "Wow");
+            hShooter.Fire(2);
+        }
+
+        if(gamepad2.dpadLeftWasPressed()){
+
+            telemetry.addData("We are on triangle", "Wow");
+            hShooter.Fire(3);
+        }
+
+
+        if(gamepad2.right_trigger > 0  && !hShooter.firingPat){
+            hShooter.firePattern();
+        }
 
 
 
@@ -192,39 +223,19 @@ public class TeleOpRedSlave1 extends OpMode {
 
         }
 
-        if(gamepad1.square){
-
-            telemetry.addData("We are on square", "hooray");
-            hShooter.Fire(1);
-        }
-        if(gamepad1.circleWasPressed()){
-
-            telemetry.addData("We are on circle", "Wow");
-            hShooter.Fire(2);
-        }
-
-        if(gamepad1.triangleWasPressed()){
-
-            telemetry.addData("We are on triangle", "Wow");
-            hShooter.Fire(3);
-        }
-
-        if(gamepad1.dpadLeftWasPressed()){
-            hShooter.FireColor('g');
-        }
-
-
-        if(gamepad1.dpadRightWasPressed()){
-            hShooter.FireColor('p');
-        }
 
 
 
 
 
-        if(gamepad1.dpadUpWasPressed()){
+
+        if(gamepad2.dpadUpWasPressed()){
 
             hShooter.firePattern();
+        }
+
+        if(gamepad1.dpadUpWasPressed()){
+            pinpoint.setHeading(0,AngleUnit.RADIANS);
         }
 
         hShooter.loop();

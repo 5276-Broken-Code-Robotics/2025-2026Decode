@@ -37,7 +37,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
@@ -64,18 +66,19 @@ public class FieldRelativeDrive {
     DcMotor br;
 
     // This declares the IMU needed to get the current direction the robot is facing
-    IMU imu;
-
     GoBildaPinpointDriver pinpoint;
 
 
     Gamepad gpad1;
 
+
+    public double AngleFacing;
+    Telemetry telemetry;
+
+
     public void init(HardwareMap hardwareMap, Gamepad gamepad1, GoBildaPinpointDriver pinpoint) {
+        waiter = new ElapsedTime();
 
-
-
-        this.pinpoint = pinpoint;
 
         gpad1 = gamepad1;
         fl = hardwareMap.get(DcMotor.class, "fl");
@@ -96,17 +99,6 @@ public class FieldRelativeDrive {
         // bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        imu = hardwareMap.get(IMU.class, "imu");
-        // This needs to be changed to match the orientation on your robot
-
-
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
-        RevHubOrientationOnRobot.UsbFacingDirection usbDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.UP;
-        RevHubOrientationOnRobot orientationOnRobot = new
-                RevHubOrientationOnRobot(logoDirection, usbDirection);
-        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
 
         this.pinpoint = pinpoint;
@@ -114,15 +106,18 @@ public class FieldRelativeDrive {
 
     }
 
+    ElapsedTime waiter;
 
 
 
     // This routine drives the robot field relative
     public void driveFieldRelative(double forward, double right, double rotate) {
 
-        if(gpad1.dpadDownWasPressed()){
-            imu.resetYaw();
+
+        if(waiter.seconds() > 0.1){
+            pinpoint.update();
         }
+
         // First, convert direction being asked to drive to polar coordinates
         double theta = Math.atan2(forward, right);
         double r = Math.hypot(right, forward);
@@ -132,12 +127,16 @@ public class FieldRelativeDrive {
                 pinpoint.getHeading(AngleUnit.RADIANS));
 
 
+
+
         // Third, convert back to cartesian
         double newForward = r * Math.sin(theta);
         double newRight = r * Math.cos(theta);
 
         // Finally, call the drive method with robot relative forward and right amounts
         drive(newForward, newRight, rotate);
+        AngleFacing = pinpoint.getHeading(AngleUnit.DEGREES);
+
     }
 
     // Thanks to FTC16072 for sharing this code!!
@@ -169,7 +168,4 @@ public class FieldRelativeDrive {
         br.setPower(maxSpeed * (backRightPower / maxPower));
     }
 
-    public void setYaw () {
-        imu.resetYaw();
-    }
 }

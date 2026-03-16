@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto.red;
+package org.firstinspires.ftc.teamcode.auto.blue;
 
 
 import com.pedropathing.follower.Follower;
@@ -28,8 +28,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.FinalFreeSortHSV;
 
 import java.util.List;
 
-@Autonomous(group = "Red Auto")
-public class RedMasterNoLever extends OpMode {
+@Autonomous(group = "Blue Auto")
+public class BNoLever1Row extends OpMode {
     boolean hasShotThisState;
     HoodedShooter shooter;
     int obeliskId = 0;
@@ -41,22 +41,22 @@ public class RedMasterNoLever extends OpMode {
     private Follower follower;
     //Limelight3A limelight;
     private ElapsedTime leverHoldTime1, opmodeTimer;
-    private final Pose startPose = new Pose(125.4, 119.3, Math.toRadians(36)); // Start Pose of our robot.
-    private final Pose scorePose = new Pose(96, 96, Math.toRadians(0)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
-    private final Pose pose4 = new Pose(118, 84, Math.toRadians(0)); // Highest (First Set) of Artifacts from the Spike Mark.
-    private final Pose pose3 = new Pose(96, 84, Math.toRadians(0)); // Lowest (Third Set) of Artifacts from the Spike Mark.
-    private final Pose leverPrep=new Pose(118,71, Math.toRadians(90));
-    private final Pose pose5=new Pose(96,57, Math.toRadians(0));
+    private final Pose startPose = new Pose(144- 125.4,  119.3, Math.toRadians(180 -36)); // Start Pose of our robot.
+    private final Pose scorePose = new Pose(144- 96,  96, Math.toRadians(180)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    private final Pose pose4 = new Pose(144 - 118, 84, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
+    private final Pose pose3 = new Pose(144 -96, 84, Math.toRadians(180)); // Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose leverPrep=new Pose(144 - 118,71, Math.toRadians(180 -90));
+    private final Pose pose5=new Pose(144 - 96,57, Math.toRadians(180));
 
-    private final Pose pose6=new Pose(118,57, Math.toRadians(0));
+    private final Pose pose6=new Pose(144 -118,57, Math.toRadians(180));
 
 
-    private final Pose pose7=new Pose(96,36, Math.toRadians(0));
+    private final Pose pose7=new Pose(144 -96,36, Math.toRadians(180));
 
-    private final Pose pose8=new Pose(118,36, Math.toRadians(0));
+    private final Pose pose8=new Pose(144- 118,36, Math.toRadians(180));
 
-    private final Pose leverHit = new Pose(120, 71, Math.toRadians(90));
-    private final Pose finalPose = new Pose(110, 70, Math.toRadians(90));// Lowest (Third Set) of Artifacts from the Spike Mark.
+    private final Pose leverHit = new Pose(144 - 120, 71, Math.toRadians(90));
+    private final Pose finalPose = new Pose(144 - 110, 70, Math.toRadians(90));// Lowest (Third Set) of Artifacts from the Spike Mark.
     private PathChain scorePreload,pos1,pos2,pos3,pos4,pos5,pos6,pos7,pos8,pos9,pos10,pos11,pos12,pos13,pos14;
 
     GoBildaPinpointDriver pinpoint;
@@ -149,14 +149,14 @@ public class RedMasterNoLever extends OpMode {
 
                 break;
             case 1:
-                if(fireCD.seconds() > 3&& !shooter.firingPat) {
+                if (fireCD.seconds() > 3) {
                     follower.followPath(pos1, false);
                     setPathState(101);
                 }
                 break;
 
             case 101:
-                if (!follower.isBusy()){
+                if (!follower.isBusy()) {
                     setPathState(2);
 
                 }
@@ -167,27 +167,11 @@ public class RedMasterNoLever extends OpMode {
                 setPathState(102);
 
 
-
                 break;
             case 102:
                 if (!follower.isBusy()) setPathState(67);
                 break;
-            case 3:
 
-
-                follower.followPath(pos3, false);
-                setPathState(103);
-
-                break;
-
-
-            case 103:
-                if (!follower.isBusy()) {
-
-                    setPathState(67);
-
-                }
-                break;
             case 67:
 
 //shoot this one goes to shootPose
@@ -209,142 +193,14 @@ public class RedMasterNoLever extends OpMode {
             case 4:
 
 
-                if (!follower.isBusy() && fireCD.seconds() > 3 && !shooter.firingPat) {
-                    follower.followPath(pos5, false);
+                if (!follower.isBusy() && fireCD.seconds() > 3) {
+                    follower.followPath(pos13, false);
+
+                    shooter.panTracking.resettingpan = true;
                     setPathState(104);
                 }
 
                 break;
-            case 104:
-                if (!follower.isBusy()) {
-
-                    setPathState(5);
-
-                }
-                break;
-            case 5:
-
-
-                if (!follower.isBusy()) {
-                    leverHoldTime1.startTime();
-                    follower.followPath(pos6, true);
-                    setPathState(105);
-                }
-
-                break;
-            case 105:
-                if (!follower.isBusy()) {
-
-                    setPathState(6);
-                }
-                break;
-            case 6:
-//shoot this one goes to shotpose
-
-                if (!follower.isBusy()) {
-                    follower.followPath(pos7, false);
-                    setPathState(106);
-
-                }
-
-                break;
-            case 106:
-                if (!follower.isBusy()) {
-                    shooter.firePattern();
-                    fireCD.reset();
-                    setPathState(9);
-
-                }
-                break;
-            case 7:
-
-
-                if (!follower.isBusy()) {
-                    follower.followPath(pos8, false);
-                    setPathState(107);
-                }
-
-                break;
-            case 107:
-                if (!follower.isBusy()) {
-
-                    setPathState(8);
-
-                }
-                break;
-            case 8:
-
-
-                if (!follower.isBusy()) {
-                    follower.followPath(pos9, false);
-                    setPathState(108);
-                }
-
-                break;
-            case 108:
-                if (!follower.isBusy()) {
-
-                    setPathState(9);
-
-                }
-                break;
-            case 9:
-
-
-                if (!follower.isBusy() && fireCD.seconds() > 3 && !shooter.firingPat) {
-                    follower.followPath(pos10, false);
-                    setPathState(109);
-                }
-
-                break;
-            case 109:
-                if (!follower.isBusy()) {
-
-                    setPathState(10);
-
-                }
-                break;
-            case 10:
-
-
-                if (!follower.isBusy()) {
-                    follower.followPath(pos11, false);
-                    setPathState(110);
-                }
-
-                break;
-            case 110:
-                if (!follower.isBusy()) {
-
-                    setPathState(11);
-
-                }
-                break;
-            case 11:
-
-//shoot this one goes to shotpose
-                if (!follower.isBusy()) {
-                    follower.followPath(pos12, false);
-                    setPathState(111);
-                }
-
-                break;
-            case 111:
-                if (!follower.isBusy()) {
-                    shooter.firePattern();
-                    fireCD.reset();
-                    setPathState(12);
-
-                }
-                break;
-            case 12:
-                if (!follower.isBusy() && 3 < fireCD.seconds() && !shooter.firingPat) {
-                    follower.followPath(pos13, false);
-                    setPathState(-1);
-                }
-
-                break;
-
         }
     }
 
@@ -383,7 +239,7 @@ public class RedMasterNoLever extends OpMode {
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotor.Direction.FORWARD);
 
-        shooter.init(hardwareMap, telemetry, pinpoint, 24);
+        shooter.init(hardwareMap, telemetry, pinpoint, 20);
         intake.setPower(0);
 
     }
@@ -401,13 +257,11 @@ public class RedMasterNoLever extends OpMode {
     public void loop() {
 
 
-
         if(shooter.freeSort.pos1 != 'e' && shooter.freeSort.pos2 != 'e' && shooter.freeSort.pos3!='e'){
             intake.setPower(-1);
         }else{
             intake.setPower(1);
         }
-
         /*
             freesort.loop();
 
@@ -422,6 +276,8 @@ public class RedMasterNoLever extends OpMode {
             }
 
          */
+
+
 
 
         telemetry.addData("obeliskId", obeliskId);
@@ -456,7 +312,7 @@ public class RedMasterNoLever extends OpMode {
     public void start () {
         opmodeTimer.reset();
         setPathState(0);
-        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(36)));
+        pinpoint.setPosition( new Pose2D(DistanceUnit.INCH,144- 125.4, 119.3, AngleUnit.RADIANS, Math.toRadians(180 - 36)));
         intake.setPower(1);
 
         shooter.start();
