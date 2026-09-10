@@ -6,6 +6,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -75,6 +76,10 @@ public class showcaseTeleOp extends OpMode {
     Limelight3A limelight;
     boolean rewinding = false;
     int num = 0;
+
+    DcMotorEx pan;
+
+    int targetVal = 0;
     public void init() {
 
         rewindTimer = new ElapsedTime();
@@ -106,6 +111,10 @@ public class showcaseTeleOp extends OpMode {
         arm1 = hardwareMap.get(Servo.class, "arm1");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
+
+
+        pan = hardwareMap.get(DcMotorEx.class, "rot");
+        pan.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         limelight = hardwareMap.get(Limelight3A.class,"limelight");
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class,"pinpoint");
@@ -189,6 +198,8 @@ public class showcaseTeleOp extends OpMode {
             hShooter.FireColor('g');
         }
 
+
+        /*
         if(gamepad2.dpadDownWasPressed()){
 
             telemetry.addData("We are on square", "hooray");
@@ -210,6 +221,24 @@ public class showcaseTeleOp extends OpMode {
         if(gamepad2.right_trigger > 0  && !hShooter.firingPat){
             hShooter.firePattern();
         }
+        */
+         if(gamepad1.dpadLeftWasPressed()){
+             targetVal-=40;
+         }
+
+         if(gamepad1.dpadRightWasPressed()){
+             targetVal+=40;
+         }
+
+         if(targetVal <= - 410){
+             targetVal = (-targetVal + 410);
+         }
+
+        if(targetVal >= 410){
+            targetVal = (targetVal - 410);
+        }
+        pan.setTargetPosition(targetVal);
+
 
 
 
