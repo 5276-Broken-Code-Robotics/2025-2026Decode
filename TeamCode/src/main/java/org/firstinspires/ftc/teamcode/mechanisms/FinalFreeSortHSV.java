@@ -385,7 +385,7 @@ public class FinalFreeSortHSV {
             pos3 = 'e';
         }
 
-
+        /*
 
 
         telem.addLine("=== Sensor 1 =========");
@@ -411,7 +411,7 @@ public class FinalFreeSortHSV {
         //telemetry.addData("dist", sensor3.getDistance(DistanceUnit.MM));
         telem.addData("Pos3", pos3);
 
-
+*/
 
 
 

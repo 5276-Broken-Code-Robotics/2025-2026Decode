@@ -115,7 +115,7 @@ public class HoodedShooter {
 
 
 
-        flywheelPower = 0.6;
+        flywheelPower = 0.3;
         headingTiltPos = 0.12;
         panTracking = new PanTracking();
 

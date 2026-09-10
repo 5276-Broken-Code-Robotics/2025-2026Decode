@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -78,10 +79,11 @@ public class showcaseTeleOp extends OpMode {
     boolean rewinding = false;
     int num = 0;
 
-    DcMotorEx pan;
+    public DcMotor pan;
 
     int targetVal = 0;
     public void init() {
+        tilt = hardwareMap.get(Servo.class, "tilt");
 
         rewindTimer = new ElapsedTime();
         rewindTimer.reset();
@@ -162,8 +164,14 @@ public class showcaseTeleOp extends OpMode {
     public void start(){
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH,96, 8.5, AngleUnit.RADIANS,0));
 
+
+        pan.setDirection(DcMotorSimple.Direction.FORWARD);
+        pan.setTargetPosition((int)0);
+        pan.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pan.setPower(1);
         hShooter.start();
-        intake.setPower(1);
+        intake.setPower(0);
+        tilt = hardwareMap.get(Servo.class, "tilt");
 
 
 
@@ -176,19 +184,13 @@ public class showcaseTeleOp extends OpMode {
 
     public void loop(){
 
-
-
-
-
-        if(gamepad2.yWasPressed()){
-            //rewindTimer.reset();
-            if(intake.getPower() == 1 )intake.setPower(-1);
-
-
-            //rewinding = true;
-        }else{
-            if(intake.getPower() == -1)intake.setPower(1);
+        if(gamepad1.xWasPressed()){
+            hShooter.Fire(1);
         }
+        telemetry.addData("TargetPos :", targetVal);
+        telemetry.addData("Pan Pos : ", pan.getCurrentPosition());
+
+        intake.setPower(gamepad1.left_trigger);
 
         if(gamepad1.leftBumperWasPressed()){
             tilt.setPosition(tilt.getPosition()+.1);
@@ -204,30 +206,6 @@ public class showcaseTeleOp extends OpMode {
             hShooter.FireColor('g');
         }
 
-
-        /*
-        if(gamepad2.dpadDownWasPressed()){
-
-            telemetry.addData("We are on square", "hooray");
-            hShooter.Fire(1);
-        }
-        if(gamepad2.dpadRightWasPressed()){
-
-            telemetry.addData("We are on circle", "Wow");
-            hShooter.Fire(2);
-        }
-
-        if(gamepad2.dpadLeftWasPressed()){
-
-            telemetry.addData("We are on triangle", "Wow");
-            hShooter.Fire(3);
-        }
-
-
-        if(gamepad2.right_trigger > 0  && !hShooter.firingPat){
-            hShooter.firePattern();
-        }
-        */
          if(gamepad1.dpadLeftWasPressed()){
              targetVal-=40;
          }
@@ -243,6 +221,7 @@ public class showcaseTeleOp extends OpMode {
         if(targetVal >= 410){
             targetVal = (targetVal - 410);
         }
+
         pan.setTargetPosition(targetVal);
 
 
@@ -276,12 +255,6 @@ public class showcaseTeleOp extends OpMode {
 
         hShooter.loop();
 
-
-
-        telemetry.addData("According to redslave 1 we are at : ", pinpoint.getPosX(DistanceUnit.INCH) + " " + pinpoint.getPosY(DistanceUnit.INCH) + " At an angle of " +pinpoint.getHeading(AngleUnit.RADIANS));
-        //telemetry.update();
-
-        telemetry.addData("Positions : ", hShooter.p1 + " , " + hShooter.p2 + " , " + hShooter.p3);
 
 
         telemetry.update();

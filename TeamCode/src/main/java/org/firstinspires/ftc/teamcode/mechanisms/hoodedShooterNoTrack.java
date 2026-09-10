@@ -115,7 +115,7 @@ public class hoodedShooterNoTrack {
 
 
 
-        flywheelPower = 0.6;
+        flywheelPower = 0.3;
         headingTiltPos = 0.12;
 
 
@@ -145,18 +145,11 @@ public class hoodedShooterNoTrack {
 
     public void start(){
         pinpointUpdatePause.reset();
-        panTracking.start();
 
     }
 
     public void loop()
     {
-
-
-
-        telemetry.addData("dex for the firing loop", dex);
-
-        telemetry.addData("Pattern Arr : ", curpat[0]+ " , ", curpat[1], " , ", curpat[2]);
 
 
         if(id == 24){
@@ -257,8 +250,6 @@ public class hoodedShooterNoTrack {
 
     }
 
-
-    public PanTracking panTracking;
 
 
 
