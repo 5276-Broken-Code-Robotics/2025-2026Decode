@@ -33,6 +33,7 @@ public class showcaseTeleOp extends OpMode {
 
     private DcMotor br;
     private DcMotor bl;
+    private Servo tilt;
 
 
 
@@ -102,10 +103,10 @@ public class showcaseTeleOp extends OpMode {
 
 
         timer = new ElapsedTime();
-        fr = hardwareMap.get(DcMotor.class, "fr");
-        fl = hardwareMap.get(DcMotor.class, "fl");
-        bl = hardwareMap.get(DcMotor.class, "bl");
-        br = hardwareMap.get(DcMotor.class, "br");
+        //fr = hardwareMap.get(DcMotor.class, "fr");
+        //fl = hardwareMap.get(DcMotor.class, "fl");
+        //bl = hardwareMap.get(DcMotor.class, "bl");
+        //br = hardwareMap.get(DcMotor.class, "br");
 
 
         arm1 = hardwareMap.get(Servo.class, "arm1");
@@ -141,10 +142,10 @@ public class showcaseTeleOp extends OpMode {
         hShooter = new hoodedShooterNoTrack();
 
 
-        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         hShooter.init(hardwareMap,telemetry, pinpoint, 24);
@@ -179,7 +180,7 @@ public class showcaseTeleOp extends OpMode {
 
 
 
-        if(gamepad2.a){
+        if(gamepad2.yWasPressed()){
             //rewindTimer.reset();
             if(intake.getPower() == 1 )intake.setPower(-1);
 
@@ -189,12 +190,17 @@ public class showcaseTeleOp extends OpMode {
             if(intake.getPower() == -1)intake.setPower(1);
         }
 
+        if(gamepad1.leftBumperWasPressed()){
+            tilt.setPosition(tilt.getPosition()+.1);
+        }
+        if(gamepad1.rightBumperWasPressed()){
+            tilt.setPosition(tilt.getPosition()-.1);
+        }
 
-
-        if(gamepad2.leftBumperWasPressed()){
+        if(gamepad2.aWasPressed()){
             hShooter.FireColor('p');
         }
-        if(gamepad2.rightBumperWasPressed()){
+        if(gamepad2.bWasPressed()){
             hShooter.FireColor('g');
         }
 
